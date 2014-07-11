@@ -4,6 +4,7 @@ Multi Agent Neural Network (MANN)
 Agent Based Model in Python Using Lens to Compute a Neural Network Decision Making Process
 
 # Setting up LENS
+Download LENS: http://web.stanford.edu/group/mbc/LENSManual/index.html
 
 #### Ubuntu 14.04 64-bit
 
