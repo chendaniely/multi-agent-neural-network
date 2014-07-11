@@ -5,7 +5,7 @@ Agent Based Model in Python Using Lens to Compute a Neural Network Decision Maki
 
 # Setting up LENS
 
-## Ubuntu 14.04 64-bit
+#### Ubuntu 14.04 64-bit
 
 Notes from David Plaut: 
 
@@ -29,10 +29,10 @@ Notes from David Plaut:
     cd $LENSDIR
     make all
 
-If you are re-running ./configure remove the config.cache first
+If you are re-running <code>./configure</code> remove the config.cache first
     rm config.cache
 
-Finally before running ./lens you need to export a few more environment variables
+Finally before running <code>./lens</code> you need to export a few more environment variables
 
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LENSDIR}/Bin/${HOSTTYPE}
     export PATH=${PATH}:${LENSDIR}/Bin/${HOSTTYPE}
