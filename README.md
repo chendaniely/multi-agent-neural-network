@@ -34,6 +34,17 @@ Notes from David Plaut:
     cd $LENSDIR
     make all
 
+<code>./configure</code> is failing make sure the follow files have execute permission <code>chmod 775</code>
+    - config.status
+    - configure
+    - configure.in
+    - configure.ORIG
+    - install-sh
+    - ldAix
+    - mkLinks
+    - tclsh
+    - wish
+
 If you are re-running <code>./configure</code> remove the config.cache first
     rm config.cache
 
