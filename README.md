@@ -6,6 +6,10 @@ Agent Based Model in Python Using Lens to Compute a Neural Network Decision Maki
 # Setting up LENS
 Download LENS: http://web.stanford.edu/group/mbc/LENSManual/index.html
 
+or
+
+https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
+
 #### Ubuntu 14.04 64-bit
 
 Notes from David Plaut: 
