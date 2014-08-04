@@ -48,7 +48,9 @@ Notes from David Plaut:
 If you are re-running <code>./configure</code> remove the config.cache first
     rm config.cache
 
-Finally before running <code>./lens</code> you need to export a few more environment variables
+Finally before running <code>./lens</code> you need to export a few more environment variables.  It is best to add these to your .bashrc file
 
+    export LENSDIR=~/code/Lens      # or wherever Lens is installed
+    export HOSTTYPE=x86_64-linux    # same as above during make
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LENSDIR}/Bin/${HOSTTYPE}
     export PATH=${PATH}:${LENSDIR}/Bin/${HOSTTYPE}
