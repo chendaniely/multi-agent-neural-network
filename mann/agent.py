@@ -8,16 +8,13 @@ class Agent(object):
     from the networkx package
     '''
 
-
     # variable that tracks how many instances the Agent object is created
     agent_count = 0
-
 
     def __init__(self):
         # first agent created is agent 0XS
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
-
 
     def __key(self):
         '''
@@ -38,7 +35,6 @@ class Agent(object):
     def get_key(self):
         return self.__key()
 
-
     def __hash__(self):
         '''
         defines the hash function.
@@ -47,15 +43,13 @@ class Agent(object):
         '''
         return hash(self.__key())
 
-
     def __eq__(x, y):
         '''
         equality method
         used to implement whether 2 agents are the same
         where equality is defined by the __key() values
         '''
-        return x.__key() == y.key()    
-
+        return x.__key() == y.key()
 
     def __repr__(self):
         return str(self.__class__.__name__) + ", key: " + str(self.get_key())
