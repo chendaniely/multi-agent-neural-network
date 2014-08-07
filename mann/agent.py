@@ -71,3 +71,7 @@ class Agent(object):
 
     def __repr__(self):
         return str(self.__class__.__name__) + ", key: " + str(self.get_key())
+
+    def __str__(self):
+        return "A" + str(self.get_key())
+
