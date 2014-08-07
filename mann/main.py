@@ -1,11 +1,6 @@
 #! /usr/bin/env python
 
 
-import agent
-import networkx as nx
-import matplotlib.pyplot as plt
-
-
 def main():
 
     # creating n number of agents
