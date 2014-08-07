@@ -6,10 +6,12 @@ import network_agent
 def main():
 
     # creating n number of agents
-    n = 3
+    n = 20
 
     # container for agents (dictionary where the __key() is the key)
     agents = {}
+    # probablity for edge creation [0, 1]
+    p = 0.1
 
     for i in range(n):
         print("creating agent # ", i)
