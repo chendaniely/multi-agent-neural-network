@@ -35,7 +35,7 @@ class Agent(object):
             return -1
             raise Exception("Error in _random_state")
 
-    def find_predecessors(self, predecessors):
+    def set_predecessors(self, predecessors):
         self.predecessors = predecessors
 
     def __key(self):
