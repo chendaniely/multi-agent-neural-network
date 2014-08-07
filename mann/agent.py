@@ -17,7 +17,7 @@ class Agent(object):
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
 
-    def _random_state(self):
+    def random_binary_state(self):
         '''
         generates a random state for the agent as it is created
         raises exception if state cannot be assign
