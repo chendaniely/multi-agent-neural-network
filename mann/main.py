@@ -11,11 +11,6 @@ def main():
     # probablity for edge creation [0, 1]
     p = 0.1
 
-
-    G = nx.MultiDiGraph()
-    G.add_edge(agents[0], agents[1])
-    G.add_edge(agents[1], agents[2])
-    G.add_edge(agents[2], agents[0])
     
 
 if __name__ == "__main__":
