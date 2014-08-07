@@ -10,7 +10,7 @@ class NetworkAgent(object):
 
     def create_multidigraph_of_agents_from_edge_list(self, number_of_agents, edge_list):
         # create the graph
-        G = nx.MultiDiGraph()
+        self.G = nx.MultiDiGraph()
         
         # dictonary container for agents, key values will be the agent.get_key
         all_agents = {}
@@ -26,9 +26,9 @@ class NetworkAgent(object):
 
         for edge in edge_list:
             u , v = edge
-            G.add_edge(all_agents[u], all_agents[v])
+            self.G.add_edge(all_agents[u], all_agents[v])
 
-        nx.draw_circular(G)
+        nx.draw_circular(self.G)
         plt.show()
 
-        return G
+        return self.G
