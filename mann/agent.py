@@ -53,7 +53,6 @@ class Agent(object):
         '''
         return self.agent_id
 
-
     def get_key(self):
         return self.__key()
 
