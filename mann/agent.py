@@ -35,6 +35,9 @@ class Agent(object):
             return -1
             raise Exception("Error in _random_state")
 
+    def find_predecessors(self, predecessors):
+        self.predecessors = predecessors
+
     def __key(self):
         '''
         method that returns a tuple of the unique vales of the agent.
