@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import agent
+import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -42,3 +43,11 @@ class NetworkAgent(object):
             # assign the predecessors agent instance variable to the iter
             node_agent.set_predecessors(predecessors)
 
+    def sample_network(self, number_of_agents_to_sample):
+        '''
+        From the random.sample documentation:
+        Return a k length list of unique elements chosen from the population sequence or set.
+        Used for random sampling without replacement.
+        '''
+        agents_picked = random.sample(self.G.nodes(), number_of_agents_to_sample)
+        return agents_picked
