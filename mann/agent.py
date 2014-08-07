@@ -16,6 +16,7 @@ class Agent(object):
         # first agent created is agent 0XS
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
+        self.binary_state = 0
 
     def random_binary_state(self):
         '''
