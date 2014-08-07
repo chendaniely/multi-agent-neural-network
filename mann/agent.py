@@ -48,7 +48,7 @@ class Agent(object):
         ------
         a tuple that represents the unique keys of the agent
         '''
-        return (self.agent_id)
+        return self.agent_id
 
 
     def get_key(self):
@@ -58,7 +58,6 @@ class Agent(object):
         '''
         defines the hash function.
         the hash function hashes the __key()
-        which is a tuple of unique agent values
         '''
         return hash(self.__key())
 
