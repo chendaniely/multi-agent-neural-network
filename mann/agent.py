@@ -18,6 +18,15 @@ class Agent(object):
         Agent.agent_count += 1
         self.binary_state = 0
 
+    def set_binary_state(self, value):
+        # binary state means 0 or 1
+        assert(value in (0, 1), "binary state can only be 0 or 1, got %r" % value)
+
+        # want to make sure we are only changing the state when the value is different
+        assert(value != self.binary_state)
+
+        self.binary_state = value
+
     def random_binary_state(self):
         '''
         generates a random state for the agent as it is created
