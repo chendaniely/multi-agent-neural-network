@@ -20,6 +20,9 @@ def main():
     network_of_agents = network_agent.NetworkAgent()
     network_of_agents.create_multidigraph_of_agents_from_edge_list(n, my_network.G.edges_iter())
 
+    # make agents aware of predecessors
+    # predecessors are agents who influence the current agent
+    network_of_agents.set_predecessors_for_each_node()
 
 if __name__ == "__main__":
     print("Running")
