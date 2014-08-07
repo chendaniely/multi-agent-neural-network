@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from random import random
 
 class Agent(object):
     '''
@@ -15,6 +16,24 @@ class Agent(object):
         # first agent created is agent 0XS
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
+
+    def _random_state(self):
+        '''
+        generates a random state for the agent as it is created
+        raises exception if state cannot be assign
+
+        returns
+        -------
+        returns an integer value of 0 or 1 for a state
+        '''
+        random_float = random()
+        if random_float < .5:
+            return 0
+        elif random_float >= .5:
+            return 1
+        else:
+            return -1
+            raise Exception("Error in _random_state")
 
     def __key(self):
         '''
