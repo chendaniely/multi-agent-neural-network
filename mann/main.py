@@ -56,6 +56,10 @@ def main():
         selected_agent.set_binary_state(1)
         print('post-seed_agent_binary_state', selected_agent.binary_state)
 
+    for i in range(5):
+        print("STEP # ", i)
+        step(network_of_agents)
+        
 if __name__ == "__main__":
     print("Running")
     main()
