@@ -20,7 +20,7 @@ def random_select_and_update(network_of_agents):
         print('post-update_agent_binary_state', selected_agent.binary_state)
 
 
-def step(network_of_agents):
+def step(time_tick, network_of_agents):
     random_select_and_update(network_of_agents)
 
 def main():
@@ -58,7 +58,7 @@ def main():
 
     for i in range(5):
         print("STEP # ", i)
-        step(network_of_agents)
+        step(i, network_of_agents)
         
 if __name__ == "__main__":
     print("Running")
