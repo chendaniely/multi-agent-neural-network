@@ -22,6 +22,7 @@ def random_select_and_update(network_of_agents):
 
 def step(time_tick, network_of_agents):
     random_select_and_update(network_of_agents)
+    network_of_agents.write_network_agent_step_info(time_tick, '../output/network_of_agents.pout', 'a')
 
 def main():
 
@@ -35,7 +36,7 @@ def main():
     my_network = network.DirectedFastGNPRandomGraph(n, p)
     print(my_network.G.edges()) # edge list
     print(my_network.G.edges_iter())
-    my_network.show_graph()
+    my_network.show_graph('../output/mann-generated.png')
     
     network_of_agents = network_agent.NetworkAgent()
     network_of_agents.create_multidigraph_of_agents_from_edge_list(n, my_network.G.edges_iter())

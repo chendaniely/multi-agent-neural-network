@@ -30,7 +30,8 @@ class NetworkAgent(object):
             self.G.add_edge(all_agents[u], all_agents[v])
 
         nx.draw_circular(self.G)
-        plt.show()
+        # plt.show()
+        plt.savefig('../output/mann-copied.png')
 
         return self.G
 
