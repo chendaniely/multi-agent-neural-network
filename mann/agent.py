@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from random import random
+import random
 
 class Agent(object):
     '''
@@ -36,7 +36,7 @@ class Agent(object):
         -------
         returns an integer value of 0 or 1 for a state
         '''
-        random_float = random()
+        random_float = random.random()
         if random_float < .5:
             return 0
         elif random_float >= .5:
