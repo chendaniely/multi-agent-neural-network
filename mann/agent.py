@@ -92,3 +92,15 @@ class Agent(object):
             return False
         else:
             return True
+    def update_agent_binary_state(self, pick='1'):
+        '''
+        pick = '1': uses the update_agent_binary_state_1 algorithm
+        '''
+        if self.has_predessor == True:
+            if pick == '1':
+                self._update_agent_binary_state_1()
+            else:
+                raise ValueError("algorithm used for pick unknown")
+        else:
+            pass
+
