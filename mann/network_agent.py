@@ -12,7 +12,7 @@ class NetworkAgent(object):
     def create_multidigraph_of_agents_from_edge_list(self, number_of_agents, edge_list):
         # create the graph
         self.G = nx.MultiDiGraph()
-        
+
         # dictonary container for agents, key values will be the agent.get_key
         all_agents = {}
 
@@ -22,7 +22,7 @@ class NetworkAgent(object):
             new_agent = agent.Agent()
             print("agent ", new_agent.get_key(), " created")
             all_agents[new_agent.get_key()] = new_agent
-            
+
         print('total number of agents created: ', new_agent.agent_count)
 
         for edge in edge_list:

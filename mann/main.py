@@ -34,7 +34,7 @@ def main():
 
     # Create Erdos-Renyi graph
     my_network = network.DirectedFastGNPRandomGraph(n, p)
-    print(my_network.G.edges()) # edge list
+    print("network edge list to copy\n", my_network.G.edges()) # edge list
     print(my_network.G.edges_iter())
     my_network.show_graph('../output/mann-generated.png')
     
