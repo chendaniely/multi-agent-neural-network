@@ -39,7 +39,7 @@ class NetworkAgent(object):
         # iterate through all nodes in network
         for node_agent in self.G.nodes_iter():
             # look up the predessors for each node
-            predecessors = self.G.predecessors_iter(node_agent)            
+            predecessors = self.G.predecessors(node_agent)
             # since the nodes are an Agent class we can
             # assign the predecessors agent instance variable to the iter
             node_agent.set_predecessors(predecessors)
