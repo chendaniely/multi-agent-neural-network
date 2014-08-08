@@ -1,5 +1,6 @@
 ##### PROJECT IGNORE
 exampleLensFiles/*
+output/*
 
 ##### PYTHON IGNORE
 # Byte-compiled / optimized / DLL files
