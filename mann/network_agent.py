@@ -51,3 +51,12 @@ class NetworkAgent(object):
         '''
         agents_picked = random.sample(self.G.nodes(), number_of_agents_to_sample)
         return agents_picked
+
+    def write_network_agent_step_info(self, time_step, file_to_write, file_mode):
+        with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
+             for node in self.G.__iter__():
+                 f.write(str(time_step) +
+                         "," +
+                         str(node.get_key()) +
+                         "," +
+                         str(node.binary_state) + "\n")
