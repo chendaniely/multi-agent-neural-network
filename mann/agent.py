@@ -87,3 +87,8 @@ class Agent(object):
     def __str__(self):
         return "A" + str(self.get_key())
 
+    def has_predessor(self):
+        if len(self.predecessors) == 0:
+            return False
+        else:
+            return True
