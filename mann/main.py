@@ -3,6 +3,9 @@
 import network
 import network_agent
 
+def step(network_of_agents):
+    random_select_and_update(network_of_agents)
+
 def main():
 
     # creating n number of agents
