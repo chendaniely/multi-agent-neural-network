@@ -13,7 +13,7 @@ class Agent(object):
     agent_count = 0
 
     def __init__(self):
-        # first agent created is agent 0XS
+        # first agent created is agent 0
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
         self.binary_state = 0
@@ -94,6 +94,7 @@ class Agent(object):
             return True
 
     def _update_agent_binary_state_1(self):
+        print('in _update_agent_binary_state_1')
         print("type of predecssors: ",  type(self.predecessors))
         print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
@@ -105,6 +106,7 @@ class Agent(object):
             print("predecessor_picked.binary_state = ", predecessor_picked.binary_state)
             pass
         else:
+            print('updateing agent state')
             random_number = random.random()
             if random_number < 0.7:
                   self.set_binary_state(predecessor_picked.binary_state)
@@ -115,7 +117,9 @@ class Agent(object):
         '''
         pick = '1': uses the update_agent_binary_state_1 algorithm
         '''
-        if self.has_predessor == True:
+        print('in update_agent_binary_state')
+        print('has predecessors', self.has_predessor())
+        if self.has_predessor() == True:
             if pick == '1':
                 self._update_agent_binary_state_1()
             else:
@@ -123,3 +127,14 @@ class Agent(object):
         else:
             pass
 
+    def get_agent_step_info(self):
+        '''
+        THIS FUNCTION IS NOT USED
+        returns
+        -------
+        a dictionary of values to be saved on each step of a model run
+        '''
+        return {
+            'key': self.__key,
+            'binary_state' : self.binary_state
+        }
