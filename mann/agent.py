@@ -115,7 +115,7 @@ class Agent(object):
         '''
         pick = '1': uses the update_agent_binary_state_1 algorithm
         '''
-        if self.has_predessor == True:
+        if self.has_predessor() == True:
             if pick == '1':
                 self._update_agent_binary_state_1()
             else:
