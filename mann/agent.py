@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from random import random
+import random
 
 class Agent(object):
     '''
@@ -36,7 +36,7 @@ class Agent(object):
         -------
         returns an integer value of 0 or 1 for a state
         '''
-        random_float = random()
+        random_float = random.random()
         if random_float < .5:
             return 0
         elif random_float >= .5:
@@ -86,4 +86,40 @@ class Agent(object):
 
     def __str__(self):
         return "A" + str(self.get_key())
+
+    def has_predessor(self):
+        if len(self.predecessors) == 0:
+            return False
+        else:
+            return True
+
+    def _update_agent_binary_state_1(self):
+        print("type of predecssors: ",  type(self.predecessors))
+        print("container of predessors: ", self.predecessors)
+        predecessor_picked = random.sample(list(self.predecessors), 1)[0]
+        print("predecessor picked: ", predecessor_picked)
+        print("predecessor picked key: ", predecessor_picked.get_key())
+        if self.binary_state == predecessor_picked.binary_state:
+            print("no update required, binary states are the same")
+            print("self.binary_state = ", self.binary_state)
+            print("predecessor_picked.binary_state = ", predecessor_picked.binary_state)
+            pass
+        else:
+            random_number = random.random()
+            if random_number < 0.7:
+                  self.set_binary_state(predecessor_picked.binary_state)
+            else:
+                  pass
+
+    def update_agent_binary_state(self, pick='1'):
+        '''
+        pick = '1': uses the update_agent_binary_state_1 algorithm
+        '''
+        if self.has_predessor == True:
+            if pick == '1':
+                self._update_agent_binary_state_1()
+            else:
+                raise ValueError("algorithm used for pick unknown")
+        else:
+            pass
 
