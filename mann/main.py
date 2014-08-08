@@ -47,7 +47,7 @@ def main():
     network_of_agents.set_predecessors_for_each_node()
 
     # randomly select nodes from network_of_agents to seed
-    num_seed = 1
+    num_seed = 5
     agents_to_seed = network_of_agents.sample_network(num_seed)
     print("agents to seed: ", agents_to_seed)
 
@@ -58,7 +58,7 @@ def main():
         selected_agent.set_binary_state(1)
         print('post-seed_agent_binary_state', selected_agent.binary_state)
 
-    for i in range(5):
+    for i in range(1000):
         print("STEP # ", i)
         step(i, network_of_agents)
         
