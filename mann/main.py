@@ -30,6 +30,17 @@ def main():
     print(agents_for_update)
     
     print(network_of_agents.G.nodes()[agents_for_update[0].get_key()])
+    # randomly select nodes from network_of_agents to seed
+    num_seed = 1
+    agents_to_seed = network_of_agents.sample_network(num_seed)
+    print("agents to seed: ", agents_to_seed)
+
+    # seed agents who were select
+    for selected_agent in agents_to_seed:
+        print("seeding: ", network_of_agents.G.nodes()[selected_agent.get_key()])
+        print('pre-seed binary_state', selected_agent.binary_state)
+        selected_agent.set_binary_state(1)
+        print('post-seed_agent_binary_state', selected_agent.binary_state)
 
 if __name__ == "__main__":
     print("Running")
