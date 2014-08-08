@@ -127,3 +127,14 @@ class Agent(object):
         else:
             pass
 
+    def get_agent_step_info(self):
+        '''
+        THIS FUNCTION IS NOT USED
+        returns
+        -------
+        a dictionary of values to be saved on each step of a model run
+        '''
+        return {
+            'key': self.__key,
+            'binary_state' : self.binary_state
+        }
