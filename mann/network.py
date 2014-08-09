@@ -3,6 +3,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
 class Network(object):
     def __init__(self):
         pass
@@ -19,4 +20,3 @@ class DirectedFastGNPRandomGraph(nx.MultiDiGraph):
         nx.draw_circular(self.G)
         # plt.show()
         plt.savefig(name)
-
