@@ -2,6 +2,7 @@
 
 import random
 
+
 class Agent(object):
     '''
     This is the agent class.
@@ -20,9 +21,10 @@ class Agent(object):
 
     def set_binary_state(self, value):
         # binary state means 0 or 1
-        assert(value in (0, 1), "binary state can only be 0 or 1, got %r" % value)
+        assert(value in (0, 1),
+               "binary state can only be 0 or 1, got %r" % value)
 
-        # want to make sure we are only changing the state when the value is different
+        # make sure we are only changing the state when the value is different
         assert(value != self.binary_state)
 
         self.binary_state = value
@@ -103,15 +105,16 @@ class Agent(object):
         if self.binary_state == predecessor_picked.binary_state:
             print("no update required, binary states are the same")
             print("self.binary_state = ", self.binary_state)
-            print("predecessor_picked.binary_state = ", predecessor_picked.binary_state)
+            print("predecessor_picked.binary_state = ",
+                  predecessor_picked.binary_state)
             pass
         else:
             print('updateing agent state')
             random_number = random.random()
             if random_number < 0.7:
-                  self.set_binary_state(predecessor_picked.binary_state)
+                self.set_binary_state(predecessor_picked.binary_state)
             else:
-                  pass
+                pass
 
     def update_agent_binary_state(self, pick='1'):
         '''
@@ -119,7 +122,7 @@ class Agent(object):
         '''
         print('in update_agent_binary_state')
         print('has predecessors', self.has_predessor())
-        if self.has_predessor() == True:
+        if self.has_predessor():
             if pick == '1':
                 self._update_agent_binary_state_1()
             else:
@@ -136,5 +139,5 @@ class Agent(object):
         '''
         return {
             'key': self.__key,
-            'binary_state' : self.binary_state
+            'binary_state': self.binary_state
         }

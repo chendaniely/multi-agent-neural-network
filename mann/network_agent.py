@@ -5,11 +5,13 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
 class NetworkAgent(object):
     def __init__(self):
         pass
 
-    def create_multidigraph_of_agents_from_edge_list(self, number_of_agents, edge_list):
+    def create_multidigraph_of_agents_from_edge_list(
+            self, number_of_agents, edge_list):
         # create the graph
         self.G = nx.MultiDiGraph()
 
@@ -26,7 +28,7 @@ class NetworkAgent(object):
         print('total number of agents created: ', new_agent.agent_count)
 
         for edge in edge_list:
-            u , v = edge
+            u, v = edge
             self.G.add_edge(all_agents[u], all_agents[v])
 
         nx.draw_circular(self.G)
@@ -47,17 +49,20 @@ class NetworkAgent(object):
     def sample_network(self, number_of_agents_to_sample):
         '''
         From the random.sample documentation:
-        Return a k length list of unique elements chosen from the population sequence or set.
+        Return a k length list of unique elements
+        chosen from the population sequence or set.
         Used for random sampling without replacement.
         '''
-        agents_picked = random.sample(self.G.nodes(), number_of_agents_to_sample)
+        agents_picked = random.sample(self.G.nodes(),
+                                      number_of_agents_to_sample)
         return agents_picked
 
-    def write_network_agent_step_info(self, time_step, file_to_write, file_mode):
+    def write_network_agent_step_info(self, time_step,
+                                      file_to_write, file_mode):
         with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
-             for node in self.G.__iter__():
-                 f.write(str(time_step) +
-                         "," +
-                         str(node.get_key()) +
-                         "," +
-                         str(node.binary_state) + "\n")
+            for node in self.G.__iter__():
+                f.write(str(time_step) +
+                        "," +
+                        str(node.get_key()) +
+                        "," +
+                        str(node.binary_state) + "\n")
