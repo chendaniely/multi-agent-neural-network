@@ -29,8 +29,9 @@ def random_select_and_update(network_of_agents):
 
 def step(time_tick, network_of_agents):
     random_select_and_update(network_of_agents)
+    network_agent_step_time_dir = '../output/network_of_agents.pout'
     network_of_agents.write_network_agent_step_info(
-        time_tick, '../output/network_of_agents.pout', 'a')
+        time_tick, network_agent_step_time_dir, 'a')
 
 
 def main():
