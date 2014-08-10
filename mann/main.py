@@ -77,10 +77,10 @@ def main():
     # Create Erdos-Renyi graph
     my_network = network.DirectedFastGNPRandomGraph(n, p)
 
-    print("network edge list to copy\n", my_network.G.edges())  # edge list
+    # print("network edge list to copy\n", my_network.G.edges())  # edge list
     logger1.info('Network edge list to copy: %s', str(my_network.G.edges()))
 
-    print(my_network.G.edges_iter())
+    # print(my_network.G.edges_iter())
 
     generated_graph_dir = '../output/mann-generated.png'
     my_network.show_graph(generated_graph_dir)
@@ -100,16 +100,16 @@ def main():
     # randomly select nodes from network_of_agents to seed
     num_seed = 5
     agents_to_seed = network_of_agents.sample_network(num_seed)
-    print("agents to seed: ", agents_to_seed)
+    # print("agents to seed: ", agents_to_seed)
     logger1.info('Agents seeded: %s', str(agents_to_seed))
 
     # seed agents who were select
     for selected_agent in agents_to_seed:
-        print("seeding: ",
-              network_of_agents.G.nodes()[selected_agent.get_key()])
+        # print("seeding: ",
+        #       network_of_agents.G.nodes()[selected_agent.get_key()])
         logger1.info('Seeding agent  %s', str(selected_agent.get_key()))
 
-        print('pre-seed binary_state', selected_agent.binary_state)
+        # print('pre-seed binary_state', selected_agent.binary_state)
         logger1.debug('Agent %s, pre-seed state: %s',
                       str(selected_agent.get_key()),
                       str(selected_agent.binary_state))
@@ -117,7 +117,7 @@ def main():
         selected_agent.set_binary_state(1)
         logger1.debug('Agent %s seeded', str(selected_agent.get_key()))
 
-        print('post-seed_agent_binary_state', selected_agent.binary_state)
+        # print('post-seed_agent_binary_state', selected_agent.binary_state)
         logger1.debug('Agent %s, post-seed state: %s',
                       str(selected_agent.get_key()),
                       str(selected_agent.binary_state))
