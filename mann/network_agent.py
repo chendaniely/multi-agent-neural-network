@@ -27,6 +27,9 @@ class NetworkAgent(object):
 
         print('total number of agents created: ', new_agent.agent_count)
 
+        self.G.add_nodes_from(all_agents.values())
+        print('number of nodes created: ', len(self.G))
+
         for edge in edge_list:
             u, v = edge
             self.G.add_edge(all_agents[u], all_agents[v])
