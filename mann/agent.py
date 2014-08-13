@@ -48,6 +48,11 @@ class Agent(object):
             raise Exception("Error in _random_state")
 
     def set_predecessors(self, predecessors):
+        '''
+        returns
+        -------
+        a list of predecessors
+        '''
         self.predecessors = predecessors
 
     def __key(self):
@@ -97,7 +102,7 @@ class Agent(object):
 
     def _update_agent_binary_state_1(self):
         print('in _update_agent_binary_state_1')
-        print("type of predecssors: ",  type(self.predecessors))
+        print("type of predecssors: ",  type(self.predecessors))  # list
         print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
         print("predecessor picked: ", predecessor_picked)
