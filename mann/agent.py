@@ -57,6 +57,9 @@ class Agent(object):
     def get_key(self):
         return self._key()
 
+    def get_state(self):
+        raise BaseAgentStateError('Base agent class has no state')
+
     def set_predecessors(self, predecessors):
         '''
         returns
@@ -105,6 +108,9 @@ class BinaryAgent(Agent):
         assert(value != self.binary_state)
 
         self.binary_state = value
+
+    def get_state(self):
+        return self.binary_state
 
     def seed_agent(self):
         self.set_binary_state(1)
@@ -174,6 +180,9 @@ class LensAgent(Agent):
 
     def set_lens_agent_state(list_of_processing_unit_activations):
         self.state = list_of_processing_unit_activations
+
+    def get_state(self):
+        return self.state
 
     def list_to_str_delim(list_to_convert, delim):
         return delim.join(map(str, list_to_convert))

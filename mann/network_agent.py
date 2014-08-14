@@ -79,4 +79,4 @@ class NetworkAgent(object):
                         "," +
                         str(node.get_key()) +
                         "," +
-                        str(node.binary_state) + "\n")
+                        str(node.get_state()) + "\n")

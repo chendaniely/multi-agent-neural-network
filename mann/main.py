@@ -52,9 +52,9 @@ def random_select_and_update(network_of_agents):
     for selected_agent in agents_for_update:
         print("updating: ",
               network_of_agents.G.nodes()[selected_agent.get_key()])
-        print('pre-update binary_state', selected_agent.binary_state)
         selected_agent.update_agent_binary_state()
-        print('post-update_agent_binary_state', selected_agent.binary_state)
+        print('pre-update binary_state', selected_agent.get_state())
+        print('post-update_agent_binary_state', selected_agent.get_state())
 
 
 def step(time_tick, network_of_agents):
@@ -121,7 +121,7 @@ def main():
         # print('pre-seed binary_state', selected_agent.binary_state)
         logger1.debug('Agent %s, pre-seed state: %s',
                       str(selected_agent.get_key()),
-                      str(selected_agent.binary_state))
+                      str(selected_agent.get_state()))
 
         selected_agent.seed_agent()
         logger1.debug('Agent %s seeded', str(selected_agent.get_key()))
@@ -129,7 +129,7 @@ def main():
         # print('post-seed_agent_binary_state', selected_agent.binary_state)
         logger1.debug('Agent %s, post-seed state: %s',
                       str(selected_agent.get_key()),
-                      str(selected_agent.binary_state))
+                      str(selected_agent.get_state()))
 
     logger1.info('Begin steps')
     for i in range(5):
