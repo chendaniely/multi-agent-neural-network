@@ -23,7 +23,7 @@ class Agent(object):
         defines the hash function.
         the hash function hashes the __key()
         '''
-        return hash(self.__key())
+        return hash(self._key())
 
     def __eq__(x, y):
         '''
