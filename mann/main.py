@@ -11,7 +11,7 @@ logging_format = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 logging.basicConfig(level=logging.DEBUG,
                     format=logging_format,
                     datefmt='%m-%d %H:%M',
-                    filename='myapp.log',
+                    filename='../output/myapp.log',
                     filemode='w')
 
 # define a Handler which writes INFO messages or higher to the sys.stderr
