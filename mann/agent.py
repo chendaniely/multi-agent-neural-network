@@ -191,6 +191,9 @@ class LensAgent(Agent):
     def list_to_str_delim(list_to_convert, delim):
         return delim.join(map(str, list_to_convert))
 
+    def seed_agent(self):
+        self.state = [1] * len(self.state)
+
     def update_agent_state(self, pick):
         if pick == 'default':
             pass
