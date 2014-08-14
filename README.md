@@ -54,3 +54,5 @@ Finally before running <code>./lens</code> you need to export a few more environ
     export HOSTTYPE=x86_64-linux    # same as above during make
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LENSDIR}/Bin/${HOSTTYPE}
     export PATH=${PATH}:${LENSDIR}/Bin/${HOSTTYPE}
+
+If you are running Lens on a remote machine via SSH, remember to ssh via <code> ssh -X </code>
