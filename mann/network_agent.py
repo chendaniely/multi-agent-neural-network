@@ -22,8 +22,18 @@ class NetworkAgent(object):
         # create all the agents
         for i in range(number_of_agents):
             print("creating agent # ", i)
-            new_agent = agent.BinaryAgent()
-            print("agent ", new_agent.get_key(), " created")
+            # createing the different types of agents for the network
+            if agent_type == 'binary':
+                new_agent = agent.BinaryAgent()
+            elif agent_type == 'lens':
+                new_agent = agent.LensAgent()
+            else:
+                raise UnknownAgentTypeError(
+                    'Unknown agent specified as nodes for network')
+
+            print("agent ", new_agent.get_key(), " created",
+                  "; type: ", type(new_agent))
+
             all_agents[new_agent.get_key()] = new_agent
 
         print('total number of agents created: ', new_agent.agent_count)
