@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 
-import agent
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+
+import agent
 
 
 class NetworkAgent(object):
