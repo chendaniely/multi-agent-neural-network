@@ -21,7 +21,7 @@ class NetworkAgent(object):
         # create all the agents
         for i in range(number_of_agents):
             print("creating agent # ", i)
-            new_agent = agent.Agent()
+            new_agent = agent.BinaryAgent()
             print("agent ", new_agent.get_key(), " created")
             all_agents[new_agent.get_key()] = new_agent
 
