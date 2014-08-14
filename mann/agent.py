@@ -107,7 +107,7 @@ class BinaryAgent(Agent):
         self.binary_state = value
 
     def seed_agent(self):
-        set_binary_state(1)
+        self.set_binary_state(1)
 
     def random_binary_state(self):
         '''
