@@ -1,0 +1,41 @@
+---
+title: "mann-r-analysis"
+author: "Daniel Chen"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+```{r, echo=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+
+# networkx generated graph
+
+```{r, echo=FALSE, comment="", results='asis'}
+cat("![networkx generated network](/home/dchen/git/multi-agent-neural-network/output/mann-generated.png)")
+```
+
+# my copied graph
+
+```{r, echo=FALSE, comment="", results='asis'}
+cat("![networkx generated network](/home/dchen/git/multi-agent-neural-network/output/mann-copied.png)")
+```
+
+
+```{r, echo=FALSE}
+df <- read.csv("~/git/multi-agent-neural-network/output/network_of_agents.pout", header=FALSE)
+
+df2 <- df %>%
+  group_by(V1) %>%
+  summarize(total1 = sum(V3))
+```
+
+# Total 1's for each time tick
+
+```{r, echo=FALSE}
+ggplot(df2, aes(x=V1, y = total1)) + geom_line()
+```
+
