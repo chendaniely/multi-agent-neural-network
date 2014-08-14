@@ -71,6 +71,9 @@ class Agent(object):
         else:
             return True
 
+    def seed_agent(self):
+        raise BaseAgentSeedError('Base agent class cannot be seeded')
+
 #    def get_agent_step_info(self):
 #        '''
 #        THIS FUNCTION IS NOT USED
@@ -102,6 +105,9 @@ class BinaryAgent(Agent):
         assert(value != self.binary_state)
 
         self.binary_state = value
+
+    def seed_agent(self):
+        set_binary_state(1)
 
     def random_binary_state(self):
         '''
