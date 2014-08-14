@@ -123,7 +123,7 @@ def main():
                       str(selected_agent.get_key()),
                       str(selected_agent.binary_state))
 
-        selected_agent.set_binary_state(1)
+        selected_agent.seed_agent()
         logger1.debug('Agent %s seeded', str(selected_agent.get_key()))
 
         # print('post-seed_agent_binary_state', selected_agent.binary_state)
