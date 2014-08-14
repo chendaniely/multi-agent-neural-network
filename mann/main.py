@@ -52,8 +52,8 @@ def random_select_and_update(network_of_agents):
     for selected_agent in agents_for_update:
         print("updating: ",
               network_of_agents.G.nodes()[selected_agent.get_key()])
-        selected_agent.update_agent_binary_state()
         print('pre-update binary_state', selected_agent.get_state())
+        selected_agent.update_agent_state('default')
         print('post-update_agent_binary_state', selected_agent.get_state())
 
 

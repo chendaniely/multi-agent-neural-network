@@ -77,6 +77,10 @@ class Agent(object):
     def seed_agent(self):
         raise BaseAgentSeedError('Base agent class cannot be seeded')
 
+    def update_agent_state(self):
+        raise BaseAgentUpdateStateError(
+            'Base agent class has no state to update')
+
 #    def get_agent_step_info(self):
 #        '''
 #        THIS FUNCTION IS NOT USED
@@ -133,7 +137,7 @@ class BinaryAgent(Agent):
             return -1
             raise Exception("Error in _random_state")
 
-    def _update_agent_binary_state_1(self):
+    def _update_agent_binary_state_default(self):
         print('in _update_agent_binary_state_1')
         print("type of predecssors: ",  type(self.predecessors))  # list
         print("container of predessors: ", self.predecessors)
@@ -154,17 +158,17 @@ class BinaryAgent(Agent):
             else:
                 pass
 
-    def update_agent_binary_state(self, pick='1'):
+    def update_agent_state(self, pick):
         '''
         pick = '1': uses the update_agent_binary_state_1 algorithm
         '''
         print('in update_agent_binary_state')
         print('has predecessors', self.has_predessor())
         if self.has_predessor():
-            if pick == '1':
-                self._update_agent_binary_state_1()
+            if pick == 'default':
+                self._update_agent_binary_state_default()
             else:
-                raise ValueError("algorithm used for pick unknown")
+                raise ValueError("Algorithm used for pick unknown")
         else:
             pass
 
@@ -186,6 +190,12 @@ class LensAgent(Agent):
 
     def list_to_str_delim(list_to_convert, delim):
         return delim.join(map(str, list_to_convert))
+
+    def update_agent_state(self, pick):
+        if pick == 'default':
+            pass
+        else:
+            raise ValueError('Algorithm used for pick unknown')
 
     def write_agent_state_to_ex(file_dir):
         '''
