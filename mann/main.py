@@ -137,5 +137,4 @@ def main():
         step(i, network_of_agents)
 
 if __name__ == "__main__":
-    print("Running")
     main()
