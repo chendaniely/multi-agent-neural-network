@@ -209,6 +209,21 @@ class LensAgent(Agent):
     def _start_end_update_out(self, f):
         # f is the .out file to be read
         return tuple([80, 84, 86, 90])
+
+    def _get_new_state_values_from_out_file(self):
+        list_of_new_state = []
+        with open('../temp/AgentState.out', 'r') as f:
+            start_bank1, end_bank1, start_bank2, end_bank2 = \
+                self._start_end_update_out(f)
+            for line_idx, line in enumerate(f):
+                line_num = line_idx + 1
+                if start_bank1 <= line_num <= end_bank1 or \
+                   start_bank2 <= line_num <= end_bank2:
+                    # in a line that I want to save information for
+                    first_col = line.strip().split(' ')[0]
+                    list_of_new_state.append(first_col)
+        return list_of_new_state
+
     def _update_agent_state_default(self):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
