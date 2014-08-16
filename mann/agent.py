@@ -219,7 +219,7 @@ class LensAgent(Agent):
         else:
             raise ValueError('Algorithm used for pick unknown')
 
-    def write_agent_state_to_ex(file_dir):
+    def write_agent_state_to_ex(self, file_dir):
         '''
         file_dir should be in the ../temp/ folder
         usually the file will be something like
