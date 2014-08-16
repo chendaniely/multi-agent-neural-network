@@ -201,6 +201,11 @@ class LensAgent(Agent):
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
         self.state = list_of_values[:]
+
+    def _call_lens(self):
+        pass
+        #subprocess.call(['lens', '-nogui', '/home/dchen/temp/lens/MainM1.in'])
+
     def _update_agent_state_default(self):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
