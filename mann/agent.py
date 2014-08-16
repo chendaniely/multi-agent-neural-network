@@ -195,6 +195,12 @@ class LensAgent(Agent):
     def seed_agent(self):
         self.state = [1] * len(self.state)
 
+    def set_agent_state(self, list_of_values):
+        # sets state to list of values
+        # list slicing is the fastest according to stackoverflow:
+        # http://stackoverflow.com/questions/2612802/
+        # how-to-clone-or-copy-a-list-in-python
+        self.state = list_of_values[:]
     def _update_agent_state_default(self):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
