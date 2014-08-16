@@ -195,6 +195,18 @@ class LensAgent(Agent):
     def seed_agent(self):
         self.state = [1] * len(self.state)
 
+    def _update_agent_state_default(self):
+        if len(self.predecessors) > 0:
+            predecessor_picked = random.sample(list(self.predecessors), 1)[0]
+            predecessor_picked.write_agent_state_to_ex('../temp/infl.ex')
+            self.write_agent_state_to_ex('../temp/agent.ex')
+            self._call_lens()
+            self.new_state_values = self._get_new_state_values_from_out_file()
+            self.set_agent_state(self.new_state_values)
+        else:
+            print('no predecessors')
+            pass
+
     def update_agent_state(self, pick):
         if pick == 'default':
             pass
