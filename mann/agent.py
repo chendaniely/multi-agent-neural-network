@@ -215,7 +215,7 @@ class LensAgent(Agent):
 
     def update_agent_state(self, pick):
         if pick == 'default':
-            pass
+            self._update_agent_state_default()
         else:
             raise ValueError('Algorithm used for pick unknown')
 
