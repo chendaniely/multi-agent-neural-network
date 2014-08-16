@@ -206,6 +206,9 @@ class LensAgent(Agent):
         pass
         #subprocess.call(['lens', '-nogui', '/home/dchen/temp/lens/MainM1.in'])
 
+    def _start_end_update_out(self, f):
+        # f is the .out file to be read
+        return tuple([80, 84, 86, 90])
     def _update_agent_state_default(self):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
