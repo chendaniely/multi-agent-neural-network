@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 
-import agent
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+
+import agent
 
 
 class NetworkAgent(object):
@@ -11,7 +12,7 @@ class NetworkAgent(object):
         pass
 
     def create_multidigraph_of_agents_from_edge_list(
-            self, number_of_agents, edge_list):
+            self, number_of_agents, edge_list, agent_type=tuple(['binary'])):
         # create the graph
         self.G = nx.MultiDiGraph()
 
@@ -21,8 +22,18 @@ class NetworkAgent(object):
         # create all the agents
         for i in range(number_of_agents):
             print("creating agent # ", i)
-            new_agent = agent.Agent()
-            print("agent ", new_agent.get_key(), " created")
+            # createing the different types of agents for the network
+            if agent_type[0] == 'binary':
+                new_agent = agent.BinaryAgent()
+            elif agent_type[0] == 'lens':
+                new_agent = agent.LensAgent(agent_type[1])
+            else:
+                raise UnknownAgentTypeError(
+                    'Unknown agent specified as nodes for network')
+
+            print("agent ", new_agent.get_key(), " created",
+                  "; type: ", type(new_agent))
+
             all_agents[new_agent.get_key()] = new_agent
 
         print('total number of agents created: ', new_agent.agent_count)
@@ -68,4 +79,4 @@ class NetworkAgent(object):
                         "," +
                         str(node.get_key()) +
                         "," +
-                        str(node.binary_state) + "\n")
+                        str(node.get_state()) + "\n")
