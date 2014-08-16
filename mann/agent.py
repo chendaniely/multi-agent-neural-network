@@ -138,7 +138,7 @@ class BinaryAgent(Agent):
             return -1
             raise Exception("Error in _random_state")
 
-    def _update_agent_binary_state_default(self):
+    def _update_agent_state_default(self):
         print('in _update_agent_binary_state_1')
         print("type of predecssors: ",  type(self.predecessors))  # list
         print("container of predessors: ", self.predecessors)
@@ -167,7 +167,7 @@ class BinaryAgent(Agent):
         print('has predecessors', self.has_predessor())
         if self.has_predessor():
             if pick == 'default':
-                self._update_agent_binary_state_default()
+                self._update_agent_state_default()
             else:
                 raise ValueError("Algorithm used for pick unknown")
         else:
