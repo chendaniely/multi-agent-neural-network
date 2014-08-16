@@ -189,7 +189,7 @@ class LensAgent(Agent):
     def get_state(self):
         return self.state
 
-    def list_to_str_delim(list_to_convert, delim):
+    def _list_to_str_delim(self, list_to_convert, delim):
         return delim.join(map(str, list_to_convert))
 
     def seed_agent(self):
@@ -234,6 +234,6 @@ class LensAgent(Agent):
             '''
             f.write('name: sit1\n')
 
-            lens_agent_state_str = list_to_str_delim(self.state, " ")
+            lens_agent_state_str = self._list_to_str_delim(self.state, " ")
             input_line = 'I: ' + lens_agent_state_str + ' ;'
             f.write(input_line)
