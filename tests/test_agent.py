@@ -23,6 +23,46 @@ from mann import agent
 #     assert(1 == 1, 'this should not fail')
 
 
+#################
+# Unit Test notes
+#################
+# To write to 'file', write to StringIO
+# use getvalue() to get and check its final contents
+# writer.getvalue()
+# nose.assert_almost_equals()
+Data = '''0 0 1 1
+1 0 2 1
+2 0 3 1
+'''
+
+
+def count_lines_in(reader):
+    count = 0
+    for line in reader:
+        count += 1
+    return count
+
+
+def count_lines(filename):
+    reader = open(filename, 'r')
+    reader.close()
+    result = count_rect_in(reader)
+    return result
+
+
+def test_count_lines():
+    print("testing count lines", file=sys.stderr)
+    reader = io.StringIO(Data)
+    assert count_lines_in(reader) == 3
+
+
+# Fixtures
+# something we run a test on
+# nose has a function called setup
+# will be run before any of the tests
+# use nose.with_setup to apply the
+# function before each test
+
 #####################################
 # Unit tests for the base Agent class
 #####################################
