@@ -30,9 +30,9 @@ class Agent(object):
         '''
         equality method
         used to implement whether 2 agents are the same
-        where equality is defined by the __key() values
+        where equality is defined by the get_key() values
         '''
-        return x.__key() == y.key()
+        return x.get_key() == y.get_key()
 
     def __repr__(self):
         return str(self.__class__.__name__) + ", key: " + str(self.get_key())
