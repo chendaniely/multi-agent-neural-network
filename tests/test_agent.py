@@ -1,9 +1,11 @@
 #! /usr/bin/env python
 
-
-from nose import with_setup
-
+import nose
+import sys
+import io
 from mann import agent
+
+
 
 
 def setup_lens_agent():
