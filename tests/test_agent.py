@@ -87,3 +87,14 @@ def test_agent_get_key_multiple():
         list_of_test_agents.append(test_multiple_agent)
     assert list_of_test_agents[0].get_key() == 0
     assert list_of_test_agents[-1].get_key() == 9
+
+
+@nose.with_setup(reset_agent)
+def test_agent_get_state():
+    test_agent = agent.Agent()
+    try:
+        test_agent.get_state()
+    except agent.BaseAgentStateError:
+        assert True
+    else:
+        assert False
