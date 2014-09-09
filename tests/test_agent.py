@@ -98,3 +98,17 @@ def test_agent_get_state():
         assert True
     else:
         assert False
+
+
+@nose.with_setup(reset_agent)
+def test_agent_set_predecessors_empty():
+    test_agent = agent.Agent()
+    test_agent.set_predecessors([])
+    assert test_agent.predecessors == []
+
+
+@nose.with_setup(reset_agent)
+def test_agent_set_predecessors_list():
+    test_agent = agent.Agent()
+    test_agent.set_predecessors([1, 3, 5])
+    assert test_agent.predecessors == [1, 3, 5]
