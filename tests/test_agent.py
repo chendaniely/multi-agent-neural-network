@@ -66,7 +66,7 @@ def test_count_lines():
 #####################################
 # Unit tests for the base Agent class
 #####################################
-def reset_agent_count():
+def reset_agent():
     agent.Agent.agent_count = 0
 
 
