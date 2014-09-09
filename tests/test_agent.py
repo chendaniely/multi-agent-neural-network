@@ -51,7 +51,7 @@ def count_lines(filename):
 
 
 def test_count_lines():
-    print("testing count lines", file=sys.stderr)
+    # print("testing count lines", file=sys.stderr)
     reader = io.StringIO(Data)
     assert count_lines_in(reader) == 3
 
@@ -71,11 +71,9 @@ def reset_agent_count():
 
 
 def test_get_key():
-    print("testing single agent creation", file=sys.stderr)
     test_agent = agent.Agent()
     assert test_agent.get_key() == 0, '1 agent fail'
 
-    print("testing multiple agent creation", file=sys.stderr)
     list_of_test_agents = []
     agent.Agent.agent_count = 0
     for i in range(10):
