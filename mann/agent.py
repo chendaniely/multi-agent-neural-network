@@ -75,9 +75,15 @@ class Agent(object):
 
     def set_predecessors(self, list_of_predecessors):
         '''
+        Takes a list of predecessors and assigns the list to self.predecessors
+
+        parameters
+        ----------
+        a lit of predecessors
+
         returns
         -------
-        a list of predecessors
+        none
         '''
         self.predecessors = list_of_predecessors
 
