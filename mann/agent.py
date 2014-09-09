@@ -73,13 +73,13 @@ class Agent(object):
     def get_state(self):
         raise BaseAgentStateError
 
-    def set_predecessors(self, predecessors):
+    def set_predecessors(self, list_of_predecessors):
         '''
         returns
         -------
         a list of predecessors
         '''
-        self.predecessors = predecessors
+        self.predecessors = list_of_predecessors
 
     def has_predessor(self):
         if len(self.predecessors) == 0:
