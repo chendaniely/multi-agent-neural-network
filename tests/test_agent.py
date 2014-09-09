@@ -70,14 +70,20 @@ def reset_agent():
     agent.Agent.agent_count = 0
 
 
-def test_get_key():
+@nose.with_setup(reset_agent)
+def test_agent_get_key_single():
+    # print("testing single agent creation", file=sys.stderr)
     test_agent = agent.Agent()
-    assert test_agent.get_key() == 0, '1 agent fail'
+    assert test_agent.get_key() == 0
 
+
+@nose.with_setup(reset_agent)
+def test_agent_get_key_multiple():
+    # print("testing multiple agent creation", file=sys.stderr)
     list_of_test_agents = []
     agent.Agent.agent_count = 0
     for i in range(10):
         test_multiple_agent = agent.Agent()
         list_of_test_agents.append(test_multiple_agent)
-    assert list_of_test_agents[0].get_key() == 0, 'first agent fail'
-    assert list_of_test_agents[-1].get_key() == 9, 'last agent fail'
+    assert list_of_test_agents[0].get_key() == 0
+    assert list_of_test_agents[-1].get_key() == 9
