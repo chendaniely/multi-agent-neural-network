@@ -222,7 +222,8 @@ class LensAgent(Agent):
 
     def _call_lens(self):
         pass
-        #subprocess.call(['lens', '-nogui', '/home/dchen/temp/lens/MainM1.in'])
+        # subprocess.call(['lens', '-nogui',
+        #                 '/home/dchen/temp/lens/MainM1.in'])
 
     def _start_end_update_out(self, f):
         # f is the .out file to be read
