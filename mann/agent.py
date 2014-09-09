@@ -4,6 +4,18 @@ import random
 import subprocess
 
 
+class Error(Exception):
+    '''Base class for other exceptions'''
+    def __init__(self):
+        pass
+
+
+class BaseAgentStateError(Error):
+    '''Raised when the get_state method is called from the Agent class'''
+    def __init__(self):
+        print('Base agent class has no state')
+
+
 class Agent(object):
     '''
     This is the agent class.
@@ -59,7 +71,7 @@ class Agent(object):
         return self._key()
 
     def get_state(self):
-        raise BaseAgentStateError('Base agent class has no state')
+        raise BaseAgentStateError
 
     def set_predecessors(self, predecessors):
         '''
