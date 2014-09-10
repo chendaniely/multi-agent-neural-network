@@ -6,8 +6,8 @@ import subprocess
 
 class Error(Exception):
     '''Base class for other exceptions'''
-    def __init__(self):
-        pass
+    def __init__(self, message):
+        print(message)
 
 
 class BaseAgentStateError(Error):
