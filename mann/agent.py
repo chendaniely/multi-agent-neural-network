@@ -12,8 +12,15 @@ class Error(Exception):
 
 class BaseAgentStateError(Error):
     '''Raised when the get_state method is called from the Agent class'''
-    def __init__(self):
-        print('Base agent class has no state')
+
+
+class BaseAgentSeedError(Error):
+    '''Raised when the seed_agent method is called from the Agent class'''
+
+
+class BaseAgentUpdateStateError(Error):
+    '''Raised when the update_agent_state method
+    is called from the Agent class'''
 
 
 class Agent(object):
@@ -71,7 +78,7 @@ class Agent(object):
         return self._key()
 
     def get_state(self):
-        raise BaseAgentStateError
+        raise BaseAgentStateError('Base agent class has no state')
 
     def set_predecessors(self, list_of_predecessors):
         '''
