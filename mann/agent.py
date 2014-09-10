@@ -126,7 +126,6 @@ class BinaryAgent(Agent):
     def __init__(self):
         self.agent_id = BinaryAgent.binary_agent_count
         BinaryAgent.binary_agent_count += 1
-
         self.binary_state = 0
 
     def set_binary_state(self, value):
