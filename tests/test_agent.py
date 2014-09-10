@@ -33,6 +33,22 @@ def test_agent_get_key_multiple():
 
 
 @nose.with_setup(reset_agent)
+def test_agent_eq_no():
+    test_agent_1 = agent.Agent()
+    test_agent_2 = agent.Agent()
+    assert not test_agent_1 == test_agent_2
+
+
+@nose.with_setup(reset_agent)
+def test_agent_eq_yes():
+    agent.Agent.agent_count = 5
+    test_agent_1 = agent.Agent()
+    agent.Agent.agent_count = 5
+    test_agent_2 = agent.Agent()
+    assert test_agent_1 == test_agent_2
+
+
+@nose.with_setup(reset_agent)
 def test_agent_get_state():
     test_agent = agent.Agent()
     try:
@@ -55,6 +71,58 @@ def test_agent_set_predecessors_list():
     test_agent = agent.Agent()
     test_agent.set_predecessors([1, 3, 5])
     assert test_agent.predecessors == [1, 3, 5]
+
+
+@nose.with_setup(reset_agent)
+def test_agent_set_predecessors_network_agent():
+    '''
+    TODO: implement unit test where predecessors are other agents
+    '''
+    pass
+
+
+@nose.with_setup(reset_agent)
+def test_has_predessor_empty():
+    test_agent = agent.Agent()
+    test_agent.set_predecessors([])
+    assert test_agent.has_predessor() is False
+
+
+@nose.with_setup(reset_agent)
+def test_has_predessor_list():
+    test_agent = agent.Agent()
+    test_agent.set_predecessors([1, 3, 5])
+    assert test_agent.has_predessor() is True
+
+
+@nose.with_setup(reset_agent)
+def test_has_predessor_network_agent():
+    '''
+    TODO implement unit test where predecessors are other agents
+    '''
+    pass
+
+
+@nose.with_setup(reset_agent)
+def test_seed_agent():
+    test_agent = agent.Agent()
+    try:
+        test_agent.seed_agent()
+    except agent.BaseAgentSeedError:
+        assert True
+    else:
+        assert False
+
+
+@nose.with_setup(reset_agent)
+def test_update_agent_state():
+    test_agent = agent.Agent()
+    try:
+        test_agent.update_agent_state()
+    except agent.BaseAgentUpdateStateError:
+        assert True
+    else:
+        assert False
 
 
 #################
