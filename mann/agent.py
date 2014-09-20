@@ -163,7 +163,6 @@ class BinaryAgent(Agent):
             raise Exception("Error in _random_state")
 
     def _update_agent_state_default(self):
-        print('in _update_agent_binary_state_1')
         '''
         Looks at the list of predessors for the selected agent
         randomly picks one of them
@@ -172,6 +171,7 @@ class BinaryAgent(Agent):
         to match the predessor's state
         otherwise no state is changed
         '''
+        print('in _update_agent_state_default')
         print("type of predecssors: ",  type(self.predecessors))  # list
         print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
@@ -191,11 +191,11 @@ class BinaryAgent(Agent):
             else:
                 pass
 
-    def update_agent_state(self, pick):
+    def update_agent_state(self, pick='default'):
         '''
-        pick = '1': uses the update_agent_binary_state_1 algorithm
+        pick = 'default': uses the update_agent__state_default algorithm
         '''
-        print('in update_agent_binary_state')
+        print('in update_agent_state')
         print('has predecessors', self.has_predessor())
         if self.has_predessor():
             if pick == 'default':
