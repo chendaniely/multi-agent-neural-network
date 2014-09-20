@@ -13,6 +13,10 @@ def reset_agent():
     agent.Agent.agent_count = 0
 
 
+def reset_BinaryAgent():
+    agent.BinaryAgent.binary_agent_count = 0
+
+
 @nose.with_setup(reset_agent)
 def test_agent_get_key_single():
     # print("testing single agent creation", file=sys.stderr)
@@ -24,7 +28,6 @@ def test_agent_get_key_single():
 def test_agent_get_key_multiple():
     # print("testing multiple agent creation", file=sys.stderr)
     list_of_test_agents = []
-    agent.Agent.agent_count = 0
     for i in range(10):
         test_multiple_agent = agent.Agent()
         list_of_test_agents.append(test_multiple_agent)
@@ -123,6 +126,67 @@ def test_update_agent_state():
         assert True
     else:
         assert False
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_get_key_single():
+    test_binary_agent = agent.BinaryAgent()
+    assert test_binary_agent.get_key() == 0
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_get_key_multiple():
+    list_of_test_binary_agents = []
+    for i in range(10):
+        test_multiple_binary_agent = agent.BinaryAgent()
+        list_of_test_binary_agents.append(test_multiple_binary_agent)
+    assert list_of_test_binary_agents[0].get_key() == 0
+    assert list_of_test_binary_agents[-1].get_key() == 9
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_set_state():
+    test_binary_agent = agent.BinaryAgent()
+    assert test_binary_agent.get_state() == 0
+
+    test_binary_agent.set_binary_state(1)
+    assert test_binary_agent.get_state() == 1
+
+    test_binary_agent.set_binary_state(0)
+    assert test_binary_agent.get_state() == 0
+
+    try:
+        test_binary_agent.set_binary_state(3)
+    except:
+        assert True
+    else:
+        assert False
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_seed():
+    test_binary_agent = agent.BinaryAgent()
+    assert test_binary_agent.get_state() == 0
+
+    test_binary_agent.seed_agent()
+    assert test_binary_agent.get_state() == 1
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_seed_random():
+    '''
+    TODO need to implement seeding rng to test random binary state()
+    '''
+    pass
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_update_agent_state():
+    '''
+    TODO need to implement seeding rng
+    to test the update_ and the _default implementation
+    '''
+    pass
 
 
 #################
