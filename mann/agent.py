@@ -164,6 +164,14 @@ class BinaryAgent(Agent):
 
     def _update_agent_state_default(self):
         print('in _update_agent_binary_state_1')
+        '''
+        Looks at the list of predessors for the selected agent
+        randomly picks one of them
+        if the selected predessor is has a different state
+        there will be a 70% chance that the selected agent will change states
+        to match the predessor's state
+        otherwise no state is changed
+        '''
         print("type of predecssors: ",  type(self.predecessors))  # list
         print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
