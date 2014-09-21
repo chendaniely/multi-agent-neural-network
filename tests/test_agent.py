@@ -17,6 +17,10 @@ def reset_BinaryAgent():
     agent.BinaryAgent.binary_agent_count = 0
 
 
+def reset_LensAgent():
+    agent.LensAgent.lens_agent_count = 0
+
+
 @nose.with_setup(reset_agent)
 def test_agent_get_key_single():
     # print("testing single agent creation", file=sys.stderr)
@@ -128,6 +132,10 @@ def test_update_agent_state():
         assert False
 
 
+######################################
+# Unit tests for the BinaryAgent class
+######################################
+
 @nose.with_setup(reset_BinaryAgent)
 def test_binary_agent_get_key_single():
     test_binary_agent = agent.BinaryAgent()
@@ -187,6 +195,33 @@ def test_binary_agent_update_agent_state():
     to test the update_ and the _default implementation
     '''
     pass
+
+
+####################################
+# Unit tests for the LensAgent class
+####################################
+
+
+@nose.with_setup(reset_LensAgent)
+def test_lens_agent_get_key_single():
+    test_lens_agent = agent.LensAgent(4)
+    assert test_lens_agent.get_key() == 0
+
+
+@nose.with_setup(reset_LensAgent)
+def test_lens_agent_get_key_multiple():
+    list_of_test_agents = []
+    for i in range(10):
+        test_multiple_lens_agent = agent.LensAgent(4)
+        list_of_test_agents.append(test_multiple_lens_agent)
+    assert list_of_test_agents[0].get_key() == 0
+    assert list_of_test_agents[-1].get_key() == 9
+
+
+@nose.with_setup(reset_LensAgent)
+def test_lens_agent_state_init():
+    test_lens_agent = agent.LensAgent(4)
+    assert test_lens_agent.get_state() == [None] * 4
 
 
 #################
