@@ -275,7 +275,7 @@ class LensAgent(Agent):
 
     def _get_new_state_values_from_out_file(self):
         list_of_new_state = []
-        with open('../temp/AgentState.out', 'r') as f:
+        with open('./temp/AgentState.out', 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
