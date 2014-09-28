@@ -78,6 +78,9 @@ class Agent(object):
     def get_key(self):
         return self._key()
 
+    def set_state(self, new_state):
+        raise BaseAgentStateError('Base agent class has no state')
+
     def get_state(self):
         raise BaseAgentStateError('Base agent class has no state')
 
