@@ -245,6 +245,10 @@ class LensAgent(Agent):
         return self.state
 
     def _list_to_str_delim(self, list_to_convert, delim):
+        '''
+        takes in a list and returns a string of list by the delim
+        used to write out agent state out to file
+        '''
         return delim.join(map(str, list_to_convert))
 
     def seed_agent(self):
