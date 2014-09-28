@@ -37,6 +37,7 @@ class Agent(object):
         # first agent created is agent 0
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
+        self.predecessors = []
 
     def __hash__(self):
         '''
@@ -127,6 +128,7 @@ class BinaryAgent(Agent):
         self.agent_id = BinaryAgent.binary_agent_count
         BinaryAgent.binary_agent_count += 1
         self.binary_state = 0
+        self.predecessors = []
 
     def set_binary_state(self, value):
         # binary state means 0 or 1
