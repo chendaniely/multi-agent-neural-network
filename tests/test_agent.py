@@ -89,10 +89,17 @@ def test_agent_set_predecessors_list():
 
 @nose.with_setup(reset_agent)
 def test_agent_set_predecessors_network_agent():
-    '''
-    TODO: implement unit test where predecessors are other agents
-    '''
-    pass
+    list_of_predecessors = []
+    for i in range(3):
+        agent_predecessor = agent.Agent()
+        list_of_predecessors.append(agent_predecessor)
+
+    test_agent = agent.Agent()
+    assert test_agent.get_key() == 3
+
+    test_agent.set_predecessors(list_of_predecessors)
+    assert test_agent.predecessors[0].get_key() == 0
+    assert test_agent.predecessors[-1].get_key() == 2
 
 
 @nose.with_setup(reset_agent)
@@ -111,10 +118,19 @@ def test_has_predessor_list():
 
 @nose.with_setup(reset_agent)
 def test_has_predessor_network_agent():
-    '''
-    TODO implement unit test where predecessors are other agents
-    '''
-    pass
+    list_of_predecessors = []
+    for i in range(3):
+        agent_predecessor = agent.Agent()
+        list_of_predecessors.append(agent_predecessor)
+
+    test_agent = agent.Agent()
+    assert test_agent.get_key() == 3
+
+    test_agent.set_predecessors(list_of_predecessors)
+    assert test_agent.has_predessor() is True
+
+    test_agent_no_predecessor = agent.Agent()
+    assert test_agent_no_predecessor.has_predessor() is False
 
 
 @nose.with_setup(reset_agent)
