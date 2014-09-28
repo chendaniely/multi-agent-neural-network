@@ -330,6 +330,68 @@ def test_lens_agent_state_init():
     assert test_lens_agent.get_state() == [None] * 4
 
 
+@nose.with_setup(reset_LensAgent)
+def test_lens_agent_set_get_state():
+    test_lens_agent = agent.LensAgent(4)
+    test_lens_agent.set_state([1, 2, 3, 4])
+    assert test_lens_agent.get_state() == [1, 2, 3, 4]
+
+    try:
+        test_lens_agent.set_state([1, 2])
+    except ValueError:
+        assert test_lens_agent.get_state() == [1, 2, 3, 4]
+        assert True
+    else:
+        assert False
+
+
+@nose.with_setup(reset_LensAgent)
+def test_list_to_str_delim():
+    test_lens_agent = agent.LensAgent(4)
+    expected_string = "1 3 5"
+    output_string = test_lens_agent._list_to_str_delim([1, 3, 5], delim=" ")
+    assert output_string == expected_string
+
+
+@nose.with_setup(reset_LensAgent)
+def test_lens_agent_seed():
+    test_lens_agent = agent.LensAgent(4)
+    assert test_lens_agent.get_state() == [None] * 4
+    test_lens_agent.seed_agent()
+    assert test_lens_agent.get_state() == [1] * 4
+
+
+@nose.with_setup(reset_LensAgent)
+def test_get_new_state_values_from_out_file():
+    test_lens_agent = agent.LensAgent(10)
+    calculated_state = test_lens_agent._get_new_state_values_from_out_file()
+    expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
+                      0.333333, 5, 0, 0, 0]
+    assert calculated_state == expected_state
+
+
+# TODO need to get LENS workign and set predessors to test
+# @nose.with_setup(reset_LensAgent)
+# def test_update_agent_state():
+#     test_lens_agent = agent.LensAgent(10)
+#     test_lens_agent.update_agent_state()
+#     expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
+#                       0.333333, 5, 0, 0, 0]
+#     assert test_lens_agent.get_state() == expected_state
+
+expected_ex_file = '''name: sit1
+I: 1 1 1 1 ;
+'''
+
+
+@nose.with_setup(reset_LensAgent)
+def test_write_agent_state_to_ex():
+    test_lens_agent = agent.LensAgent(4)
+    test_lens_agent.seed_agent()
+    assert test_lens_agent.get_state() == [1, 1, 1, 1]
+    generated_file = test_lens_agent._string_agent_state_to_ex()
+    assert generated_file == expected_ex_file
+
 ###############################################################################
 # Unit Test notes
 ###############################################################################
