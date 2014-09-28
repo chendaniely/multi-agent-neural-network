@@ -40,6 +40,13 @@ def test_agent_get_key_multiple():
 
 
 @nose.with_setup(reset_agent)
+def test_hash():
+    test_agent = agent.Agent()
+    assert test_agent.get_key() == 0
+    assert test_agent.__hash__() == 0
+
+
+@nose.with_setup(reset_agent)
 def test_agent_eq_no():
     test_agent_1 = agent.Agent()
     test_agent_2 = agent.Agent()
