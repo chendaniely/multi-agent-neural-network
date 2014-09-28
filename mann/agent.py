@@ -160,9 +160,9 @@ class BinaryAgent(Agent):
             return 0
         elif random_float >= .5:
             return 1
-        else:
-            return -1
-            raise Exception("Error in _random_state")
+        # else:
+        #     return -1
+        #     raise Exception("Error in _random_state")
 
     def _update_agent_state_default(self):
         '''
