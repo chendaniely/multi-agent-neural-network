@@ -8,9 +8,9 @@ import random
 from mann import agent
 
 
-#####################################
+###############################################################################
 # Unit tests for the base Agent class
-#####################################
+###############################################################################
 def reset_agent():
     agent.Agent.agent_count = 0
 
@@ -157,9 +157,9 @@ def test_update_agent_state():
         assert False
 
 
-######################################
+###############################################################################
 # Unit tests for the BinaryAgent class
-######################################
+###############################################################################
 
 @nose.with_setup(reset_BinaryAgent)
 def test_binary_agent_get_key_single():
@@ -294,11 +294,9 @@ def test_binary_agent_update_agent_state_fail():
         assert False
 
 
-####################################
+###############################################################################
 # Unit tests for the LensAgent class
-####################################
-
-
+###############################################################################
 @nose.with_setup(reset_LensAgent)
 def test_lens_agent_get_key_single():
     test_lens_agent = agent.LensAgent(4)
@@ -321,9 +319,9 @@ def test_lens_agent_state_init():
     assert test_lens_agent.get_state() == [None] * 4
 
 
-#################
+###############################################################################
 # Unit Test notes
-#################
+###############################################################################
 # To write to 'file', write to StringIO
 # use getvalue() to get and check its final contents
 # writer.getvalue()
