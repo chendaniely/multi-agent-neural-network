@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/chendaniely/multi-agent-neural-network.svg?branch=master)](https://travis-ci.org/chendaniely/multi-agent-neural-network)
 
-[![Coverage Status](https://coveralls.io/repos/chendaniely/multi-agent-neural-network/badge.png?branch=feature-coveralls)](https://coveralls.io/r/chendaniely/multi-agent-neural-network?branch=feature-coveralls)
+[![Coverage Status](https://coveralls.io/repos/chendaniely/multi-agent-neural-network/badge.png?branch=master)](https://coveralls.io/r/chendaniely/multi-agent-neural-network?branch=master)
 
 Multi Agent Neural Network (MANN)
 ====================
