@@ -2,6 +2,7 @@
 
 import random
 import subprocess
+import io
 
 
 class Error(Exception):
@@ -304,6 +305,17 @@ class LensAgent(Agent):
             self._update_agent_state_default()
         else:
             raise ValueError('Algorithm used for pick unknown')
+
+    def _string_agent_state_to_ex(self):
+        output = io.StringIO()
+        output.write('name: sit1\n')
+        lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+        input_line = 'I: ' + lens_agent_state_str + ' ;\n'
+        output.write(input_line)
+        contents = output.getvalue()
+        output.close()
+        print(contents)
+        return contents
 
     def write_agent_state_to_ex(self, file_dir):
         '''
