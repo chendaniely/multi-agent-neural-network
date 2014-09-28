@@ -284,7 +284,7 @@ class LensAgent(Agent):
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
                     first_col = line.strip().split(' ')[0]
-                    list_of_new_state.append(first_col)
+                    list_of_new_state.append(float(first_col))
         return list_of_new_state
 
     def _update_agent_state_default(self):
