@@ -3,6 +3,8 @@
 import nose
 import sys
 import io
+import random
+
 from mann import agent
 
 
@@ -206,18 +208,90 @@ def test_binary_agent_seed():
 @nose.with_setup(reset_BinaryAgent)
 def test_binary_agent_seed_random():
     '''
-    TODO need to implement seeding rng to test random binary state()
+    In [1]: random.seed(1)
+
+    In [2]: random.random()
+    Out[2]: 0.13436424411240122
+
+    In [3]: random.random()
+    Out[3]: 0.8474337369372327
     '''
-    pass
+    random.seed(1)
+    test_binary_agent = agent.BinaryAgent()
+    random_seed = test_binary_agent.random_binary_state()
+    assert random_seed == 0
+
+    test_binary_agent = agent.BinaryAgent()
+    random_seed = test_binary_agent.random_binary_state()
+    assert random_seed == 1
 
 
 @nose.with_setup(reset_BinaryAgent)
 def test_binary_agent_update_agent_state():
     '''
-    TODO need to implement seeding rng
-    to test the update_ and the _default implementation
+    In [1]: random.seed(1)
+
+    In [2]: random.sample([1,2,3], 1)
+    Out[2]: [1]
+
+    In [3]: random.random()
+    Out[3]: 0.5692038748222122
+
+    In [4]: random.sample([1,2,3], 1)
+    Out[4]: [1]
+
+    In [5]: random.random()
+    Out[5]: 0.2550690257394217
+
+    In [6]: random.sample([1,2,3], 1)
+    Out[6]: [2]
+
+    In [7]: random.random()
+    Out[7]: 0.7609624449125756
     '''
-    pass
+    test_binary_agent = agent.BinaryAgent()
+    assert test_binary_agent.get_state() == 0
+    test_binary_agent.update_agent_state()
+
+    list_binary_agents_for_predecessor = []
+    for i in range(3):
+        test_binary_agent_predecessor = agent.BinaryAgent()
+        list_binary_agents_for_predecessor.append(
+            test_binary_agent_predecessor)
+    test_binary_agent.set_predecessors(list_binary_agents_for_predecessor)
+    list_binary_agents_for_predecessor[0].set_binary_state(1)
+
+    random.seed(1)
+    test_binary_agent.update_agent_state()
+    assert test_binary_agent.get_state() == 1
+
+    test_binary_agent.update_agent_state()
+    assert test_binary_agent.get_state() == 1
+
+    test_binary_agent.update_agent_state()
+    assert test_binary_agent.get_state() == 0
+
+
+@nose.with_setup(reset_BinaryAgent)
+def test_binary_agent_update_agent_state_fail():
+    test_binary_agent = agent.BinaryAgent()
+    assert test_binary_agent.get_state() == 0
+    test_binary_agent.update_agent_state()
+
+    list_binary_agents_for_predecessor = []
+    for i in range(3):
+        test_binary_agent_predecessor = agent.BinaryAgent()
+        list_binary_agents_for_predecessor.append(
+            test_binary_agent_predecessor)
+    test_binary_agent.set_predecessors(list_binary_agents_for_predecessor)
+    list_binary_agents_for_predecessor[0].set_binary_state(1)
+
+    try:
+        test_binary_agent.update_agent_state(pick='fail')
+    except ValueError:
+        assert True
+    else:
+        assert False
 
 
 ####################################
