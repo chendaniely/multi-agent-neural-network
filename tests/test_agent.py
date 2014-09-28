@@ -65,6 +65,17 @@ def test_agent_eq_yes():
 
 
 @nose.with_setup(reset_agent)
+def test_agent_set_state():
+    test_agent = agent.Agent()
+    try:
+        test_agent.set_state(1)
+    except agent.BaseAgentStateError:
+        assert True
+    else:
+        assert False
+
+
+@nose.with_setup(reset_agent)
 def test_agent_get_state():
     test_agent = agent.Agent()
     try:
