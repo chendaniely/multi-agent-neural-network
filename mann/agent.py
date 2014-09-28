@@ -279,7 +279,7 @@ class LensAgent(Agent):
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
-                line_num = line_idx + 1
+                line_num = line_idx + 1  # python starts from line 0
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
