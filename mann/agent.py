@@ -2,6 +2,26 @@
 
 import random
 import subprocess
+import io
+
+
+class Error(Exception):
+    '''Base class for other exceptions'''
+    def __init__(self, message):
+        print(message)
+
+
+class BaseAgentStateError(Error):
+    '''Raised when the get_state method is called from the Agent class'''
+
+
+class BaseAgentSeedError(Error):
+    '''Raised when the seed_agent method is called from the Agent class'''
+
+
+class BaseAgentUpdateStateError(Error):
+    '''Raised when the update_agent_state method
+    is called from the Agent class'''
 
 
 class Agent(object):
@@ -18,11 +38,12 @@ class Agent(object):
         # first agent created is agent 0
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
+        self.predecessors = []
 
     def __hash__(self):
         '''
         defines the hash function.
-        the hash function hashes the __key()
+        the hash function hashes the _key()
         '''
         return hash(self._key())
 
@@ -30,9 +51,9 @@ class Agent(object):
         '''
         equality method
         used to implement whether 2 agents are the same
-        where equality is defined by the __key() values
+        where equality is defined by the get_key() values
         '''
-        return x.__key() == y.key()
+        return x.get_key() == y.get_key()
 
     def __repr__(self):
         return str(self.__class__.__name__) + ", key: " + str(self.get_key())
@@ -58,16 +79,25 @@ class Agent(object):
     def get_key(self):
         return self._key()
 
+    def set_state(self, new_state):
+        raise BaseAgentStateError('Base agent class has no state')
+
     def get_state(self):
         raise BaseAgentStateError('Base agent class has no state')
 
-    def set_predecessors(self, predecessors):
+    def set_predecessors(self, list_of_predecessors):
         '''
+        Takes a list of predecessors and assigns the list to self.predecessors
+
+        parameters
+        ----------
+        a lit of predecessors
+
         returns
         -------
-        a list of predecessors
+        none
         '''
-        self.predecessors = predecessors
+        self.predecessors = list_of_predecessors
 
     def has_predessor(self):
         if len(self.predecessors) == 0:
@@ -101,16 +131,16 @@ class BinaryAgent(Agent):
     def __init__(self):
         self.agent_id = BinaryAgent.binary_agent_count
         BinaryAgent.binary_agent_count += 1
-
         self.binary_state = 0
+        self.predecessors = []
 
     def set_binary_state(self, value):
         # binary state means 0 or 1
-        assert(value in (0, 1),
-               "binary state can only be 0 or 1, got %r" % value)
+        assert value in [0, 1],\
+            "binary state can only be 0 or 1, got %r" % value
 
         # make sure we are only changing the state when the value is different
-        assert(value != self.binary_state)
+        assert value != self.binary_state, "changing state to same value"
 
         self.binary_state = value
 
@@ -134,12 +164,20 @@ class BinaryAgent(Agent):
             return 0
         elif random_float >= .5:
             return 1
-        else:
-            return -1
-            raise Exception("Error in _random_state")
+        # else:
+        #     return -1
+        #     raise Exception("Error in _random_state")
 
     def _update_agent_state_default(self):
-        print('in _update_agent_binary_state_1')
+        '''
+        Looks at the list of predessors for the selected agent
+        randomly picks one of them
+        if the selected predessor is has a different state
+        there will be a 70% chance that the selected agent will change states
+        to match the predessor's state
+        otherwise no state is changed
+        '''
+        print('in _update_agent_state_default')
         print("type of predecssors: ",  type(self.predecessors))  # list
         print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
@@ -159,11 +197,11 @@ class BinaryAgent(Agent):
             else:
                 pass
 
-    def update_agent_state(self, pick):
+    def update_agent_state(self, pick='default'):
         '''
-        pick = '1': uses the update_agent_binary_state_1 algorithm
+        pick = 'default': uses the update_agent__state_default algorithm
         '''
-        print('in update_agent_binary_state')
+        print('in update_agent_state')
         print('has predecessors', self.has_predessor())
         if self.has_predessor():
             if pick == 'default':
@@ -178,33 +216,59 @@ class LensAgent(Agent):
     lens_agent_count = 0
 
     def __init__(self, num_state_vars):
+        '''
+        num_state_vars is the total number of elements the agent has as a state
+        for LENS, this is the total number of processing units per agent
+        that is, the number of positive valence bank units
+        and the number of negative valence bank units
+        '''
         self.agent_id = LensAgent.lens_agent_count
         LensAgent.lens_agent_count += 1
 
         self.state = [None] * num_state_vars
+        self.predecessors = []
 
-    def set_lens_agent_state(list_of_processing_unit_activations):
-        self.state = list_of_processing_unit_activations
+    # def set_lens_agent_state(self, list_of_processing_unit_activations):
+    #     print(len(list_of_processing_unit_activations))
+    #     print(len(self.state))
+    #     is_len_equal = len(list_of_processing_unit_activations) ==\
+    #         len(self.state)
+
+    #     print(is_len_equal)
+
+    #     if():
+    #         self.state = list_of_processing_unit_activations[:]
+    #     else:
+    #         raise ValueError("length of processing units to assign state\
+    #                          not equal to lengh of state")
 
     def get_state(self):
         return self.state
 
     def _list_to_str_delim(self, list_to_convert, delim):
+        '''
+        takes in a list and returns a string of list by the delim
+        used to write out agent state out to file
+        '''
         return delim.join(map(str, list_to_convert))
 
     def seed_agent(self):
         self.state = [1] * len(self.state)
 
-    def set_agent_state(self, list_of_values):
+    def set_state(self, list_of_values):
         # sets state to list of values
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
-        self.state = list_of_values[:]
+        if len(list_of_values) == len(self.state):
+            self.state = list_of_values[:]
+        else:
+            raise ValueError("len of values not equal to len of state")
 
     def _call_lens(self):
         pass
-        #subprocess.call(['lens', '-nogui', '/home/dchen/temp/lens/MainM1.in'])
+        # subprocess.call(['lens', '-nogui',
+        #                 '/home/dchen/temp/lens/MainM1.in'])
 
     def _start_end_update_out(self, f):
         # f is the .out file to be read
@@ -212,16 +276,16 @@ class LensAgent(Agent):
 
     def _get_new_state_values_from_out_file(self):
         list_of_new_state = []
-        with open('../temp/AgentState.out', 'r') as f:
+        with open('./temp/AgentState.out', 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
-                line_num = line_idx + 1
+                line_num = line_idx + 1  # python starts from line 0
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
                     first_col = line.strip().split(' ')[0]
-                    list_of_new_state.append(first_col)
+                    list_of_new_state.append(float(first_col))
         return list_of_new_state
 
     def _update_agent_state_default(self):
@@ -236,11 +300,22 @@ class LensAgent(Agent):
             print('no predecessors')
             pass
 
-    def update_agent_state(self, pick):
+    def update_agent_state(self, pick='default'):
         if pick == 'default':
             self._update_agent_state_default()
         else:
             raise ValueError('Algorithm used for pick unknown')
+
+    def _string_agent_state_to_ex(self):
+        output = io.StringIO()
+        output.write('name: sit1\n')
+        lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+        input_line = 'I: ' + lens_agent_state_str + ' ;\n'
+        output.write(input_line)
+        contents = output.getvalue()
+        output.close()
+        print(contents)
+        return contents
 
     def write_agent_state_to_ex(self, file_dir):
         '''
