@@ -278,7 +278,7 @@ class LensAgent(Agent):
     def _get_new_state_values_from_out_file(self):
         list_of_new_state = []
         print(os.getcwd())
-        with open('./temp/AgentState.out', 'r') as f:
+        with open('./tests/lens/AgentState.out', 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
@@ -293,8 +293,8 @@ class LensAgent(Agent):
     def _update_agent_state_default(self):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            predecessor_picked.write_agent_state_to_ex('../temp/infl.ex')
-            self.write_agent_state_to_ex('../temp/agent.ex')
+            predecessor_picked.write_agent_state_to_ex('./tests/lens/infl.ex')
+            self.write_agent_state_to_ex('./tests/lens/agent.ex')
             self._call_lens()
             self.new_state_values = self._get_new_state_values_from_out_file()
             self.set_agent_state(self.new_state_values)
@@ -321,12 +321,12 @@ class LensAgent(Agent):
 
     def write_agent_state_to_ex(self, file_dir):
         '''
-        file_dir should be in the ../temp/ folder
+        file_dir should be in the ./tests/lens/ folder
         usually the file will be something like
         agent.ex for the agent or
         infl.ex for the influencing agent
         '''
-        with open('../temp/agent.ex', 'w') as f:
+        with open('./tests/lens/agent.ex', 'w') as f:
             '''
             should look something like this:
             name: sit1
