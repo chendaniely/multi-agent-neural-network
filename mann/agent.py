@@ -227,9 +227,19 @@ class LensAgent(Agent):
         self.state = [None] * num_state_vars
         self.predecessors = []
 
+    # def set_lens_agent_state(self, list_of_processing_unit_activations):
+    #     print(len(list_of_processing_unit_activations))
+    #     print(len(self.state))
+    #     is_len_equal = len(list_of_processing_unit_activations) ==\
+    #         len(self.state)
 
-    def set_lens_agent_state(list_of_processing_unit_activations):
-        self.state = list_of_processing_unit_activations
+    #     print(is_len_equal)
+
+    #     if():
+    #         self.state = list_of_processing_unit_activations[:]
+    #     else:
+    #         raise ValueError("length of processing units to assign state\
+    #                          not equal to lengh of state")
 
     def get_state(self):
         return self.state
@@ -240,12 +250,15 @@ class LensAgent(Agent):
     def seed_agent(self):
         self.state = [1] * len(self.state)
 
-    def set_agent_state(self, list_of_values):
+    def set_state(self, list_of_values):
         # sets state to list of values
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
-        self.state = list_of_values[:]
+        if len(list_of_values) == len(self.state):
+            self.state = list_of_values[:]
+        else:
+            raise ValueError("len of values not equal to len of state")
 
     def _call_lens(self):
         pass
