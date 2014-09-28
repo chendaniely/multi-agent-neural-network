@@ -225,6 +225,8 @@ class LensAgent(Agent):
         LensAgent.lens_agent_count += 1
 
         self.state = [None] * num_state_vars
+        self.predecessors = []
+
 
     def set_lens_agent_state(list_of_processing_unit_activations):
         self.state = list_of_processing_unit_activations
