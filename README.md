@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/chendaniely/multi-agent-neural-network.svg?branch=master)](https://travis-ci.org/chendaniely/multi-agent-neural-network)
+
 Multi Agent Neural Network (MANN)
 ====================
 
