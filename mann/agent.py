@@ -41,7 +41,7 @@ class Agent(object):
     def __hash__(self):
         '''
         defines the hash function.
-        the hash function hashes the __key()
+        the hash function hashes the _key()
         '''
         return hash(self._key())
 
