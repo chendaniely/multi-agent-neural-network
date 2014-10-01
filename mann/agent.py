@@ -275,10 +275,13 @@ class LensAgent(Agent):
         # f is the .out file to be read
         return tuple([80, 84, 86, 90])
 
-    def _get_new_state_values_from_out_file(self):
+    def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
-        print(os.getcwd())
-        with open('./tests/lens/AgentState.out', 'r') as f:
+
+        here = os.path.abspath(os.path.dirname(__file__))
+        read_file_path = here + '/' + file_dir
+
+        with open(read_file_path, 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
@@ -293,11 +296,12 @@ class LensAgent(Agent):
     def _update_agent_state_default(self):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            predecessor_picked.write_agent_state_to_ex('./tests/lens/infl.ex')
-            self.write_agent_state_to_ex('./tests/lens/agent.ex')
+            predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
+            self.write_agent_state_to_ex('../tests/lens/agent.ex')
             self._call_lens()
-            self.new_state_values = self._get_new_state_values_from_out_file()
-            self.set_agent_state(self.new_state_values)
+            self.new_state_values = self._get_new_state_values_from_out_file(
+                '../tests/lens/AgentState.out')
+            self.set_state(self.new_state_values)
         else:
             print('no predecessors')
             pass
@@ -326,7 +330,12 @@ class LensAgent(Agent):
         agent.ex for the agent or
         infl.ex for the influencing agent
         '''
-        with open('./tests/lens/agent.ex', 'w') as f:
+
+        here = os.path.abspath(os.path.dirname(__file__))
+        write_file_path = here + '/' + file_dir
+        print(here)
+        print(write_file_path)
+        with open(write_file_path, 'w') as f:
             '''
             should look something like this:
             name: sit1
