@@ -385,7 +385,7 @@ I: 1 1 1 1 ;
 
 
 @nose.with_setup(reset_LensAgent)
-def test_write_agent_state_to_ex():
+def test_string_agent_state_to_ex():
     test_lens_agent = agent.LensAgent(4)
     test_lens_agent.seed_agent()
     assert test_lens_agent.get_state() == [1, 1, 1, 1]
