@@ -14,5 +14,5 @@ setup(
     # arbitrary keywords
     keywords=['agent-based model', 'abm', 'neural network', 'learning',
               'diffusion'],
-    classifiers=[]
+    classifiers=[],
 )
