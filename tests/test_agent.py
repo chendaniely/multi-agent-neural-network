@@ -364,7 +364,8 @@ def test_lens_agent_seed():
 @nose.with_setup(reset_LensAgent)
 def test_get_new_state_values_from_out_file():
     test_lens_agent = agent.LensAgent(10)
-    calculated_state = test_lens_agent._get_new_state_values_from_out_file()
+    calculated_state = test_lens_agent._get_new_state_values_from_out_file(
+        '../tests/lens/AgentState.out')
     expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
                       0.333333, 5, 0, 0, 0]
     assert calculated_state == expected_state
@@ -385,7 +386,7 @@ I: 1 1 1 1 ;
 
 
 @nose.with_setup(reset_LensAgent)
-def test_write_agent_state_to_ex():
+def test_string_agent_state_to_ex():
     test_lens_agent = agent.LensAgent(4)
     test_lens_agent.seed_agent()
     assert test_lens_agent.get_state() == [1, 1, 1, 1]
