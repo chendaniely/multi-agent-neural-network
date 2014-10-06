@@ -4,7 +4,7 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-import agent
+import mann.agent as agent
 
 
 class NetworkAgent(object):
