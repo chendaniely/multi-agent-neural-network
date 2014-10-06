@@ -11,5 +11,5 @@ setup(
                   tarball/0.0.1',
     keywords=['agent-based model', 'abm', 'neural network', 'learning',
               'diffusion'],
-    classifiers=[],
+    classifiers=['Natural Language :: English', ],
 )
