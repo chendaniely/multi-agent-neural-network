@@ -62,4 +62,5 @@ Finally before running <code>./lens</code> you need to export a few more environ
 If you are running Lens on a remote machine via SSH, remember to ssh via <code> ssh -X </code>
 
 If you are planning to run the nose tests:
+
 `nosetests --cover-branches --with-coverage --cover-erase --cover-package=mann`
