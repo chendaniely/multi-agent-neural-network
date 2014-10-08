@@ -39,6 +39,7 @@ Notes from David Plaut:
     make all
 
 <code>./configure</code> is failing make sure the follow files have execute permission <code>chmod 775</code>
+
     - config.status
     - configure
     - configure.in
@@ -49,8 +50,7 @@ Notes from David Plaut:
     - tclsh
     - wish
 
-If you are re-running <code>./configure</code> remove the config.cache first
-    rm config.cache
+If you are re-running <code>./configure</code> remove the config.cache first `rm config.cache`
 
 Finally before running <code>./lens</code> you need to export a few more environment variables.  It is best to add these to your .bashrc file
 
