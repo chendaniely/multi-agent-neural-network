@@ -293,14 +293,20 @@ class LensAgent(Agent):
                     list_of_new_state.append(float(first_col))
         return list_of_new_state
 
-    def _update_agent_state_default(self):
+    def _update_agent_state_default(self, agent_ex_file, infl_ex_file,
+                                    agent_state_out_file):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
-            self.write_agent_state_to_ex('../tests/lens/agent.ex')
+            # predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
+            predecessor_picked.write_agent_state_to_ex(infl_ex_file)
+            # self.write_agent_state_to_ex('../tests/lens/agent.ex')
+            self.write_agent_state_to_ex(agent_ex_file)
             self._call_lens()
+            # self.new_state_values = self._get_new_state_values_from_out_file(
+            #     '../tests/lens/AgentState.out')
             self.new_state_values = self._get_new_state_values_from_out_file(
-                '../tests/lens/AgentState.out')
+                agent_state_out_file)
+
             self.set_state(self.new_state_values)
         else:
             print('no predecessors')
