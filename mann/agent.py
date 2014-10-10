@@ -268,10 +268,11 @@ class LensAgent(Agent):
         else:
             raise ValueError("len of values not equal to len of state")
 
-    def _call_lens(self):
-        pass
-        # subprocess.call(['lens', '-nogui',
-        #                 '/home/dchen/temp/lens/MainM1.in'])
+    def _call_lens(self, lens_in_file):
+        # pass
+        subprocess.call(['lens', '-nogui',
+                         lens_in_file])
+        # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
     def _start_end_update_out(self, f):
         # f is the .out file to be read
