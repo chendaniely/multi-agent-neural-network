@@ -374,6 +374,16 @@ def test_get_new_state_values_from_out_file():
     assert calculated_state == expected_state
 
 
+@nose.with_setup(reset_LensAgent)
+def test_write_agent_state_to_ex():
+    pass
+
+
+@nose.with_setup(reset_LensAgent)
+def test_update_agent_state_default():
+    pass
+
+
 # TODO need to get LENS workign and set predessors to test
 @nose.with_setup(reset_LensAgent)
 def test_update_agent_state():
