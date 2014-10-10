@@ -328,7 +328,7 @@ def test_lens_agent_get_key_multiple():
 @nose.with_setup(reset_LensAgent)
 def test_lens_agent_state_init():
     test_lens_agent = agent.LensAgent(4)
-    assert test_lens_agent.get_state() == [None] * 4
+    assert test_lens_agent.get_state() == [0] * 4
 
 
 @nose.with_setup(reset_LensAgent)
@@ -357,7 +357,7 @@ def test_list_to_str_delim():
 @nose.with_setup(reset_LensAgent)
 def test_lens_agent_seed():
     test_lens_agent = agent.LensAgent(4)
-    assert test_lens_agent.get_state() == [None] * 4
+    assert test_lens_agent.get_state() == [0] * 4
     test_lens_agent.seed_agent()
     assert test_lens_agent.get_state() == [1] * 4
 
