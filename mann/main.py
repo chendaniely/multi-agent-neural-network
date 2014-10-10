@@ -44,8 +44,8 @@ def random_select_and_update(network_of_agents):
     # select 10% of the nodes for update, performs floor division
     num_update = n // 10
     agents_for_update = network_of_agents.sample_network(num_update)
-    print(agents_for_update)
-
+    print('agents for update: ', agents_for_update)
+    print('key of agent for update')
     print(network_of_agents.G.nodes()[agents_for_update[0].get_key()])
 
     # update agents who were selected
