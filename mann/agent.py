@@ -281,8 +281,9 @@ class LensAgent(Agent):
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
 
-        here = os.path.abspath(os.path.dirname(__file__))
-        read_file_path = here + '/' + file_dir
+        # here = os.path.abspath(os.path.dirname(__file__))
+        # read_file_path = here + '/' + file_dir
+        read_file_path = file_dir
         print('read_file_path: ', read_file_path)
         print('files here', os.listdir("./"))
 
