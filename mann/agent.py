@@ -349,9 +349,6 @@ class LensAgent(Agent):
         infl.ex for the influencing agent
         '''
 
-        write_file_path = here + '/' + file_dir
-        print(here)
-        print(write_file_path)
         with open(write_file_path, 'w') as f:
             '''
             should look something like this:
@@ -360,6 +357,9 @@ class LensAgent(Agent):
             '''
             f.write('name: sit1\n')
         # here = os.path.abspath(os.path.dirname(__file__))
+        # write_file_path = here + '/' + file_dir
+        # print(here)
+        # print(write_file_path)
 
             lens_agent_state_str = self._list_to_str_delim(self.state, " ")
             input_line = 'I: ' + lens_agent_state_str + ' ;'
