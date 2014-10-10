@@ -301,8 +301,8 @@ class LensAgent(Agent):
                     print('list of new state', list_of_new_state)
         return list_of_new_state
 
-    def _update_agent_state_default(self, agent_ex_file, infl_ex_file,
-                                    agent_state_out_file):
+    def _update_agent_state_default(self, lens_in_file, agent_ex_file,
+                                    infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
             # predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
