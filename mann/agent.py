@@ -309,7 +309,7 @@ class LensAgent(Agent):
             predecessor_picked.write_agent_state_to_ex(infl_ex_file)
             # self.write_agent_state_to_ex('../tests/lens/agent.ex')
             self.write_agent_state_to_ex(agent_ex_file)
-            self._call_lens()
+            self._call_lens(lens_in_file)
             # self.new_state_values = self._get_new_state_values_from_out_file(
             #     '../tests/lens/AgentState.out')
             self.new_state_values = self._get_new_state_values_from_out_file(
