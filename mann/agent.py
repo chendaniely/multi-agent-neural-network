@@ -320,7 +320,7 @@ class LensAgent(Agent):
             print('no predecessors')
             pass
 
-    def update_agent_state(self, pick='default'):
+    def update_agent_state(self, pick='default', **kwargs):
         if pick == 'default':
             self._update_agent_state_default()
         else:
