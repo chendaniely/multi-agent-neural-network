@@ -4,6 +4,7 @@ import nose
 import sys
 import io
 import random
+import os
 
 from mann import agent
 
