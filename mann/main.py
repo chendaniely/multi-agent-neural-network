@@ -54,6 +54,7 @@ def random_select_and_update(network_of_agents):
               network_of_agents.G.nodes()[selected_agent.get_key()])
         print('pre-update binary_state', selected_agent.get_state())
         selected_agent.update_agent_state('default')
+        here = os.path.abspath(os.path.dirname(__file__))
         print('post-update_agent_binary_state', selected_agent.get_state())
 
 
