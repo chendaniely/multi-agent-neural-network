@@ -55,6 +55,10 @@ def random_select_and_update(network_of_agents):
         print('pre-update binary_state', selected_agent.get_state())
         selected_agent.update_agent_state('default')
         here = os.path.abspath(os.path.dirname(__file__))
+        lens_in_file_dir = here + '/../src/' + 'lens/MainM1PlautFix2.in'
+        agent_ex_file_dir = here + '/../src/' + 'lens/AgentState.ex'
+        infl_ex_file_dir = here + '/../src/' + 'lens/infl.ex'
+        agent_state_out_file_dir = here + '/../src/' + 'lens/AgentState.out'
         print('post-update_agent_binary_state', selected_agent.get_state())
 
 
