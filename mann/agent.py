@@ -283,6 +283,8 @@ class LensAgent(Agent):
 
         here = os.path.abspath(os.path.dirname(__file__))
         read_file_path = here + '/' + file_dir
+        print('read_file_path: ', read_file_path)
+        print('files here', os.listdir("./"))
 
         with open(read_file_path, 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
