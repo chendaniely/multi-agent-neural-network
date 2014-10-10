@@ -322,7 +322,11 @@ class LensAgent(Agent):
 
     def update_agent_state(self, pick='default', **kwargs):
         if pick == 'default':
-            self._update_agent_state_default()
+            self._update_agent_state_default(kwargs.get('lens_in_file'),
+                                             kwargs.get('agent_ex_file'),
+                                             kwargs.get('infl_ex_file'),
+                                             kwargs.get('agent_state_out_file')
+                                             )
         else:
             raise ValueError('Algorithm used for pick unknown')
 
