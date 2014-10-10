@@ -291,12 +291,14 @@ class LensAgent(Agent):
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
+                print(line)
                 line_num = line_idx + 1  # python starts from line 0
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
                     first_col = line.strip().split(' ')[0]
                     list_of_new_state.append(float(first_col))
+                    print('list of new state', list_of_new_state)
         return list_of_new_state
 
     def _update_agent_state_default(self, agent_ex_file, infl_ex_file,
