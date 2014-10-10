@@ -261,6 +261,8 @@ class LensAgent(Agent):
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
+        print('list of values length:', len(list_of_values))
+        print('state length:', len(self.state))
         if len(list_of_values) == len(self.state):
             self.state = list_of_values[:]
         else:
