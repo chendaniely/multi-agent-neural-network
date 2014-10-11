@@ -226,7 +226,7 @@ class LensAgent(Agent):
         self.agent_id = LensAgent.lens_agent_count
         LensAgent.lens_agent_count += 1
 
-        self.state = [None] * num_state_vars
+        self.state = [0] * num_state_vars
         self.predecessors = []
 
     # def set_lens_agent_state(self, list_of_processing_unit_activations):
@@ -261,15 +261,18 @@ class LensAgent(Agent):
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
+        print('list of values length:', len(list_of_values))
+        print('state length:', len(self.state))
         if len(list_of_values) == len(self.state):
             self.state = list_of_values[:]
         else:
             raise ValueError("len of values not equal to len of state")
 
-    def _call_lens(self):
-        pass
-        # subprocess.call(['lens', '-nogui',
-        #                 '/home/dchen/temp/lens/MainM1.in'])
+    def _call_lens(self, lens_in_file):
+        # pass
+        subprocess.call(['lens', '-nogui',
+                         lens_in_file])
+        # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
     def _start_end_update_out(self, f):
         # f is the .out file to be read
@@ -278,37 +281,52 @@ class LensAgent(Agent):
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
 
-        here = os.path.abspath(os.path.dirname(__file__))
-        read_file_path = here + '/' + file_dir
+        # here = os.path.abspath(os.path.dirname(__file__))
+        # read_file_path = here + '/' + file_dir
+        read_file_path = file_dir
+        print('read_file_path: ', read_file_path)
+        print('files here', os.listdir("./"))
 
         with open(read_file_path, 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
+                print(line)
                 line_num = line_idx + 1  # python starts from line 0
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
                     first_col = line.strip().split(' ')[0]
                     list_of_new_state.append(float(first_col))
+                    print('list of new state', list_of_new_state)
         return list_of_new_state
 
-    def _update_agent_state_default(self):
+    def _update_agent_state_default(self, lens_in_file, agent_ex_file,
+                                    infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
-            self.write_agent_state_to_ex('../tests/lens/agent.ex')
-            self._call_lens()
+            # predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
+            predecessor_picked.write_agent_state_to_ex(infl_ex_file)
+            # self.write_agent_state_to_ex('../tests/lens/agent.ex')
+            self.write_agent_state_to_ex(agent_ex_file)
+            self._call_lens(lens_in_file)
+            # self.new_state_values = self._get_new_state_values_from_out_file(
+            #     '../tests/lens/AgentState.out')
             self.new_state_values = self._get_new_state_values_from_out_file(
-                '../tests/lens/AgentState.out')
+                agent_state_out_file)
+
             self.set_state(self.new_state_values)
         else:
             print('no predecessors')
             pass
 
-    def update_agent_state(self, pick='default'):
+    def update_agent_state(self, pick='default', **kwargs):
         if pick == 'default':
-            self._update_agent_state_default()
+            self._update_agent_state_default(kwargs.get('lens_in_file'),
+                                             kwargs.get('agent_ex_file'),
+                                             kwargs.get('infl_ex_file'),
+                                             kwargs.get('agent_state_out_file')
+                                             )
         else:
             raise ValueError('Algorithm used for pick unknown')
 
@@ -331,18 +349,23 @@ class LensAgent(Agent):
         infl.ex for the influencing agent
         '''
 
-        here = os.path.abspath(os.path.dirname(__file__))
-        write_file_path = here + '/' + file_dir
-        print(here)
-        print(write_file_path)
-        with open(write_file_path, 'w') as f:
-            '''
-            should look something like this:
-            name: sit1
-            I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
-            '''
-            f.write('name: sit1\n')
+        # here = os.path.abspath(os.path.dirname(__file__))
+        # write_file_path = here + '/' + file_dir
+        # print(here)
+        # print(write_file_path)
+        write_file_path = file_dir
 
-            lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-            input_line = 'I: ' + lens_agent_state_str + ' ;'
-            f.write(input_line)
+        try:
+            with open(write_file_path, 'w') as f:
+                '''
+                should look something like this:
+                name: sit1
+                I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
+                '''
+                f.write('name: sit1\n')
+
+                lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+                input_line = 'I: ' + lens_agent_state_str + ' ;'
+                f.write(input_line)
+        except:
+            pass

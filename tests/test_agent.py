@@ -4,6 +4,7 @@ import nose
 import sys
 import io
 import random
+import os
 
 from mann import agent
 
@@ -327,7 +328,7 @@ def test_lens_agent_get_key_multiple():
 @nose.with_setup(reset_LensAgent)
 def test_lens_agent_state_init():
     test_lens_agent = agent.LensAgent(4)
-    assert test_lens_agent.get_state() == [None] * 4
+    assert test_lens_agent.get_state() == [0] * 4
 
 
 @nose.with_setup(reset_LensAgent)
@@ -356,7 +357,7 @@ def test_list_to_str_delim():
 @nose.with_setup(reset_LensAgent)
 def test_lens_agent_seed():
     test_lens_agent = agent.LensAgent(4)
-    assert test_lens_agent.get_state() == [None] * 4
+    assert test_lens_agent.get_state() == [0] * 4
     test_lens_agent.seed_agent()
     assert test_lens_agent.get_state() == [1] * 4
 
@@ -364,21 +365,54 @@ def test_lens_agent_seed():
 @nose.with_setup(reset_LensAgent)
 def test_get_new_state_values_from_out_file():
     test_lens_agent = agent.LensAgent(10)
+    here = os.path.abspath(os.path.dirname(__file__))
+    agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
     calculated_state = test_lens_agent._get_new_state_values_from_out_file(
-        '../tests/lens/AgentState.out')
+        agent_state_out_file_dir)
     expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
                       0.333333, 5, 0, 0, 0]
     assert calculated_state == expected_state
 
 
+@nose.with_setup(reset_LensAgent)
+def test_write_agent_state_to_ex():
+    pass
+
+
+@nose.with_setup(reset_LensAgent)
+def test_update_agent_state_default():
+    pass
+
+
 # TODO need to get LENS workign and set predessors to test
-# @nose.with_setup(reset_LensAgent)
-# def test_update_agent_state():
-#     test_lens_agent = agent.LensAgent(10)
-#     test_lens_agent.update_agent_state()
-#     expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
-#                       0.333333, 5, 0, 0, 0]
-#     assert test_lens_agent.get_state() == expected_state
+@nose.with_setup(reset_LensAgent)
+def test_update_agent_state():
+    list_of_predecessors = []
+    for i in range(3):
+        lens_agent_predecessor = agent.LensAgent(10)
+        list_of_predecessors.append(lens_agent_predecessor)
+    test_lens_agent = agent.LensAgent(10)
+    assert test_lens_agent.get_key() == 3
+
+    test_lens_agent.set_predecessors(list_of_predecessors)
+    assert test_lens_agent.predecessors[0].get_key() == 0
+    assert test_lens_agent.predecessors[-1].get_key() == 2
+
+    here = os.path.abspath(os.path.dirname(__file__))
+    lens_in_file_dir = here + '/' + 'lens/MainM1PlautFix2.in'
+    agent_ex_file_dir = here + '/' + 'lens/AgentState.ex'
+    infl_ex_file_dir = here + '/' + 'lens/infl.ex'
+    agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
+
+    test_lens_agent.update_agent_state(lens_in_file=lens_in_file_dir,
+                                       # lens_agent_predecessor,
+                                       agent_ex_file=agent_ex_file_dir,
+                                       infl_ex_file=infl_ex_file_dir,
+                                       agent_state_out_file=agent_state_out_file_dir)
+    expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
+                      0.333333, 5, 0, 0, 0]
+    assert test_lens_agent.get_state() == expected_state
+
 
 expected_ex_file = '''name: sit1
 I: 1 1 1 1 ;
