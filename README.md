@@ -15,7 +15,7 @@ or
 https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
 
     wget https://github.com/chendaniely/multi-agent-neural-network/raw/master/Lens.tgz
-    tar xvzf Lens.tar.gz
+    tar xvzf Lens.tgz
 
 #### Ubuntu 14.04 64-bit
 
