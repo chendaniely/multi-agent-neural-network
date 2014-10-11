@@ -15,7 +15,10 @@ or
 https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
 
     wget https://github.com/chendaniely/multi-agent-neural-network/raw/master/Lens.tgz
-    tar xvzf Lens.tgz
+    wget http://web.stanford.edu/group/mbc/LENSManual/Manual/Dist/lens.tar.gz
+    tar xvzf Lens.tgZ
+
+note the older lens link has a capital letter, the one from Stanford has a lower case
 
 #### Ubuntu 14.04 64-bit
 
@@ -26,10 +29,12 @@ Notes from David Plaut:
     export LENSDIR=~/code/Lens      # or wherever Lens is installed
     export HOSTTYPE=x86_64-linux    # can set this to more-or-less anything
     cd TclTk/tcl8.3.4/unix
+    rm config.cache
     ./configure --enable-shared --enable-64bit
     make
     rm -f *.o
     cd ../../tk8.3.4/unix
+    rm config.cache
     ./configure --enable-shared --enable-64bit --with-tcl=../../tcl8.3.4/unix
     # ./configure --enable-shared --enable-64bit --with-tcl=../../tcl8.3.4/unix
     make
@@ -52,6 +57,12 @@ Notes from David Plaut:
     - mkLinks
     - tclsh
     - wish
+    
+or you can `chmod 755 -R` your `Lens` folder
+
+If making the tcl library fails becuase of X11/Xlib.h header file run `apt-get install libx11-dev`
+
+`sudo apt-get install tcl8.4-dev tk8.4-dev`
 
 If you are re-running <code>./configure</code> remove the config.cache first `rm config.cache`
 
