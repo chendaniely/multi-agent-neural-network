@@ -8,7 +8,7 @@ mkdir -p code
 cd code
 
 wget https://github.com/chendaniely/multi-agent-neural-network/raw/master/Lens.tgz
-tar xvzf Lens.tgZ
+tar xvzf Lens.tgz
 cd Lens
 
 export LENSDIR=~/code/Lens      # or wherever Lens is installed
