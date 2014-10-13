@@ -5,8 +5,10 @@ python:
 
 # command to install dependencies
 before_install:
+  - export TRAVIS_PROJ=`pwd`
+  - cp lens_install_config_travis.sh lens_install_config.sh
   - source ./lens_install.sh
-  - cd chendaniely/multi-agent-neural-network
+  - cd $TRAVIS_PROJ
 install:
   - pip install -r requirements.txt
   - pip install coveralls
