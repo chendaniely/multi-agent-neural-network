@@ -3,7 +3,15 @@
 apt-get install libx11-dev
 apt-get install tcl8.4-dev tk8.4-dev
 
-cd ~/
+
+if [ -f ./lens_install_config.sh ]; then
+    . ./lens_install_config.sh
+else
+    export LENSDIR=~/code/Lens      # or wherever Lens is installed
+    cd ~/
+fi
+
+export HOSTTYPE=x86_64-linux    # can set this to more-or-less anything
 mkdir -p code
 cd code
 
