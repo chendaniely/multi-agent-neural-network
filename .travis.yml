@@ -4,6 +4,8 @@ python:
   - "3.4"
 
 # command to install dependencies
+before_install:
+  - source ./lens_install.sh
 install:
   - pip install -r requirements.txt
   - pip install coveralls
