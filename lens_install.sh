@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 apt-get install libx11-dev
 apt-get install tcl8.4-dev tk8.4-dev
