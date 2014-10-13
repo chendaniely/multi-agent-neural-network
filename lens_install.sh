@@ -19,8 +19,6 @@ wget https://github.com/chendaniely/multi-agent-neural-network/raw/master/Lens.t
 tar xvzf Lens.tgz
 cd Lens
 
-export LENSDIR=~/code/Lens      # or wherever Lens is installed
-export HOSTTYPE=x86_64-linux    # can set this to more-or-less anything
 cd TclTk/tcl8.3.4/unix
 rm config.cache
 ./configure --enable-shared --enable-64bit
