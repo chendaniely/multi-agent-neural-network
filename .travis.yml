@@ -6,6 +6,7 @@ python:
 # command to install dependencies
 before_install:
   - source ./lens_install.sh
+  - cd chendaniely/multi-agent-neural-network
 install:
   - pip install -r requirements.txt
   - pip install coveralls
