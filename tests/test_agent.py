@@ -472,7 +472,7 @@ def test_create_weight_file():
     # assert '/home/dchen/git/multi-agent-neural-network/tests/lens/'
     # 'AgentWgt000000.wt' in globed
     # assert False
-    assert len(glob.glob(expected_weight_file_name)) == 1
+    # assert len(glob.glob(expected_weight_file_name)) == 1
     assert os.path.exists(expected_weight_file_name) is True
 
 
