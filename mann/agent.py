@@ -268,6 +268,32 @@ class LensAgent(Agent):
         else:
             raise ValueError("len of values not equal to len of state")
 
+    def create_weight_file(self, weight_in_file, weight_output_dir):
+        # print('weight in file read: ', weight_in_file)
+        # print('weight output read: ', weight_output_dir)
+
+        padded_agent_number = "{0:06d}".format(self.get_key())
+        assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
+
+        weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
+        weight_file_dir = weight_output_dir + '/' + weight_file_name
+
+        # print('weight file name: ', weight_file_name)
+        # print('weight file dir: ', weight_file_dir)
+
+        # copy current envvironment
+        lens_env = os.environ
+        # export variable w into environment as the padded agent number
+        lens_env["w"] = padded_agent_number
+        # print('w environment: ', lens_env.get('w'))
+
+        # list of 'words' passed into the subprocess call
+        lens_weight_command = ['lens', ' -nogui',  weight_in_file]
+        # print('lens weight list: ', lens_weight_command)
+        subprocess.call(['lens', '-nogui', weight_in_file], env=lens_env)
+        # print('ls call: ', subprocess.call(['ls']))
+        # return weight_file_name
+
     def _call_lens(self, lens_in_file):
         # pass
         subprocess.call(['lens', '-nogui', lens_in_file])
