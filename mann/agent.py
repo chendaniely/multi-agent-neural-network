@@ -279,6 +279,8 @@ class LensAgent(Agent):
         weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
         weight_file_dir = weight_output_dir + '/' + weight_file_name
 
+        if not os.path.exists(weight_output_dir):
+            os.makedirs(weight_output_dir)
         # print('weight file name: ', weight_file_name)
         # print('weight file dir: ', weight_file_dir)
 
