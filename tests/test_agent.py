@@ -458,21 +458,22 @@ def test_create_weight_file():
     test_lens_agent.create_weight_file(weight_in_file, weight_output_dir)
 
     # search directory for weight file
-    search_dir = here + '/lens/AgentWgt000000.wt'
+    expected_weight_file_name = here + '/lens/AgentWgt000000.wt'
     # print('searchdir: ', search_dir)
-    globed = glob.glob(search_dir)
+    # globed = glob.glob(search_dir)
     # print('glob: ', globed)
 
-    expected_weight_file_name = globed[0]
-    print(expected_weight_file_name)
-    assert expected_weight_file_name == '/home/dchen/git/' + \
-        'multi-agent-neural-network/tests/lens/AgentWgt000000.wt'
+    # expected_weight_file_name = globed[0]
+    # print(expected_weight_file_name)
+    # assert expected_weight_file_name == here + '/lens/AgentWgt000000.wt'
 
     # print('g :', generated_weight_file_name)
     # assert expected_weight_file_namees == generated_weight_file_name
     # assert '/home/dchen/git/multi-agent-neural-network/tests/lens/'
     # 'AgentWgt000000.wt' in globed
     # assert False
+    assert len(glob.glob(expected_weight_file_name)) == 1
+    assert os.path.exists(expected_weight_file_name) is True
 
 
 ###############################################################################
