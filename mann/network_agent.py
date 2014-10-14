@@ -12,7 +12,8 @@ class NetworkAgent(object):
         pass
 
     def create_multidigraph_of_agents_from_edge_list(
-            self, number_of_agents, edge_list, agent_type=tuple(['binary'])):
+            self, number_of_agents, edge_list, agent_type=tuple(['binary']),
+            **kwargs):
         # create the graph
         self.G = nx.MultiDiGraph()
 
@@ -27,6 +28,8 @@ class NetworkAgent(object):
                 new_agent = agent.BinaryAgent()
             elif agent_type[0] == 'lens':
                 new_agent = agent.LensAgent(agent_type[1])
+                new_agent.create_weight_file(kwargs.get('weight_in_file'),
+                                             kwargs.get('weight_dir'))
             else:
                 raise UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
