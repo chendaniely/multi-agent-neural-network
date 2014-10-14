@@ -270,8 +270,7 @@ class LensAgent(Agent):
 
     def _call_lens(self, lens_in_file):
         # pass
-        subprocess.call(['lens', '-nogui',
-                         lens_in_file])
+        subprocess.call(['lens', '-nogui', lens_in_file])
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
     def _start_end_update_out(self, f):
