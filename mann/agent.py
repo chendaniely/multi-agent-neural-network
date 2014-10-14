@@ -4,6 +4,7 @@ import random
 import subprocess
 import io
 import os
+import sys
 
 
 class Error(Exception):
@@ -285,7 +286,8 @@ class LensAgent(Agent):
         lens_env = os.environ
         # export variable w into environment as the padded agent number
         lens_env["w"] = padded_agent_number
-        # print('w environment: ', lens_env.get('w'))
+        print('w environment: ', lens_env.get('w'))
+        print('w environment: ', lens_env.get('w'), file=sys.stderr)
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
