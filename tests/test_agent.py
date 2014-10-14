@@ -5,6 +5,7 @@ import sys
 import io
 import random
 import os
+import pdb
 
 from mann import agent
 
@@ -427,6 +428,7 @@ def test_string_agent_state_to_ex():
     generated_file = test_lens_agent._string_agent_state_to_ex()
     assert generated_file == expected_ex_file
 
+    # pdb.set_trace()
 ###############################################################################
 # Unit Test notes
 ###############################################################################
