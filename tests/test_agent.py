@@ -459,6 +459,7 @@ def test_create_weight_file():
 
     # search directory for weight file
     expected_weight_file_name = here + '/lens/AgentWgt000000.wt'
+    print('expected file name: ', expected_weight_file_name, file=sys.stderr)
     # print('searchdir: ', search_dir)
     # globed = glob.glob(search_dir)
     # print('glob: ', globed)
@@ -473,6 +474,10 @@ def test_create_weight_file():
     # 'AgentWgt000000.wt' in globed
     # assert False
     # assert len(glob.glob(expected_weight_file_name)) == 1
+    print('glob of here/lens/*wt: ', glob.glob(here + '/lens/*wt'),
+          file=sys.stderr)
+    print('does this file exist? ', os.path.exists(expected_weight_file_name),
+          file=sys.stderr)
     assert os.path.exists(expected_weight_file_name) is True
 
 
