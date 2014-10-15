@@ -481,6 +481,14 @@ def test_create_weight_file():
     assert os.path.exists(expected_weight_file_name) is True
 
 
+@nose.with_setup(reset_LensAgent)
+def test_length_per_bank():
+    test_lens_agent = agent.LensAgent(10)
+    calculated_bank_length = test_lens_agent._length_per_bank()
+    expected_bank_length = 5
+    assert calculated_bank_length == 5
+
+
 ###############################################################################
 # Unit Test notes
 ###############################################################################
