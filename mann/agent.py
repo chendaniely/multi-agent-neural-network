@@ -342,6 +342,23 @@ class LensAgent(Agent):
         pos = self.get_state()[:num_units_per_bank]
         neg = self.get_state()[num_units_per_bank:]
         return (pos, neg)
+
+    def get_env_for_pos_neg_bank_values(self):
+        current_env = os.environ
+        for idx_bank, bank in enumerate(('p', 'n')):
+            bank_values = self.get_pos_neg_bank_values()[idx_bank]
+            print(bank_values, file=sys.stderr)
+            for idx_pu, j in enumerate(bank_values):
+                var_key = str(bank) + str(idx_pu)
+                var_value = str(bank_values[idx_pu])
+                print('key: ', var_key, '; value: ', var_value)
+                # setattr(current_env, var_to_export, var_to_export)
+                # current_env.putenv(var_key, var_value)
+                current_env[var_key] = var_value
+                # print(current_env.get(var_to_export))
+                print(current_env.get(var_key))
+        return current_env
+
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
