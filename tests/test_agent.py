@@ -502,6 +502,21 @@ def test_get_pos_neg_bank_values():
     assert neg == [5, 6, 7, 8, 9]
 
 
+@nose.with_setup(reset_LensAgent)
+def test_export_state_to_env():
+    test_lens_agent = agent.LensAgent(10)
+
+    set_state_values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    test_lens_agent.set_state(set_state_values)
+    assert test_lens_agent.get_state() == set_state_values
+    env = test_lens_agent.get_env_for_pos_neg_bank_values()
+    # print(env, file=sys.stderr)
+    print(env.get('p0'))
+    assert env.get('p0') == '0'
+    assert env.get('p4') == '4'
+    assert env.get('n0') == '5'
+    assert env.get('n4') == '9'
+
 ###############################################################################
 # Unit Test notes
 ###############################################################################
