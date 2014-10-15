@@ -331,6 +331,10 @@ class LensAgent(Agent):
                     print('list of new state', list_of_new_state)
         return list_of_new_state
 
+    def _length_per_bank(self):
+        num_elements_per_bank = len(self.get_state())/2
+        assert str(num_elements_per_bank).split('.')[1] == '0'
+        return int(num_elements_per_bank)
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
