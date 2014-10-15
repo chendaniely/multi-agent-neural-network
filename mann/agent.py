@@ -5,6 +5,7 @@ import subprocess
 import io
 import os
 import sys
+import warnings
 
 
 class Error(Exception):
@@ -346,8 +347,9 @@ class LensAgent(Agent):
 
             self.set_state(self.new_state_values)
         else:
-            print('no predecessors')
-            pass
+            # print('no predecessors')
+            warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
+                          UserWarning)
 
     def update_agent_state(self, pick='default', **kwargs):
         if pick == 'default':
