@@ -335,6 +335,13 @@ class LensAgent(Agent):
         num_elements_per_bank = len(self.get_state())/2
         assert str(num_elements_per_bank).split('.')[1] == '0'
         return int(num_elements_per_bank)
+
+    def get_pos_neg_bank_values(self):
+        banks = ('p', 'n')
+        num_units_per_bank = self._length_per_bank()
+        pos = self.get_state()[:num_units_per_bank]
+        neg = self.get_state()[num_units_per_bank:]
+        return (pos, neg)
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
