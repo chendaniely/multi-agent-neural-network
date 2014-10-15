@@ -489,6 +489,19 @@ def test_length_per_bank():
     assert calculated_bank_length == 5
 
 
+@nose.with_setup(reset_LensAgent)
+def test_get_pos_neg_bank_values():
+    test_lens_agent = agent.LensAgent(10)
+
+    set_state_values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    test_lens_agent.set_state(set_state_values)
+    assert test_lens_agent.get_state() == set_state_values
+
+    pos, neg = test_lens_agent.get_pos_neg_bank_values()
+    assert pos == [0, 1, 2, 3, 4]
+    assert neg == [5, 6, 7, 8, 9]
+
+
 ###############################################################################
 # Unit Test notes
 ###############################################################################
