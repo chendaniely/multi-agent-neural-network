@@ -311,7 +311,7 @@ class LensAgent(Agent):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
-        return tuple([80, 84, 86, 90])
+        return tuple([122, 126, 128, 132])
 
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
