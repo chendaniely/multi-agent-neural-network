@@ -352,6 +352,7 @@ class LensAgent(Agent):
     def get_env_for_pos_neg_bank_values(self):
         current_env = os.environ
         padded_agent_number = "{0:06d}".format(self.get_key())
+        current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
             print(bank_values, file=sys.stderr)
