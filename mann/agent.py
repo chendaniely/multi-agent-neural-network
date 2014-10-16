@@ -301,9 +301,10 @@ class LensAgent(Agent):
         # print('ls call: ', subprocess.call(['ls']))
         # return weight_file_name
 
-    def _call_lens(self, lens_in_file):
+    def _call_lens(self, lens_in_file, **kwargs):
         # pass
-        subprocess.call(['lens', '-nogui', lens_in_file])
+        subprocess.call(['lens', '-nogui', lens_in_file],
+                        env=kwargs.get('env'))
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
     def _start_end_update_out(self, f):
@@ -373,7 +374,8 @@ class LensAgent(Agent):
             predecessor_picked.write_agent_state_to_ex(infl_ex_file)
             # self.write_agent_state_to_ex('../tests/lens/agent.ex')
             self.write_agent_state_to_ex(agent_ex_file)
-            self._call_lens(lens_in_file)
+            state_env = self.get_env_for_pos_neg_bank_values()
+            self._call_lens(lens_in_file, env=state_env)
             # self.new_state_values = self._get_new_state_values_from_out_file(
             #     '../tests/lens/AgentState.out')
             self.new_state_values = self._get_new_state_values_from_out_file(
