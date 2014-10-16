@@ -308,6 +308,8 @@ class LensAgent(Agent):
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
     def _start_end_update_out(self, f):
+        # enter the actual file line numbers
+        # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
         return tuple([80, 84, 86, 90])
 
