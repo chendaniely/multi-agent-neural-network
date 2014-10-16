@@ -274,6 +274,7 @@ class LensAgent(Agent):
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
 
+        # TODO make this lins a function
         padded_agent_number = "{0:06d}".format(self.get_key())
         assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
 
@@ -343,8 +344,12 @@ class LensAgent(Agent):
         neg = self.get_state()[num_units_per_bank:]
         return (pos, neg)
 
+    def _pad_agent_id(self):
+        pass  # TODO
+
     def get_env_for_pos_neg_bank_values(self):
         current_env = os.environ
+        padded_agent_number = "{0:06d}".format(self.get_key())
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
             print(bank_values, file=sys.stderr)
