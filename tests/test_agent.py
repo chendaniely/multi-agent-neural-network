@@ -407,7 +407,7 @@ def test_update_agent_state():
     here = os.path.abspath(os.path.dirname(__file__))
     lens_in_file_dir = here + '/' + 'lens/UpdateFromInfl.in'
     agent_ex_file_dir = here + '/' + 'lens/AgentState.ex'
-    infl_ex_file_dir = here + '/' + 'lens/infl.ex'
+    infl_ex_file_dir = here + '/' + 'lens/Infl.ex'
     agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
 
     test_lens_agent.update_agent_state(lens_in_file=lens_in_file_dir,
