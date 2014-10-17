@@ -367,26 +367,6 @@ def test_lens_agent_seed():
 
 
 @nose.with_setup(reset_LensAgent)
-def test_get_new_state_values_from_out_file():
-    test_lens_agent = agent.LensAgent(10)
-    here = os.path.abspath(os.path.dirname(__file__))
-    agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
-    calculated_state = test_lens_agent._get_new_state_values_from_out_file(
-        agent_state_out_file_dir)
-    expected_state = [1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
-                      1.09608e-07,
-                      1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
-                      1.09608e-07]
-    print('agent state: ', calculated_state, file=sys.stderr)
-    numpy.testing.assert_allclose(calculated_state, expected_state,
-                                  rtol=1e-07, verbose=True)
-
-    # expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
-    #                   0.333333, 5, 0, 0, 0]
-    # assert calculated_state == expected_state
-
-
-@nose.with_setup(reset_LensAgent)
 def test_update_agent_state_default():
     pass
 
@@ -422,6 +402,27 @@ def test_update_agent_state():
     print('agent state: ', test_lens_agent.get_state(), file=sys.stderr)
     numpy.testing.assert_allclose(test_lens_agent.get_state(), expected_state,
                                   rtol=1e-07, verbose=True)
+
+
+
+@nose.with_setup(reset_LensAgent)
+def test_get_new_state_values_from_out_file():
+    test_lens_agent = agent.LensAgent(10)
+    here = os.path.abspath(os.path.dirname(__file__))
+    agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
+    calculated_state = test_lens_agent._get_new_state_values_from_out_file(
+        agent_state_out_file_dir)
+    expected_state = [1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
+                      1.09608e-07,
+                      1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
+                      1.09608e-07]
+    print('agent state: ', calculated_state, file=sys.stderr)
+    numpy.testing.assert_allclose(calculated_state, expected_state,
+                                  rtol=1e-07, verbose=True)
+
+    # expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
+    #                   0.333333, 5, 0, 0, 0]
+    # assert calculated_state == expected_state
 
 
 expected_ex_file = '''name: sit1
