@@ -8,6 +8,7 @@ import os
 import glob
 import pdb
 import subprocess
+from numpy import testing
 
 from mann import agent
 
@@ -372,14 +373,14 @@ def test_get_new_state_values_from_out_file():
     agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
     calculated_state = test_lens_agent._get_new_state_values_from_out_file(
         agent_state_out_file_dir)
-    expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
-                      0.333333, 5, 0, 0, 0]
-    assert calculated_state == expected_state
+    expected_state = [1.09608, 1.09608, 1.09608, 1.09608, 1.09608,
+                      1.09608, 1.09608, 1.09608, 1.09608, 1.09608]
+    testing.assert_allclose(test_lens_agent.get_key(),
+                            expected_state, rtol=1e04, verbose=True)
 
-
-@nose.with_setup(reset_LensAgent)
-def test_write_agent_state_to_ex():
-    pass
+    # expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
+    #                   0.333333, 5, 0, 0, 0]
+    # assert calculated_state == expected_state
 
 
 @nose.with_setup(reset_LensAgent)
