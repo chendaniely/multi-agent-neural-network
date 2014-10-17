@@ -391,6 +391,11 @@ class LensAgent(Agent):
                           UserWarning)
 
     def update_agent_state(self, pick='default', **kwargs):
+        # if there is an agent_state_out_file, clear it
+        # this makes sure there will be nothing appended
+        if kwargs.get('agent_state_out_file') is not None:
+            open(kwargs.get('agent_state_out_file'), 'w').close()
+            assert os.stat(kwargs.get('agent_state_out_file')).st_size == 0
         if pick == 'default':
             self._update_agent_state_default(kwargs.get('lens_in_file'),
                                              kwargs.get('agent_ex_file'),
