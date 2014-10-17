@@ -4,6 +4,8 @@ import random
 import subprocess
 import io
 import os
+import sys
+import warnings
 
 
 class Error(Exception):
@@ -268,15 +270,48 @@ class LensAgent(Agent):
         else:
             raise ValueError("len of values not equal to len of state")
 
-    def _call_lens(self, lens_in_file):
+    def create_weight_file(self, weight_in_file, weight_output_dir):
+        # print('weight in file read: ', weight_in_file)
+        # print('weight output read: ', weight_output_dir)
+
+        # TODO make this lins a function
+        padded_agent_number = "{0:06d}".format(self.get_key())
+        assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
+
+        weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
+        weight_file_dir = weight_output_dir + '/' + weight_file_name
+
+        if not os.path.exists(weight_output_dir):
+            os.makedirs(weight_output_dir)
+        # print('weight file name: ', weight_file_name)
+        # print('weight file dir: ', weight_file_dir)
+
+        # copy current envvironment
+        lens_env = os.environ
+        # export variable w into environment as the padded agent number
+        # TODO make env 'w' env 'a' to match in file name
+        lens_env["w"] = padded_agent_number
+        print('w environment: ', lens_env.get('w'))
+        print('w environment: ', lens_env.get('w'), file=sys.stderr)
+
+        # list of 'words' passed into the subprocess call
+        lens_weight_command = ['lens', ' -nogui',  weight_in_file]
+        # print('lens weight list: ', lens_weight_command)
+        subprocess.call(['lens', '-nogui', weight_in_file], env=lens_env)
+        # print('ls call: ', subprocess.call(['ls']))
+        # return weight_file_name
+
+    def _call_lens(self, lens_in_file, **kwargs):
         # pass
-        subprocess.call(['lens', '-nogui',
-                         lens_in_file])
+        subprocess.call(['lens', '-nogui', lens_in_file],
+                        env=kwargs.get('env'))
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
     def _start_end_update_out(self, f):
+        # enter the actual file line numbers
+        # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
-        return tuple([80, 84, 86, 90])
+        return tuple([122, 126, 128, 132])
 
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
@@ -301,6 +336,39 @@ class LensAgent(Agent):
                     print('list of new state', list_of_new_state)
         return list_of_new_state
 
+    def _length_per_bank(self):
+        num_elements_per_bank = len(self.get_state())/2
+        assert str(num_elements_per_bank).split('.')[1] == '0'
+        return int(num_elements_per_bank)
+
+    def get_pos_neg_bank_values(self):
+        banks = ('p', 'n')
+        num_units_per_bank = self._length_per_bank()
+        pos = self.get_state()[:num_units_per_bank]
+        neg = self.get_state()[num_units_per_bank:]
+        return (pos, neg)
+
+    def _pad_agent_id(self):
+        pass  # TODO
+
+    def get_env_for_pos_neg_bank_values(self):
+        current_env = os.environ
+        padded_agent_number = "{0:06d}".format(self.get_key())
+        current_env['a'] = padded_agent_number
+        for idx_bank, bank in enumerate(('p', 'n')):
+            bank_values = self.get_pos_neg_bank_values()[idx_bank]
+            print(bank_values, file=sys.stderr)
+            for idx_pu, j in enumerate(bank_values):
+                var_key = str(bank) + str(idx_pu)
+                var_value = str(bank_values[idx_pu])
+                print('key: ', var_key, '; value: ', var_value)
+                # setattr(current_env, var_to_export, var_to_export)
+                # current_env.putenv(var_key, var_value)
+                current_env[var_key] = var_value
+                # print(current_env.get(var_to_export))
+                print(current_env.get(var_key))
+        return current_env
+
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
@@ -309,7 +377,8 @@ class LensAgent(Agent):
             predecessor_picked.write_agent_state_to_ex(infl_ex_file)
             # self.write_agent_state_to_ex('../tests/lens/agent.ex')
             self.write_agent_state_to_ex(agent_ex_file)
-            self._call_lens(lens_in_file)
+            state_env = self.get_env_for_pos_neg_bank_values()
+            self._call_lens(lens_in_file, env=state_env)
             # self.new_state_values = self._get_new_state_values_from_out_file(
             #     '../tests/lens/AgentState.out')
             self.new_state_values = self._get_new_state_values_from_out_file(
@@ -317,8 +386,9 @@ class LensAgent(Agent):
 
             self.set_state(self.new_state_values)
         else:
-            print('no predecessors')
-            pass
+            # print('no predecessors')
+            warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
+                          UserWarning)
 
     def update_agent_state(self, pick='default', **kwargs):
         if pick == 'default':

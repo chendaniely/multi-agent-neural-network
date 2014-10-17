@@ -6,6 +6,8 @@ python:
 # command to install dependencies
 before_install:
   - export TRAVIS_PROJ=`pwd`
+  # - "export DISPLAY=:99.0" # set display environment variable for lens
+  # - "sh -e /etc/init.d/xvfb start"  # set display environment variable for lens
   - cp lens_install_config_travis.sh lens_install_config.sh
   - source ./lens_install.sh
   - cd $TRAVIS_PROJ
