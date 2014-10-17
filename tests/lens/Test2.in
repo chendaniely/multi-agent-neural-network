@@ -1,0 +1,102 @@
+#LENS FIRST TEST IN MANN
+
+
+deleteNets * 
+
+set a $env(a)
+ 
+addNet "5X5-TRA DIFFUSION" -i 3.0 -t 3 CONTINUOUS
+
+addGroup Input 5 -RESET_ON_EXAMPLE INPUT OUTPUT SOFT_CLAMP -BIASED USE_OUTPUT_HIST USE_TARGET_HIST
+addGroup InputMirror 5 -RESET_ON_EXAMPLE INPUT OUTPUT SOFT_CLAMP -BIASED USE_OUTPUT_HIST USE_TARGET_HIST
+addGroup Hidden 10 -RESET_ON_EXAMPLE
+addGroup HiddenMirror 10 -RESET_ON_EXAMPLE
+
+#ADD LINK TYPE FOR THE INPUT TO INPUTMIRROR
+addLinkType "InToMirror"
+
+connectGroups Input Hidden -bidirectional
+connectGroups Input Input
+connectGroups InputMirror InputMirror
+connectGroups InputMirror HiddenMirror -bidirectional
+
+
+#FIX INTERBANK UNITS
+repeat u [getObj Input.numUnits] {
+   connectUnits Input:$u InputMirror:$u -m -1.0 -r 0 -b 		 
+}
+repeat u [getObj Input.numUnits] {
+   connectUnits InputMirror:$u Input:$u -m -1.0 -r 0 -b 		 
+}
+
+#Remove Input->Input self connections
+#AND mirror
+repeat u [getObj Input.numUnits] {
+  disconnectUnits Input:$u Input:$u
+}
+
+repeat u [getObj InputMirror.numUnits] {
+  disconnectUnits InputMirror:$u InputMirror:$u
+}
+
+#CHARACTERISTICS OF NETWORK
+setObj Input.initOutput	  0.0
+setObj Hidden.initOutput  0.0
+setObj InputMirror.initOutput  0.0
+setObj HiddenMirror.initOutput  0.0
+
+setObj Input.maxOutput	  1.0
+setObj Hidden.maxOutput  1.0
+setObj InputMirror.maxOutput  1.0
+setObj HiddenMirror.maxOutput  1.0
+
+setObj Input.minOutput	 -0.2
+setObj Hidden.minOutput  -0.2
+setObj InputMirror.minOutput  -0.2
+setObj HiddenMirror.minOutput -0.2
+
+deleteExampleSets *
+
+#EXAMPLE SETS
+#DAN
+loadExamples Infl.ex -s train -exmode PERMUTED 
+
+setObj train.graceTime  1.0
+setObj train.minTime    3.0
+setObj train.maxTime    3.0
+
+setObj learningRate     0.01
+setObj momentum         0.8
+setObj clampStrength 	0.2
+setObj randRange        0.25
+
+#saveWeights wgt1.wt
+
+#THIS RESETS WEIGHTS AND OUTPUTS
+resetNet
+
+#ADD OUTPUT AT T-1 (CURRENT STATE) 
+repeat u [getObj Input.numUnits] {
+   setObj Input:$u.output $env(p$u)
+}
+
+repeat u [getObj InputMirror.numUnits] {
+   setObj InputMirror:$u.output $env(n$u)
+}
+
+#LOAD WEIGHTS
+#DAN USE ENV VARIABLE "a" for Agent ID 
+loadWeights weights/AgentWgt$a.wt
+
+
+#NO LEARNING ALLOWED
+freezeWeights
+
+#MAKE DATA AND SIMULATE
+#DAN FOR NOW 
+openNetOutputFile AgentState.out
+train 1
+closeNetOutputFile
+
+exit 
+#EOF
