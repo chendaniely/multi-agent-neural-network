@@ -8,6 +8,7 @@ import os
 import glob
 import pdb
 import subprocess
+import numpy.testing
 
 from mann import agent
 
@@ -366,28 +367,10 @@ def test_lens_agent_seed():
 
 
 @nose.with_setup(reset_LensAgent)
-def test_get_new_state_values_from_out_file():
-    test_lens_agent = agent.LensAgent(10)
-    here = os.path.abspath(os.path.dirname(__file__))
-    agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
-    calculated_state = test_lens_agent._get_new_state_values_from_out_file(
-        agent_state_out_file_dir)
-    expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
-                      0.333333, 5, 0, 0, 0]
-    assert calculated_state == expected_state
-
-
-@nose.with_setup(reset_LensAgent)
-def test_write_agent_state_to_ex():
-    pass
-
-
-@nose.with_setup(reset_LensAgent)
 def test_update_agent_state_default():
     pass
 
 
-# TODO need to get LENS workign and set predessors to test
 @nose.with_setup(reset_LensAgent)
 def test_update_agent_state():
     list_of_predecessors = []
@@ -402,9 +385,9 @@ def test_update_agent_state():
     assert test_lens_agent.predecessors[-1].get_key() == 2
 
     here = os.path.abspath(os.path.dirname(__file__))
-    lens_in_file_dir = here + '/' + 'lens/MainM1PlautFix2.in'
+    lens_in_file_dir = here + '/' + 'lens/UpdateFromInfl.in'
     agent_ex_file_dir = here + '/' + 'lens/AgentState.ex'
-    infl_ex_file_dir = here + '/' + 'lens/infl.ex'
+    infl_ex_file_dir = here + '/' + 'lens/Infl.ex'
     agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
 
     test_lens_agent.update_agent_state(lens_in_file=lens_in_file_dir,
@@ -412,9 +395,34 @@ def test_update_agent_state():
                                        agent_ex_file=agent_ex_file_dir,
                                        infl_ex_file=infl_ex_file_dir,
                                        agent_state_out_file=agent_state_out_file_dir)
-    expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
-                      0.333333, 5, 0, 0, 0]
-    assert test_lens_agent.get_state() == expected_state
+    expected_state = [1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
+                      1.09608e-07,
+                      1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
+                      1.09608e-07]
+    print('agent state: ', test_lens_agent.get_state(), file=sys.stderr)
+    numpy.testing.assert_allclose(test_lens_agent.get_state(), expected_state,
+                                  rtol=1e-07, verbose=True)
+
+
+
+@nose.with_setup(reset_LensAgent)
+def test_get_new_state_values_from_out_file():
+    test_lens_agent = agent.LensAgent(10)
+    here = os.path.abspath(os.path.dirname(__file__))
+    agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
+    calculated_state = test_lens_agent._get_new_state_values_from_out_file(
+        agent_state_out_file_dir)
+    expected_state = [1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
+                      1.09608e-07,
+                      1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
+                      1.09608e-07]
+    print('agent state: ', calculated_state, file=sys.stderr)
+    numpy.testing.assert_allclose(calculated_state, expected_state,
+                                  rtol=1e-07, verbose=True)
+
+    # expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
+    #                   0.333333, 5, 0, 0, 0]
+    # assert calculated_state == expected_state
 
 
 expected_ex_file = '''name: sit1
@@ -440,7 +448,7 @@ def test_create_weight_file():
     here = os.path.abspath(os.path.dirname(__file__))
 
     # delete AgentWgt000000.wt if it currently exists
-    search_dir = here + '/lens/AgentWgt000000.wt'
+    search_dir = here + '/lens/weights/AgentWgt000000.wt'
     if os.path.exists(search_dir):
         globed = glob.glob(search_dir)
         print('glob: ', globed)
@@ -458,7 +466,7 @@ def test_create_weight_file():
     test_lens_agent.create_weight_file(weight_in_file, weight_output_dir)
 
     # search directory for weight file
-    expected_weight_file_name = here + '/lens/AgentWgt000000.wt'
+    expected_weight_file_name = here + '/lens/weights/AgentWgt000000.wt'
     print('expected file name: ', expected_weight_file_name, file=sys.stderr)
     # print('searchdir: ', search_dir)
     # globed = glob.glob(search_dir)
@@ -474,7 +482,8 @@ def test_create_weight_file():
     # 'AgentWgt000000.wt' in globed
     # assert False
     # assert len(glob.glob(expected_weight_file_name)) == 1
-    print('glob of here/lens/*wt: ', glob.glob(here + '/lens/*wt'),
+    print('glob of here/lens/weights/*wt: ',
+          glob.glob(here + '/lens/weights/*wt'),
           file=sys.stderr)
     print('does this file exist? ', os.path.exists(expected_weight_file_name),
           file=sys.stderr)

@@ -281,6 +281,7 @@ class LensAgent(Agent):
         weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
         weight_file_dir = weight_output_dir + '/' + weight_file_name
 
+        # if the path does not exist, create it
         if not os.path.exists(weight_output_dir):
             os.makedirs(weight_output_dir)
         # print('weight file name: ', weight_file_name)
@@ -376,7 +377,7 @@ class LensAgent(Agent):
             # predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
             predecessor_picked.write_agent_state_to_ex(infl_ex_file)
             # self.write_agent_state_to_ex('../tests/lens/agent.ex')
-            self.write_agent_state_to_ex(agent_ex_file)
+            # self.write_agent_state_to_ex(agent_ex_file)
             state_env = self.get_env_for_pos_neg_bank_values()
             self._call_lens(lens_in_file, env=state_env)
             # self.new_state_values = self._get_new_state_values_from_out_file(
@@ -391,6 +392,11 @@ class LensAgent(Agent):
                           UserWarning)
 
     def update_agent_state(self, pick='default', **kwargs):
+        # if there is an agent_state_out_file, clear it
+        # this makes sure there will be nothing appended
+        if kwargs.get('agent_state_out_file') is not None:
+            open(kwargs.get('agent_state_out_file'), 'w').close()
+            assert os.stat(kwargs.get('agent_state_out_file')).st_size == 0
         if pick == 'default':
             self._update_agent_state_default(kwargs.get('lens_in_file'),
                                              kwargs.get('agent_ex_file'),
