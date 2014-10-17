@@ -388,7 +388,6 @@ def test_update_agent_state_default():
     pass
 
 
-# TODO need to get LENS workign and set predessors to test
 @nose.with_setup(reset_LensAgent)
 def test_update_agent_state():
     list_of_predecessors = []
