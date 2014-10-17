@@ -8,7 +8,7 @@ import os
 import glob
 import pdb
 import subprocess
-from numpy import testing
+import numpy.testing
 
 from mann import agent
 
@@ -378,8 +378,8 @@ def test_get_new_state_values_from_out_file():
                       1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
                       1.09608e-07]
     print('agent state: ', calculated_state, file=sys.stderr)
-    np.testing.assert_allclose(calculated_state, expected_state,
-                               rtol=1e-07, verbose=True)
+    numpy.testing.assert_allclose(calculated_state, expected_state,
+                                  rtol=1e-07, verbose=True)
 
     # expected_state = [1, 5, 0.333333, 0.333333, 0.333333,
     #                   0.333333, 5, 0, 0, 0]
@@ -420,8 +420,8 @@ def test_update_agent_state():
                       1.09608e-07, 1.09608e-07, 1.09608e-07, 1.09608e-07,
                       1.09608e-07]
     print('agent state: ', test_lens_agent.get_state(), file=sys.stderr)
-    np.testing.assert_allclose(test_lens_agent.get_state(), expected_state,
-                               rtol=1e-07, verbose=True)
+    numpy.testing.assert_allclose(test_lens_agent.get_state(), expected_state,
+                                  rtol=1e-07, verbose=True)
 
 
 expected_ex_file = '''name: sit1
