@@ -402,7 +402,7 @@ def test_update_agent_state():
     assert test_lens_agent.predecessors[-1].get_key() == 2
 
     here = os.path.abspath(os.path.dirname(__file__))
-    lens_in_file_dir = here + '/' + 'lens/MainM1PlautFix2.in'
+    lens_in_file_dir = here + '/' + 'lens/UpdateFromInfl.in'
     agent_ex_file_dir = here + '/' + 'lens/AgentState.ex'
     infl_ex_file_dir = here + '/' + 'lens/infl.ex'
     agent_state_out_file_dir = here + '/' + 'lens/AgentState.out'
