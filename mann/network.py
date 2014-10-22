@@ -18,5 +18,6 @@ class DirectedFastGNPRandomGraph(nx.MultiDiGraph):
 
     def show_graph(self, path_and_name):
         nx.draw_circular(self.G)
+        # nx.draw_networkx_labels(self.G, pos=nx.draw_circular(self.G))
         # plt.show()
         plt.savefig(path_and_name)
