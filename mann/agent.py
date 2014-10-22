@@ -290,6 +290,7 @@ class LensAgent(Agent):
         assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
 
         weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
+        weight_ex_name = 'AgentWgt' + padded_agent_number + '.ex'
         weight_file_dir = weight_output_dir + '/' + weight_file_name
 
         # if the path does not exist, create it
