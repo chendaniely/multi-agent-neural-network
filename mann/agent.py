@@ -487,3 +487,6 @@ class LensAgent(Agent):
             list_of_example_values.append(train_list)
         return list_of_example_values
 
+    def _train_weights(self, base_example, num_train_examples,
+                       num_train_mutations):
+        pass
