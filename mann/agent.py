@@ -274,7 +274,9 @@ class LensAgent(Agent):
         else:
             raise ValueError("len of values not equal to len of state")
 
-    def create_weight_file(self, weight_in_file, weight_output_dir):
+    def create_weight_file(self, weight_in_file, weight_output_dir,
+                           base_example, num_train_examples,
+                           num_train_mutations):
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
 
@@ -298,6 +300,10 @@ class LensAgent(Agent):
         lens_env["w"] = padded_agent_number
         print('w environment: ', lens_env.get('w'))
         print('w environment: ', lens_env.get('w'), file=sys.stderr)
+
+        self._train_weights(base_example,
+                            num_train_examples,
+                            num_train_mutations)
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
