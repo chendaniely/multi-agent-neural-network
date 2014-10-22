@@ -455,3 +455,12 @@ class LensAgent(Agent):
                 f.write(input_line)
         except:
             pass
+
+    def _flip_1_0_value(self, number):
+        if number == 0:
+            return 1
+        if number == 1:
+            return 0
+        else:
+            raise ValueError('Number to flip not 0 or 1')
+
