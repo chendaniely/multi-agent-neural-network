@@ -307,9 +307,6 @@ class LensAgent(Agent):
         print('a environment: ', lens_env.get('a'))
         print('a environment: ', lens_env.get('a'), file=sys.stderr)
 
-        self._train_weights(base_example,
-                            num_train_examples,
-                            num_train_mutations)
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
@@ -493,6 +490,6 @@ class LensAgent(Agent):
             list_of_example_values.append(train_list)
         return list_of_example_values
 
-    def _train_weights(self, base_example, num_train_examples,
-                       num_train_mutations):
-        pass
+    # def _train_weights(self, base_example, num_train_examples,
+    #                    num_train_mutations):
+    #     self._create_weight_training_examples()
