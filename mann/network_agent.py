@@ -29,7 +29,10 @@ class NetworkAgent(object):
             elif agent_type[0] == 'lens':
                 new_agent = agent.LensAgent(agent_type[1])
                 new_agent.create_weight_file(kwargs.get('weight_in_file'),
-                                             kwargs.get('weight_dir'))
+                                             kwargs.get('weight_dir'),
+                                             kwargs.get('base_example'),
+                                             kwargs.get('num_train_examples'),
+                                             kwargs.get('num_train_mutations'))
             else:
                 raise UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
