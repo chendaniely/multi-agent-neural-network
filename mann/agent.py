@@ -303,9 +303,9 @@ class LensAgent(Agent):
         lens_env = os.environ
         # export variable w into environment as the padded agent number
         # TODO make env 'w' env 'a' to match in file name
-        lens_env["w"] = padded_agent_number
-        print('w environment: ', lens_env.get('w'))
-        print('w environment: ', lens_env.get('w'), file=sys.stderr)
+        lens_env["a"] = padded_agent_number
+        print('a environment: ', lens_env.get('a'))
+        print('a environment: ', lens_env.get('a'), file=sys.stderr)
 
         self._train_weights(base_example,
                             num_train_examples,
