@@ -79,8 +79,12 @@ class Agent(object):
         '''
         return self.agent_id
 
-    def get_key(self):
-        return self._key()
+    def get_key(self, **kwargs):
+        if kwargs.get('pad_0_left') is not None:
+            padded_agent_number = "{0:06d}".format(self.get_key())
+            return padded_agent_number
+        else:
+            return self._key()
 
     def set_state(self, new_state):
         raise BaseAgentStateError('Base agent class has no state')
