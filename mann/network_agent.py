@@ -82,4 +82,6 @@ class NetworkAgent(object):
                         "," +
                         str(node.get_key()) +
                         "," +
-                        str(node.get_state()) + "\n")
+                        # str(node.get_state()) +
+                        str(e) for e in list(node.get_state()) +
+                        "\n")
