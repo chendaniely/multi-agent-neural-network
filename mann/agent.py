@@ -277,6 +277,11 @@ class LensAgent(Agent):
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            num_train_mutations):
+        '''
+        calls ._create_weight_training_examples to create list of training examples
+        calls ._write_to_ex to write  list of trianing ex to create the .ex files
+        calls lens to create .wt weight files
+        '''
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
 
