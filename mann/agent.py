@@ -501,6 +501,8 @@ class LensAgent(Agent):
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
 
+    def _str_to_int_list(self, string):
+        return list(int(s) for s in string.strip().split(','))
 
     def _flip_1_0_value(self, number):
         if number == 0:
