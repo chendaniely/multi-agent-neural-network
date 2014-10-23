@@ -220,7 +220,7 @@ class BinaryAgent(Agent):
 
 
 class LensAgent(Agent):
-    lens_agent_count = 0
+    agent_count = 0
 
     def __init__(self, num_state_vars):
         '''
@@ -229,8 +229,8 @@ class LensAgent(Agent):
         that is, the number of positive valence bank units
         and the number of negative valence bank units
         '''
-        self.agent_id = LensAgent.lens_agent_count
-        LensAgent.lens_agent_count += 1
+        self.agent_id = LensAgent.agent_count
+        LensAgent.agent_count += 1
 
         self.state = [0] * num_state_vars
         self.predecessors = []
