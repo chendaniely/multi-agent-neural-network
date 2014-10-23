@@ -477,12 +477,18 @@ class LensAgent(Agent):
                     f.write(input_line)
             except:
                 assert False, 'write_type == "state" failed'
+        if write_type == 'sit':
+            try:
+                with open(file_dir, 'w') as f:
+                    # print('weight_ex_list', kwargs.get('weight_ex_list'))
+                    # print('type: ', type(kwargs.get('weight_ex_list')))
+                    assert isinstance(kwargs.get('weight_ex_list'), list)
+                    for i in range(len(kwargs.get('weight_ex_list'))):
+                        self._write_sit_to_ex(kwargs.get('weight_ex_list')[i],
+                                              i, f)
+            except:
+                assert False, 'write_type == "sit" failed'
 
-                lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-                input_line = 'I: ' + lens_agent_state_str + ' ;'
-                f.write(input_line)
-        except:
-            pass
 
     def _flip_1_0_value(self, number):
         if number == 0:
