@@ -458,14 +458,25 @@ class LensAgent(Agent):
         # print(write_file_path)
         write_file_path = file_dir
 
-        try:
-            with open(write_file_path, 'w') as f:
-                '''
-                should look something like this:
-                name: sit1
-                I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
-                '''
-                f.write('name: sit1\n')
+        if write_type == 'state':
+            # print("###########writefilepath: ", write_file_path)
+            # print('write state: ', self._list_to_str_delim(self.state, " "))
+            # assert False
+            try:
+                # print('trying to open file to write state')
+                with open(write_file_path, 'w') as f:
+                    '''
+                    should look something like this:
+                    name: sit1
+                    I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
+                    '''
+                    f.write('name: sit1\n')
+                    # assert False
+                    lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+                    input_line = 'B: ' + lens_agent_state_str + ' ;'
+                    f.write(input_line)
+            except:
+                assert False, 'write_type == "state" failed'
 
                 lens_agent_state_str = self._list_to_str_delim(self.state, " ")
                 input_line = 'I: ' + lens_agent_state_str + ' ;'
