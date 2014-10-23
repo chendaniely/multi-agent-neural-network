@@ -309,6 +309,11 @@ class LensAgent(Agent):
 
         base_example = self._str_to_int_list(base_example)
 
+        list_ex = self._create_weight_training_examples(weight_file_dir,
+                                                        base_example,
+                                                        num_train_examples,
+                                                        num_train_mutations)
+
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
