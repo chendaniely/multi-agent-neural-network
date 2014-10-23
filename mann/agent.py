@@ -316,6 +316,9 @@ class LensAgent(Agent):
 
         assert isinstance(list_ex, list), 'list_ex is not a list'
 
+        self.write_to_ex(weight_ex_name,
+                         write_type='sit',
+                         weight_ex_list=list_ex)
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
