@@ -259,13 +259,27 @@ class LensAgent(Agent):
         '''
         return delim.join(map(str, list_to_convert))
 
-    def seed_agent(self):
-        self.state = [1] * len(self.state)
     def seed_agent_no_update(self, weightBaseExample):
         # TODO THIS IS HACKY AS HELL
         list_of_values = self._str_to_int_list(weightBaseExample)
         self.set_state(list_of_values)
 
+    def seed_agent(self, weightBaseExample, lens_in_file,
+                   self_ex_file_location, self_state_out_file):
+        # self.state = [1] * len(self.state)
+        # train weights already done during the network creating process
+        # set input as base example
+        list_of_values = self._str_to_int_list(weightBaseExample)
+        self.set_state(list_of_values)
+        self.write_to_ex(self_ex_file_location, write_type='state')
+        # run lens
+        state_env = self.get_env_for_pos_neg_bank_values()
+        self._call_lens(lens_in_file, env=state_env)
+        # capture output and set as state
+        self.new_state_values = self._get_new_state_values_from_out_file(
+            self_state_out_file)
+        print('new', self.new_state_values)
+        self.set_state(self.new_state_values)
 
     def set_state(self, list_of_values):
         # sets state to list of values
