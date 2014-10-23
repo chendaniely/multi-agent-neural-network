@@ -489,6 +489,18 @@ class LensAgent(Agent):
             except:
                 assert False, 'write_type == "sit" failed'
 
+    def _write_sit_to_ex(self, list_to_write, sit_num, f):
+        '''
+        parameters
+        ----------
+        list_to_write: list, 1d list
+        '''
+        f.write('name: sit' + str(sit_num) + '\n')
+        lens_agent_state_str = self._list_to_str_delim(list_to_write, " ")
+        # print('weight EX to write: ', lens_agent_state_str)
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
+        f.write(input_line)
+
 
     def _flip_1_0_value(self, number):
         if number == 0:
