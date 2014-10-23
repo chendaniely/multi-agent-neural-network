@@ -79,8 +79,12 @@ class Agent(object):
         '''
         return self.agent_id
 
-    def get_key(self):
-        return self._key()
+    def get_key(self, **kwargs):
+        if kwargs.get('pad_0_left') is not None:
+            padded_agent_number = "{0:06d}".format(self.get_key())
+            return padded_agent_number
+        else:
+            return self._key()
 
     def set_state(self, new_state):
         raise BaseAgentStateError('Base agent class has no state')
@@ -180,20 +184,20 @@ class BinaryAgent(Agent):
         to match the predessor's state
         otherwise no state is changed
         '''
-        print('in _update_agent_state_default')
-        print("type of predecssors: ",  type(self.predecessors))  # list
-        print("container of predessors: ", self.predecessors)
+        # print('in _update_agent_state_default')
+        # print("type of predecssors: ",  type(self.predecessors))  # list
+        # print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-        print("predecessor picked: ", predecessor_picked)
-        print("predecessor picked key: ", predecessor_picked.get_key())
+        # print("predecessor picked: ", predecessor_picked)
+        # print("predecessor picked key: ", predecessor_picked.get_key())
         if self.binary_state == predecessor_picked.binary_state:
-            print("no update required, binary states are the same")
-            print("self.binary_state = ", self.binary_state)
-            print("predecessor_picked.binary_state = ",
-                  predecessor_picked.binary_state)
+            # print("no update required, binary states are the same")
+            # print("self.binary_state = ", self.binary_state)
+            # print("predecessor_picked.binary_state = ",
+            #       predecessor_picked.binary_state)
             pass
         else:
-            print('updateing agent state')
+            # print('updateing agent state')
             random_number = random.random()
             if random_number < 0.7:
                 self.set_binary_state(predecessor_picked.binary_state)
@@ -204,8 +208,8 @@ class BinaryAgent(Agent):
         '''
         pick = 'default': uses the update_agent__state_default algorithm
         '''
-        print('in update_agent_state')
-        print('has predecessors', self.has_predessor())
+        # print('in update_agent_state')
+        # print('has predecessors', self.has_predessor())
         if self.has_predessor():
             if pick == 'default':
                 self._update_agent_state_default()
@@ -216,7 +220,7 @@ class BinaryAgent(Agent):
 
 
 class LensAgent(Agent):
-    lens_agent_count = 0
+    agent_count = 0
 
     def __init__(self, num_state_vars):
         '''
@@ -225,8 +229,8 @@ class LensAgent(Agent):
         that is, the number of positive valence bank units
         and the number of negative valence bank units
         '''
-        self.agent_id = LensAgent.lens_agent_count
-        LensAgent.lens_agent_count += 1
+        self.agent_id = LensAgent.agent_count
+        LensAgent.agent_count += 1
 
         self.state = [0] * num_state_vars
         self.predecessors = []
@@ -255,22 +259,48 @@ class LensAgent(Agent):
         '''
         return delim.join(map(str, list_to_convert))
 
-    def seed_agent(self):
-        self.state = [1] * len(self.state)
+    def seed_agent_no_update(self, weightBaseExample):
+        # TODO THIS IS HACKY AS HELL
+        list_of_values = self._str_to_int_list(weightBaseExample)
+        self.set_state(list_of_values)
+
+    def seed_agent(self, weightBaseExample, lens_in_file,
+                   self_ex_file_location, self_state_out_file):
+        # self.state = [1] * len(self.state)
+        # train weights already done during the network creating process
+        # set input as base example
+        list_of_values = self._str_to_int_list(weightBaseExample)
+        self.set_state(list_of_values)
+        self.write_to_ex(self_ex_file_location, write_type='state')
+        # run lens
+        state_env = self.get_env_for_pos_neg_bank_values()
+        self._call_lens(lens_in_file, env=state_env)
+        # capture output and set as state
+        self.new_state_values = self._get_new_state_values_from_out_file(
+            self_state_out_file)
+        print('new', self.new_state_values)
+        self.set_state(self.new_state_values)
 
     def set_state(self, list_of_values):
         # sets state to list of values
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
-        print('list of values length:', len(list_of_values))
-        print('state length:', len(self.state))
+        # print('list of values length:', len(list_of_values))
+        # print('state length:', len(self.state))
         if len(list_of_values) == len(self.state):
             self.state = list_of_values[:]
         else:
             raise ValueError("len of values not equal to len of state")
 
-    def create_weight_file(self, weight_in_file, weight_output_dir):
+    def create_weight_file(self, weight_in_file, weight_output_dir,
+                           base_example, num_train_examples,
+                           num_train_mutations):
+        '''
+        calls ._create_weight_training_examples to create list of training examples
+        calls ._write_to_ex to write  list of trianing ex to create the .ex files
+        calls lens to create .wt weight files
+        '''
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
 
@@ -279,6 +309,7 @@ class LensAgent(Agent):
         assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
 
         weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
+        weight_ex_name = 'AgentWgt' + padded_agent_number + '.ex'
         weight_file_dir = weight_output_dir + '/' + weight_file_name
 
         # if the path does not exist, create it
@@ -291,9 +322,22 @@ class LensAgent(Agent):
         lens_env = os.environ
         # export variable w into environment as the padded agent number
         # TODO make env 'w' env 'a' to match in file name
-        lens_env["w"] = padded_agent_number
-        print('w environment: ', lens_env.get('w'))
-        print('w environment: ', lens_env.get('w'), file=sys.stderr)
+        lens_env["a"] = padded_agent_number
+        # print('a environment: ', lens_env.get('a'))
+        # print('a environment: ', lens_env.get('a'), file=sys.stderr)
+
+        base_example = self._str_to_int_list(base_example)
+
+        list_ex = self._create_weight_training_examples(weight_file_dir,
+                                                        base_example,
+                                                        num_train_examples,
+                                                        num_train_mutations)
+
+        assert isinstance(list_ex, list), 'list_ex is not a list'
+
+        self.write_to_ex(weight_ex_name,
+                         write_type='sit',
+                         weight_ex_list=list_ex)
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
@@ -312,7 +356,8 @@ class LensAgent(Agent):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
-        return tuple([122, 126, 128, 132])
+        # TODO pass these values in from config file
+        return tuple([5, 9, 10, 14])
 
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
@@ -320,21 +365,21 @@ class LensAgent(Agent):
         # here = os.path.abspath(os.path.dirname(__file__))
         # read_file_path = here + '/' + file_dir
         read_file_path = file_dir
-        print('read_file_path: ', read_file_path)
-        print('files here', os.listdir("./"))
+        # print('read_file_path: ', read_file_path)
+        # print('files here', os.listdir("./"))
 
         with open(read_file_path, 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
-                print(line)
+                # print(line)
                 line_num = line_idx + 1  # python starts from line 0
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
                     first_col = line.strip().split(' ')[0]
                     list_of_new_state.append(float(first_col))
-                    print('list of new state', list_of_new_state)
+                    # print('list of new state', list_of_new_state)
         return list_of_new_state
 
     def _length_per_bank(self):
@@ -358,26 +403,26 @@ class LensAgent(Agent):
         current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
-            print(bank_values, file=sys.stderr)
+            # print(bank_values, file=sys.stderr)
             for idx_pu, j in enumerate(bank_values):
                 var_key = str(bank) + str(idx_pu)
                 var_value = str(bank_values[idx_pu])
-                print('key: ', var_key, '; value: ', var_value)
+                # print('key: ', var_key, '; value: ', var_value)
                 # setattr(current_env, var_to_export, var_to_export)
                 # current_env.putenv(var_key, var_value)
                 current_env[var_key] = var_value
                 # print(current_env.get(var_to_export))
-                print(current_env.get(var_key))
+                # print(current_env.get(var_key))
         return current_env
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            # predecessor_picked.write_agent_state_to_ex('../tests/lens/infl.ex')
-            predecessor_picked.write_agent_state_to_ex(infl_ex_file)
-            # self.write_agent_state_to_ex('../tests/lens/agent.ex')
-            # self.write_agent_state_to_ex(agent_ex_file)
+            # predecessor_picked.write_to_ex('../tests/lens/infl.ex')
+            predecessor_picked.write_to_ex(infl_ex_file)
+            # self.write_to_ex('../tests/lens/agent.ex')
+            # self.write_to_ex(agent_ex_file)
             state_env = self.get_env_for_pos_neg_bank_values()
             self._call_lens(lens_in_file, env=state_env)
             # self.new_state_values = self._get_new_state_values_from_out_file(
@@ -410,14 +455,15 @@ class LensAgent(Agent):
         output = io.StringIO()
         output.write('name: sit1\n')
         lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-        input_line = 'I: ' + lens_agent_state_str + ' ;\n'
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         output.write(input_line)
         contents = output.getvalue()
         output.close()
-        print(contents)
+        # print(contents)
         return contents
 
-    def write_agent_state_to_ex(self, file_dir):
+    # def write_to_ex(self, file_dir):
+    def write_to_ex(self, file_dir, write_type='state', **kwargs):
         '''
         file_dir should be in the ./tests/lens/ folder
         usually the file will be something like
@@ -431,17 +477,88 @@ class LensAgent(Agent):
         # print(write_file_path)
         write_file_path = file_dir
 
-        try:
-            with open(write_file_path, 'w') as f:
-                '''
-                should look something like this:
-                name: sit1
-                I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
-                '''
-                f.write('name: sit1\n')
+        if write_type == 'state':
+            # print("###########writefilepath: ", write_file_path)
+            # print('write state: ', self._list_to_str_delim(self.state, " "))
+            # assert False
+            try:
+                # print('trying to open file to write state')
+                with open(write_file_path, 'w') as f:
+                    '''
+                    should look something like this:
+                    name: sit1
+                    I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
+                    '''
+                    f.write('name: sit1\n')
+                    # assert False
+                    lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+                    input_line = 'B: ' + lens_agent_state_str + ' ;'
+                    f.write(input_line)
+            except:
+                assert False, 'write_type == "state" failed'
+        if write_type == 'sit':
+            try:
+                with open(file_dir, 'w') as f:
+                    # print('weight_ex_list', kwargs.get('weight_ex_list'))
+                    # print('type: ', type(kwargs.get('weight_ex_list')))
+                    assert isinstance(kwargs.get('weight_ex_list'), list)
+                    for i in range(len(kwargs.get('weight_ex_list'))):
+                        self._write_sit_to_ex(kwargs.get('weight_ex_list')[i],
+                                              i, f)
+            except:
+                assert False, 'write_type == "sit" failed'
 
-                lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-                input_line = 'I: ' + lens_agent_state_str + ' ;'
-                f.write(input_line)
-        except:
-            pass
+    def _write_sit_to_ex(self, list_to_write, sit_num, f):
+        '''
+        parameters
+        ----------
+        list_to_write: list, 1d list
+        '''
+        f.write('name: sit' + str(sit_num) + '\n')
+        lens_agent_state_str = self._list_to_str_delim(list_to_write, " ")
+        # print('weight EX to write: ', lens_agent_state_str)
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
+        f.write(input_line)
+
+    def _str_to_int_list(self, string):
+        return list(int(s) for s in string.strip().split(','))
+
+    def _flip_1_0_value(self, number):
+        assert isinstance(number, int), 'number to flip is not int'
+        if number == 0:
+            return 1
+        if number == 1:
+            return 0
+        else:
+            raise ValueError('Number to flip not 0 or 1')
+
+    def _create_weight_training_examples(self, filename,
+                                         base_example,
+                                         num_train_examples,
+                                         num_train_mutations):
+        open(filename, 'w').close()
+        if num_train_mutations == 0:
+            return [base_example] * num_train_examples
+        else:
+            list_of_example_values = []
+            for train_example in range(num_train_examples):
+                # train_list = []
+                train_list = base_example[:]
+                sample_index = range(len(base_example))
+                # random_idx = random.randint(0, len(train_list) - 1)
+                random_idx = random.sample(sample_index, num_train_mutations)
+                for idx in random_idx:
+                    # print('random int: ', random_idx)
+                    # print('train list pre : ', train_list)
+                    new_value = self._flip_1_0_value(train_list[idx])
+                    # print('new value:', new_value)
+                    # print('list idx value: ', train_list[random_idx])
+                    train_list[idx] = new_value
+                    # print('train list post: ', train_list)
+                    assert train_list is not base_example, 'lists are equal'
+                    list_of_example_values.append(train_list)
+            return list_of_example_values
+
+    # def _train_weights(self, base_example, num_train_examples,
+    #                    num_train_mutations):
+    #     self._create_weight_training_examples()
