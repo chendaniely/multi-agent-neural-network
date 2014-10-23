@@ -12,7 +12,7 @@ class NetworkAgent(object):
         pass
 
     def create_multidigraph_of_agents_from_edge_list(
-            self, number_of_agents, edge_list, agent_type=tuple(['binary']),
+            self, number_of_agents, edge_list, agent_type=tuple(['None']),
             **kwargs):
         # create the graph
         self.G = nx.MultiDiGraph()
