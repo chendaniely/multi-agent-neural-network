@@ -505,6 +505,7 @@ class LensAgent(Agent):
         return list(int(s) for s in string.strip().split(','))
 
     def _flip_1_0_value(self, number):
+        assert isinstance(number, int), 'number to flip is not int'
         if number == 0:
             return 1
         if number == 1:
