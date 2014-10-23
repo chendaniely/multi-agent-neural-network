@@ -261,6 +261,11 @@ class LensAgent(Agent):
 
     def seed_agent(self):
         self.state = [1] * len(self.state)
+    def seed_agent_no_update(self, weightBaseExample):
+        # TODO THIS IS HACKY AS HELL
+        list_of_values = self._str_to_int_list(weightBaseExample)
+        self.set_state(list_of_values)
+
 
     def set_state(self, list_of_values):
         # sets state to list of values
