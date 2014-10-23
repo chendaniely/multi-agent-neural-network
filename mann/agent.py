@@ -184,20 +184,20 @@ class BinaryAgent(Agent):
         to match the predessor's state
         otherwise no state is changed
         '''
-        print('in _update_agent_state_default')
-        print("type of predecssors: ",  type(self.predecessors))  # list
-        print("container of predessors: ", self.predecessors)
+        # print('in _update_agent_state_default')
+        # print("type of predecssors: ",  type(self.predecessors))  # list
+        # print("container of predessors: ", self.predecessors)
         predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-        print("predecessor picked: ", predecessor_picked)
-        print("predecessor picked key: ", predecessor_picked.get_key())
+        # print("predecessor picked: ", predecessor_picked)
+        # print("predecessor picked key: ", predecessor_picked.get_key())
         if self.binary_state == predecessor_picked.binary_state:
-            print("no update required, binary states are the same")
-            print("self.binary_state = ", self.binary_state)
-            print("predecessor_picked.binary_state = ",
-                  predecessor_picked.binary_state)
+            # print("no update required, binary states are the same")
+            # print("self.binary_state = ", self.binary_state)
+            # print("predecessor_picked.binary_state = ",
+            #       predecessor_picked.binary_state)
             pass
         else:
-            print('updateing agent state')
+            # print('updateing agent state')
             random_number = random.random()
             if random_number < 0.7:
                 self.set_binary_state(predecessor_picked.binary_state)
@@ -208,8 +208,8 @@ class BinaryAgent(Agent):
         '''
         pick = 'default': uses the update_agent__state_default algorithm
         '''
-        print('in update_agent_state')
-        print('has predecessors', self.has_predessor())
+        # print('in update_agent_state')
+        # print('has predecessors', self.has_predessor())
         if self.has_predessor():
             if pick == 'default':
                 self._update_agent_state_default()
@@ -267,8 +267,8 @@ class LensAgent(Agent):
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
         # how-to-clone-or-copy-a-list-in-python
-        print('list of values length:', len(list_of_values))
-        print('state length:', len(self.state))
+        # print('list of values length:', len(list_of_values))
+        # print('state length:', len(self.state))
         if len(list_of_values) == len(self.state):
             self.state = list_of_values[:]
         else:
@@ -304,8 +304,8 @@ class LensAgent(Agent):
         # export variable w into environment as the padded agent number
         # TODO make env 'w' env 'a' to match in file name
         lens_env["a"] = padded_agent_number
-        print('a environment: ', lens_env.get('a'))
-        print('a environment: ', lens_env.get('a'), file=sys.stderr)
+        # print('a environment: ', lens_env.get('a'))
+        # print('a environment: ', lens_env.get('a'), file=sys.stderr)
 
 
         # list of 'words' passed into the subprocess call
@@ -333,21 +333,21 @@ class LensAgent(Agent):
         # here = os.path.abspath(os.path.dirname(__file__))
         # read_file_path = here + '/' + file_dir
         read_file_path = file_dir
-        print('read_file_path: ', read_file_path)
-        print('files here', os.listdir("./"))
+        # print('read_file_path: ', read_file_path)
+        # print('files here', os.listdir("./"))
 
         with open(read_file_path, 'r') as f:
             start_bank1, end_bank1, start_bank2, end_bank2 = \
                 self._start_end_update_out(f)
             for line_idx, line in enumerate(f):
-                print(line)
+                # print(line)
                 line_num = line_idx + 1  # python starts from line 0
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
                     first_col = line.strip().split(' ')[0]
                     list_of_new_state.append(float(first_col))
-                    print('list of new state', list_of_new_state)
+                    # print('list of new state', list_of_new_state)
         return list_of_new_state
 
     def _length_per_bank(self):
@@ -371,16 +371,16 @@ class LensAgent(Agent):
         current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
-            print(bank_values, file=sys.stderr)
+            # print(bank_values, file=sys.stderr)
             for idx_pu, j in enumerate(bank_values):
                 var_key = str(bank) + str(idx_pu)
                 var_value = str(bank_values[idx_pu])
-                print('key: ', var_key, '; value: ', var_value)
+                # print('key: ', var_key, '; value: ', var_value)
                 # setattr(current_env, var_to_export, var_to_export)
                 # current_env.putenv(var_key, var_value)
                 current_env[var_key] = var_value
                 # print(current_env.get(var_to_export))
-                print(current_env.get(var_key))
+                # print(current_env.get(var_key))
         return current_env
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
@@ -427,7 +427,7 @@ class LensAgent(Agent):
         output.write(input_line)
         contents = output.getvalue()
         output.close()
-        print(contents)
+        # print(contents)
         return contents
 
     # def write_to_ex(self, file_dir):
