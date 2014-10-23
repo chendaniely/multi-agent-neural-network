@@ -517,23 +517,28 @@ class LensAgent(Agent):
                                          base_example,
                                          num_train_examples,
                                          num_train_mutations):
-        list_of_example_values = []
         open(filename, 'w').close()
-        for train_example in range(num_train_examples):
-            # train_list = []
-            train_list = base_example[:]
-            random_idx = random.randint(0, len(train_list) - 1)
-            # print('random int: ', random_idx, file=sys.stderr)
-            # print('train list pre : ', train_list, file=sys.stderr)
-            new_value = self._flip_1_0_value(train_list[random_idx])
-            # print('new value:', new_value, file=sys.stderr)
-            # print('list idx value: ', train_list[random_idx],
-            #       file=sys.stderr)
-            train_list[random_idx] = new_value
-            # print('train list post: ', train_list, file=sys.stderr)
-            assert train_list is not base_example, 'lists are equal'
-            list_of_example_values.append(train_list)
-        return list_of_example_values
+        if num_train_mutations == 0:
+            return [base_example] * num_train_examples
+        else:
+            list_of_example_values = []
+            for train_example in range(num_train_examples):
+                # train_list = []
+                train_list = base_example[:]
+                sample_index = range(len(base_example))
+                # random_idx = random.randint(0, len(train_list) - 1)
+                random_idx = random.sample(sample_index, num_train_mutations)
+                for idx in random_idx:
+                    # print('random int: ', random_idx)
+                    # print('train list pre : ', train_list)
+                    new_value = self._flip_1_0_value(train_list[idx])
+                    # print('new value:', new_value)
+                    # print('list idx value: ', train_list[random_idx])
+                    train_list[idx] = new_value
+                    # print('train list post: ', train_list)
+                    assert train_list is not base_example, 'lists are equal'
+                    list_of_example_values.append(train_list)
+            return list_of_example_values
 
     # def _train_weights(self, base_example, num_train_examples,
     #                    num_train_mutations):
