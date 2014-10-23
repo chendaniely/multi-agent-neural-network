@@ -314,6 +314,8 @@ class LensAgent(Agent):
                                                         num_train_examples,
                                                         num_train_mutations)
 
+        assert isinstance(list_ex, list), 'list_ex is not a list'
+
 
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', ' -nogui',  weight_in_file]
