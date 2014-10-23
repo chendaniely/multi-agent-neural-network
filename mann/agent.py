@@ -424,7 +424,7 @@ class LensAgent(Agent):
         output = io.StringIO()
         output.write('name: sit1\n')
         lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-        input_line = 'I: ' + lens_agent_state_str + ' ;\n'
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         output.write(input_line)
         contents = output.getvalue()
         output.close()
