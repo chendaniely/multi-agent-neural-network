@@ -444,7 +444,7 @@ class LensAgent(Agent):
         return contents
 
     # def write_to_ex(self, file_dir):
-    def write_to_ex(self, file_dir, type='state'):
+    def write_to_ex(self, file_dir, write_type='state', **kwargs):
         '''
         file_dir should be in the ./tests/lens/ folder
         usually the file will be something like
