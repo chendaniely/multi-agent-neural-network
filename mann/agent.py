@@ -559,7 +559,7 @@ class LensAgent(Agent):
                     train_list[idx] = new_value
                     # print('train list post: ', train_list)
                     assert train_list is not base_example, 'lists are equal'
-                    list_of_example_values.append(train_list)
+                list_of_example_values.append(train_list)
             return list_of_example_values
 
     # def _train_weights(self, base_example, num_train_examples,
