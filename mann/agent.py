@@ -313,6 +313,7 @@ class LensAgent(Agent):
         # weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
         weight_ex_name = 'AgentWgt' + padded_agent_number + '.ex'
         # weight_file_dir = weight_output_dir + '/' + weight_file_name
+        weight_ex_dir = weight_output_dir + '/' + weight_ex_name
 
         # if the path does not exist, create it
         if not os.path.exists(weight_output_dir):
@@ -330,14 +331,14 @@ class LensAgent(Agent):
 
         base_example = self._str_to_int_list(base_example)
 
-        list_ex = self._create_weight_training_examples(weight_file_dir,
+        list_ex = self._create_weight_training_examples(weight_ex_dir,
                                                         base_example,
                                                         num_train_examples,
                                                         num_train_mutations)
 
         assert isinstance(list_ex, list), 'list_ex is not a list'
 
-        self.write_to_ex(weight_ex_name,
+        self.write_to_ex(weight_ex_dir,
                          write_type='sit',
                          weight_ex_list=list_ex)
 
