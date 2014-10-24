@@ -3,6 +3,7 @@
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+import re
 
 import mann.agent as agent
 
@@ -77,6 +78,18 @@ class NetworkAgent(object):
                                       number_of_agents_to_sample)
         return agents_picked
 
+    def str_list_with_out_brackets(self, list_to_str):
+        # reg ex str replace multiple
+        # http://stackoverflow.com/questions/6116978/python-replace-multiple-strings
+        # dict.iteritems() is a python 2 syntax
+        # python 3 has dict.itemd()
+        rep = {"[": "", "]": ""}
+        rep = dict((re.escape(k), v) for k, v in rep.items())
+        pattern = re.compile("|".join(rep.keys()))
+        text = pattern.sub(lambda m: rep[re.escape(m.group(0))],
+                           str(list_to_str))
+        return text
+
     def write_network_agent_step_info(self, time_step,
                                       file_to_write, file_mode):
         with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
@@ -85,6 +98,8 @@ class NetworkAgent(object):
                         "," +
                         str(node.get_key()) +
                         "," +
-                         str(node.get_state()) +
+                        str(node.num_update) +
+                        "," +
+                        self.str_list_with_out_brackets(node.get_state()) +
                         # str(e) for e in list(node.get_state()) +
                         "\n")
