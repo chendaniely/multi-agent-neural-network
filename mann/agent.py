@@ -42,6 +42,7 @@ class Agent(object):
         self.agent_id = Agent.agent_count
         Agent.agent_count += 1
         self.predecessors = []
+        self.num_update = 0
 
     def __hash__(self):
         '''
@@ -234,6 +235,7 @@ class LensAgent(Agent):
 
         self.state = [0] * num_state_vars
         self.predecessors = []
+        self.num_update = 0
 
     # def set_lens_agent_state(self, list_of_processing_unit_activations):
     #     print(len(list_of_processing_unit_activations))
@@ -448,6 +450,7 @@ class LensAgent(Agent):
                                              kwargs.get('infl_ex_file'),
                                              kwargs.get('agent_state_out_file')
                                              )
+            self.num_update += 1
         else:
             raise ValueError('Algorithm used for pick unknown')
 
