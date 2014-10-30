@@ -574,7 +574,7 @@ class LensAgent(Agent):
     #                    num_train_mutations):
     #     self._create_weight_training_examples()
     def reset_step_variables(self):
-        self.step_input_state_values = [None] * num_state_vars
+        self.step_input_state_values = [None] * len(self.get_state())
         self.step_update_status = None
-        self.step_lens_target = [None] * num_state_vars
+        self.step_lens_target = [None] * len(self.get_state())
         self.step_input_agent_id = None
