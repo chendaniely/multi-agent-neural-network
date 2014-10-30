@@ -344,9 +344,9 @@ class LensAgent(Agent):
                          weight_ex_list=list_ex)
 
         # list of 'words' passed into the subprocess call
-        lens_weight_command = ['lens', ' -nogui',  weight_in_file]
+        lens_weight_command = ['lens', '-nogui',  weight_in_file]
         # print('lens weight list: ', lens_weight_command)
-        subprocess.call(['lens', '-nogui', weight_in_file], env=lens_env)
+        subprocess.call(lens_weight_command, env=lens_env)
         # print('ls call: ', subprocess.call(['ls']))
         # return weight_file_name
 
