@@ -343,6 +343,8 @@ class LensAgent(Agent):
             self.write_to_ex(weight_ex_dir,
                              write_type='sit',
                              weight_ex_list=list_ex)
+        else:
+            subprocess.call(['Rscript', r_script, weight_ex_dir])
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', '-nogui',  weight_in_file]
         # print('lens weight list: ', lens_weight_command)
