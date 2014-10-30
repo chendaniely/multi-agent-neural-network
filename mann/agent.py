@@ -297,7 +297,8 @@ class LensAgent(Agent):
 
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
-                           num_train_mutations, criterion):
+                           num_train_mutations, criterion,
+                           r_script, r_status=False):
         '''
         calls ._create_weight_training_examples to create list of training examples
         calls ._write_to_ex to write  list of trianing ex to create the .ex files
@@ -330,19 +331,20 @@ class LensAgent(Agent):
         # print('a environment: ', lens_env.get('a'))
         # print('a environment: ', lens_env.get('a'), file=sys.stderr)
 
-        base_example = self._str_to_int_list(base_example)
+        if r_status is False:
+            assert False
+            base_example = self._str_to_int_list(base_example)
 
-        list_ex = self._create_weight_training_examples(weight_ex_dir,
-                                                        base_example,
-                                                        num_train_examples,
-                                                        num_train_mutations)
-
-        assert isinstance(list_ex, list), 'list_ex is not a list'
-
-        self.write_to_ex(weight_ex_dir,
-                         write_type='sit',
-                         weight_ex_list=list_ex)
-
+            list_ex = self._create_weight_training_examples(weight_ex_dir,
+                                                            base_example,
+                                                            num_train_examples,
+                                                            num_train_mutations)
+            assert isinstance(list_ex, list), 'list_ex is not a list'
+            self.write_to_ex(weight_ex_dir,
+                             write_type='sit',
+                             weight_ex_list=list_ex)
+        else:
+            subprocess.call(['Rscript', r_script, weight_ex_dir])
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', '-nogui',  weight_in_file]
         # print('lens weight list: ', lens_weight_command)
@@ -361,7 +363,7 @@ class LensAgent(Agent):
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
         # TODO pass these values in from config file
-        return tuple([5, 9, 10, 14])
+        return tuple([5, 14, 15, 24])
 
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
