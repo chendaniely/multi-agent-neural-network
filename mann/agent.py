@@ -297,7 +297,7 @@ class LensAgent(Agent):
 
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
-                           num_train_mutations):
+                           num_train_mutations, criterion):
         '''
         calls ._create_weight_training_examples to create list of training examples
         calls ._write_to_ex to write  list of trianing ex to create the .ex files
@@ -326,6 +326,7 @@ class LensAgent(Agent):
         # export variable w into environment as the padded agent number
         # TODO make env 'w' env 'a' to match in file name
         lens_env["a"] = padded_agent_number
+        lens_env["c"] = str(criterion)
         # print('a environment: ', lens_env.get('a'))
         # print('a environment: ', lens_env.get('a'), file=sys.stderr)
 
@@ -343,9 +344,9 @@ class LensAgent(Agent):
                          weight_ex_list=list_ex)
 
         # list of 'words' passed into the subprocess call
-        lens_weight_command = ['lens', ' -nogui',  weight_in_file]
+        lens_weight_command = ['lens', '-nogui',  weight_in_file]
         # print('lens weight list: ', lens_weight_command)
-        subprocess.call(['lens', '-nogui', weight_in_file], env=lens_env)
+        subprocess.call(lens_weight_command, env=lens_env)
         # print('ls call: ', subprocess.call(['ls']))
         # return weight_file_name
 

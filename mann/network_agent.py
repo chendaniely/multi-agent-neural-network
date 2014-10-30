@@ -13,8 +13,8 @@ class NetworkAgent(object):
         pass
 
     def create_multidigraph_of_agents_from_edge_list(
-            self, number_of_agents, edge_list, agent_type=tuple(['None']),
-            **kwargs):
+            self, number_of_agents, edge_list, fig_path,
+            agent_type=tuple(['None']), **kwargs):
         # create the graph
         self.G = nx.MultiDiGraph()
 
@@ -33,7 +33,8 @@ class NetworkAgent(object):
                                              kwargs.get('weight_dir'),
                                              kwargs.get('base_example'),
                                              kwargs.get('num_train_examples'),
-                                             kwargs.get('num_train_mutations'))
+                                             kwargs.get('num_train_mutations'),
+                                             kwargs.get('training_criterion'))
             else:
                 raise UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
@@ -54,7 +55,7 @@ class NetworkAgent(object):
 
         nx.draw_circular(self.G)
         # plt.show()
-        plt.savefig('./output/mann-copied.png')
+        plt.savefig(fig_path)
 
         return self.G
 
