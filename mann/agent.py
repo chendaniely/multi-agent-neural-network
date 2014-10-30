@@ -239,25 +239,47 @@ class LensAgent(Agent):
 
         reset_step_variables()
 
-    def _list_to_str_delim(self, list_to_convert, delim):
-        '''
-        takes in a list and returns a string of list by the delim
-        used to write out agent state out to file
-        '''
-        return delim.join(map(str, list_to_convert))
-
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
         subprocess.call(['lens', '-nogui', lens_in_file],
                         env=kwargs.get('env'))
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
-    def _start_end_update_out(self, f):
-        # enter the actual file line numbers
-        # the 1 offset is used in the actual fxn call
-        # f is the .out file to be read
-        # TODO pass these values in from config file
-        return tuple([5, 14, 15, 24])
+    def _create_weight_training_examples(self, filename,
+                                         base_example,
+                                         num_train_examples,
+                                         num_train_mutations):
+        open(filename, 'w').close()
+        if num_train_mutations == 0:
+            return [base_example] * num_train_examples
+        else:
+            list_of_example_values = []
+            for train_example in range(num_train_examples):
+                # train_list = []
+                train_list = base_example[:]
+                sample_index = range(len(base_example))
+                # random_idx = random.randint(0, len(train_list) - 1)
+                random_idx = random.sample(sample_index, num_train_mutations)
+                for idx in random_idx:
+                    # print('random int: ', random_idx)
+                    # print('train list pre : ', train_list)
+                    new_value = self._flip_1_0_value(train_list[idx])
+                    # print('new value:', new_value)
+                    # print('list idx value: ', train_list[random_idx])
+                    train_list[idx] = new_value
+                    # print('train list post: ', train_list)
+                    assert train_list is not base_example, 'lists are equal'
+                list_of_example_values.append(train_list)
+            return list_of_example_values
+
+    def _flip_1_0_value(self, number):
+        assert isinstance(number, int), 'number to flip is not int'
+        if number == 0:
+            return 1
+        if number == 1:
+            return 0
+        else:
+            raise ValueError('Number to flip not 0 or 1')
 
     def _get_new_state_values_from_out_file(self, file_dir):
         list_of_new_state = []
@@ -287,8 +309,36 @@ class LensAgent(Agent):
         assert str(num_elements_per_bank).split('.')[1] == '0'
         return int(num_elements_per_bank)
 
+    def _list_to_str_delim(self, list_to_convert, delim):
+        '''
+        takes in a list and returns a string of list by the delim
+        used to write out agent state out to file
+        '''
+        return delim.join(map(str, list_to_convert))
+
     def _pad_agent_id(self):
         pass  # TODO
+
+    def _start_end_update_out(self, f):
+        # enter the actual file line numbers
+        # the 1 offset is used in the actual fxn call
+        # f is the .out file to be read
+        # TODO pass these values in from config file
+        return tuple([5, 14, 15, 24])
+
+    def _string_agent_state_to_ex(self):
+        output = io.StringIO()
+        output.write('name: sit1\n')
+        lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
+        output.write(input_line)
+        contents = output.getvalue()
+        output.close()
+        # print(contents)
+        return contents
+
+    def _str_to_int_list(self, string):
+        return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file):
@@ -311,17 +361,6 @@ class LensAgent(Agent):
             warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
                           UserWarning)
 
-    def _string_agent_state_to_ex(self):
-        output = io.StringIO()
-        output.write('name: sit1\n')
-        lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
-        output.write(input_line)
-        contents = output.getvalue()
-        output.close()
-        # print(contents)
-        return contents
-
     def _write_sit_to_ex(self, list_to_write, sit_num, f):
         '''
         parameters
@@ -333,46 +372,6 @@ class LensAgent(Agent):
         # print('weight EX to write: ', lens_agent_state_str)
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
-
-    def _str_to_int_list(self, string):
-        return list(int(s) for s in string.strip().split(','))
-
-    def _flip_1_0_value(self, number):
-        assert isinstance(number, int), 'number to flip is not int'
-        if number == 0:
-            return 1
-        if number == 1:
-            return 0
-        else:
-            raise ValueError('Number to flip not 0 or 1')
-
-    def _create_weight_training_examples(self, filename,
-                                         base_example,
-                                         num_train_examples,
-                                         num_train_mutations):
-        open(filename, 'w').close()
-        if num_train_mutations == 0:
-            return [base_example] * num_train_examples
-        else:
-            list_of_example_values = []
-            for train_example in range(num_train_examples):
-                # train_list = []
-                train_list = base_example[:]
-                sample_index = range(len(base_example))
-                # random_idx = random.randint(0, len(train_list) - 1)
-                random_idx = random.sample(sample_index, num_train_mutations)
-                for idx in random_idx:
-                    # print('random int: ', random_idx)
-                    # print('train list pre : ', train_list)
-                    new_value = self._flip_1_0_value(train_list[idx])
-                    # print('new value:', new_value)
-                    # print('list idx value: ', train_list[random_idx])
-                    train_list[idx] = new_value
-                    # print('train list post: ', train_list)
-                    assert train_list is not base_example, 'lists are equal'
-                list_of_example_values.append(train_list)
-            return list_of_example_values
-
 
     # def set_lens_agent_state(self, list_of_processing_unit_activations):
     #     print(len(list_of_processing_unit_activations))
