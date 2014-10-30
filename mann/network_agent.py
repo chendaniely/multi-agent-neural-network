@@ -54,7 +54,7 @@ class NetworkAgent(object):
 
         nx.draw_circular(self.G)
         # plt.show()
-        plt.savefig('./output/mann-copied.png')
+        plt.savefig(fig_path)
 
         return self.G
 
