@@ -237,7 +237,7 @@ class LensAgent(Agent):
         self.predecessors = []
         self.num_update = 0
 
-        reset_step_variables()
+        self.reset_step_variables()
 
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
