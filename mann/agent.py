@@ -387,43 +387,6 @@ class LensAgent(Agent):
     #         raise ValueError("length of processing units to assign state\
     #                          not equal to lengh of state")
 
-    def get_state(self):
-        return self.state
-
-    def seed_agent_no_update(self, weightBaseExample):
-        # TODO THIS IS HACKY AS HELL
-        list_of_values = self._str_to_int_list(weightBaseExample)
-        self.set_state(list_of_values)
-
-    def seed_agent(self, weightBaseExample, lens_in_file,
-                   self_ex_file_location, self_state_out_file):
-        # self.state = [1] * len(self.state)
-        # train weights already done during the network creating process
-        # set input as base example
-        list_of_values = self._str_to_int_list(weightBaseExample)
-        self.set_state(list_of_values)
-        self.write_to_ex(self_ex_file_location, write_type='state')
-        # run lens
-        state_env = self.get_env_for_pos_neg_bank_values()
-        self._call_lens(lens_in_file, env=state_env)
-        # capture output and set as state
-        self.new_state_values = self._get_new_state_values_from_out_file(
-            self_state_out_file)
-        print('new', self.new_state_values)
-        self.set_state(self.new_state_values)
-
-    def set_state(self, list_of_values):
-        # sets state to list of values
-        # list slicing is the fastest according to stackoverflow:
-        # http://stackoverflow.com/questions/2612802/
-        # how-to-clone-or-copy-a-list-in-python
-        # print('list of values length:', len(list_of_values))
-        # print('state length:', len(self.state))
-        if len(list_of_values) == len(self.state):
-            self.state = list_of_values[:]
-        else:
-            raise ValueError("len of values not equal to len of state")
-
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            num_train_mutations, criterion,
@@ -481,8 +444,54 @@ class LensAgent(Agent):
         # print('ls call: ', subprocess.call(['ls']))
         # return weight_file_name
 
+    def get_state(self):
+        return self.state
+
+    def reset_step_variables(self):
+        self.step_input_state_values = [None] * len(self.get_state())
+        self.step_update_status = None
+        self.step_lens_target = [None] * len(self.get_state())
+        self.step_input_agent_id = None
+
+    def seed_agent(self, weightBaseExample, lens_in_file,
+                   self_ex_file_location, self_state_out_file):
+        # self.state = [1] * len(self.state)
+        # train weights already done during the network creating process
+        # set input as base example
+        list_of_values = self._str_to_int_list(weightBaseExample)
+        self.set_state(list_of_values)
+        self.write_to_ex(self_ex_file_location, write_type='state')
+        # run lens
+        state_env = self.get_env_for_pos_neg_bank_values()
+        self._call_lens(lens_in_file, env=state_env)
+        # capture output and set as state
+        self.new_state_values = self._get_new_state_values_from_out_file(
+            self_state_out_file)
+        print('new', self.new_state_values)
+        self.set_state(self.new_state_values)
+
+    def seed_agent_no_update(self, weightBaseExample):
+        '''Set the agent state to weightBaseExample
+        however do not call lens get output based on trained weights
+        '''
+        # TODO THIS IS HACKY AS HELL
+        list_of_values = self._str_to_int_list(weightBaseExample)
+        self.set_state(list_of_values)
+
+    def set_state(self, list_of_values):
+        # sets state to list of values
+        # list slicing is the fastest according to stackoverflow:
+        # http://stackoverflow.com/questions/2612802/
+        # how-to-clone-or-copy-a-list-in-python
+        # print('list of values length:', len(list_of_values))
+        # print('state length:', len(self.state))
+        if len(list_of_values) == len(self.state):
+            self.state = list_of_values[:]
+        else:
+            raise ValueError("len of values not equal to len of state")
 
     def get_pos_neg_bank_values(self):
+        # TODO this should be a hidden function
         banks = ('p', 'n')
         num_units_per_bank = self._length_per_bank()
         pos = self.get_state()[:num_units_per_bank]
@@ -490,6 +499,7 @@ class LensAgent(Agent):
         return (pos, neg)
 
     def get_env_for_pos_neg_bank_values(self):
+        # TODO this should be a hidden function
         current_env = os.environ
         padded_agent_number = "{0:06d}".format(self.get_key())
         current_env['a'] = padded_agent_number
@@ -572,8 +582,3 @@ class LensAgent(Agent):
     # def _train_weights(self, base_example, num_train_examples,
     #                    num_train_mutations):
     #     self._create_weight_training_examples()
-    def reset_step_variables(self):
-        self.step_input_state_values = [None] * len(self.get_state())
-        self.step_update_status = None
-        self.step_lens_target = [None] * len(self.get_state())
-        self.step_input_agent_id = None
