@@ -237,6 +237,8 @@ class LensAgent(Agent):
         self.predecessors = []
         self.num_update = 0
 
+        reset_step_variables(self)
+
     # def set_lens_agent_state(self, list_of_processing_unit_activations):
     #     print(len(list_of_processing_unit_activations))
     #     print(len(self.state))
@@ -569,3 +571,8 @@ class LensAgent(Agent):
     # def _train_weights(self, base_example, num_train_examples,
     #                    num_train_mutations):
     #     self._create_weight_training_examples()
+    def reset_step_variables(self):
+        self.step_input_state_values = [None] * num_state_vars
+        self.step_update_status = None
+        self.step_lens_target = [None] * num_state_vars
+        self.step_input_agent_id = None
