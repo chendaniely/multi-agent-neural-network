@@ -100,17 +100,8 @@ class NetworkAgent(object):
         with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
             for node in self.G.__iter__():
                 f.write(",".join([str(time_step),
-                                  node.get_key(),
-                                  node.num_update,
-                                  self.str_list_with_out_brackets(node.get_state())]
-                                 ))
-
-# str(time_step) +
-#                         "," +
-#                         str(node.get_key()) +
-#                         "," +
-#                         str(node.num_update) +
-#                         "," +
-#                         self.str_list_with_out_brackets(node.get_state()) +
-#                         # str(e) for e in list(node.get_state()) +
-#                         "\n")
+                                  str(node.get_key()),
+                                  str(node.num_update),
+                                  self.str_list_with_out_brackets(
+                                      node.get_state())
+                                  ]) + "\n")
