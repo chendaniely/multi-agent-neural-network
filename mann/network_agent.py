@@ -102,6 +102,13 @@ class NetworkAgent(object):
                 f.write(",".join([str(time_step),
                                   str(node.get_key()),
                                   str(node.num_update),
+                                  str(node.step_update_status),
+                                  str(node.step_input_agent_id),
                                   self.str_list_with_out_brackets(
-                                      node.get_state())
+                                      node.get_state()),
+                                  self.str_list_with_out_brackets(
+                                      node.step_input_state_values),
+                                  self.str_list_with_out_brackets(
+                                      node.step_lens_target)
                                   ]) + "\n")
+                node.reset_step_variables()
