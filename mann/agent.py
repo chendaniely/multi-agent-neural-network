@@ -281,7 +281,7 @@ class LensAgent(Agent):
         else:
             raise ValueError('Number to flip not 0 or 1')
 
-    def _get_new_state_values_from_out_file(self, file_dir):
+    def _get_new_state_values_from_out_file(self, file_dir, column=0):
         list_of_new_state = []
 
         # here = os.path.abspath(os.path.dirname(__file__))
@@ -299,8 +299,8 @@ class LensAgent(Agent):
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
-                    first_col = line.strip().split(' ')[0]
-                    list_of_new_state.append(float(first_col))
+                    col = line.strip().split(' ')[column]
+                    list_of_new_state.append(float(col))
                     # print('list of new state', list_of_new_state)
         return list_of_new_state
 
