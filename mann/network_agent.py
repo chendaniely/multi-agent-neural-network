@@ -109,6 +109,8 @@ class NetworkAgent(object):
                                   self.str_list_with_out_brackets(
                                       node.step_input_state_values),
                                   self.str_list_with_out_brackets(
-                                      node.step_lens_target)
+                                      node.step_lens_target),
+                                  self.str_list_with_out_brackets(
+                                      node.prototype)
                                   ]) + "\n")
                 node.reset_step_variables()
