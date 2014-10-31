@@ -344,20 +344,13 @@ class LensAgent(Agent):
                                     infl_ex_file, agent_state_out_file):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            # predecessor_picked.write_to_ex('../tests/lens/infl.ex')
             predecessor_picked.write_to_ex(infl_ex_file)
-            # self.write_to_ex('../tests/lens/agent.ex')
-            # self.write_to_ex(agent_ex_file)
             state_env = self.get_env_for_pos_neg_bank_values()
             self._call_lens(lens_in_file, env=state_env)
-            # self.new_state_values = self._get_new_state_values_from_out_file(
-            #     '../tests/lens/AgentState.out')
             self.new_state_values = self._get_new_state_values_from_out_file(
                 agent_state_out_file)
-
             self.set_state(self.new_state_values)
         else:
-            # print('no predecessors')
             warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
                           UserWarning)
 
