@@ -350,6 +350,12 @@ class LensAgent(Agent):
             self.new_state_values = self._get_new_state_values_from_out_file(
                 agent_state_out_file)
             self.set_state(self.new_state_values)
+
+            self.step_input_agent_id = predecessor_picked.get_key()
+            self.step_input_state_values = predecessor_picked.get_state()
+            self.step_lens_target = predecessor_picked\
+                ._get_new_state_values_from_out_file(agent_state_out_file, 1)
+            self.step_update_status = 1
         else:
             warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
                           UserWarning)
