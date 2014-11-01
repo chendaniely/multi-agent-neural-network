@@ -428,8 +428,7 @@ class LensAgent(Agent):
 
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
-                           num_train_mutations, criterion,
-                           r_script, r_status=False):
+                           prototype_mutation_prob, criterion):
         '''
         calls ._create_weight_training_examples to create list of training examples
         calls ._write_to_ex to write  list of trianing ex to create the .ex files
