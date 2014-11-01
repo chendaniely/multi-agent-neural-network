@@ -285,6 +285,11 @@ class LensAgent(Agent):
                                          base_example,
                                          num_train_examples,
                                          num_train_mutations):
+        '''return a 2d list
+        where d1 is a list that represents the training example
+        d2 is the individual value of the training example
+        the 2d list can be used to write weight training examples
+        '''
         open(filename, 'w').close()
         if num_train_mutations == 0:
             return [base_example] * num_train_examples
