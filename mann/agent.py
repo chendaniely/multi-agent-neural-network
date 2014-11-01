@@ -284,7 +284,7 @@ class LensAgent(Agent):
     def _create_weight_training_examples(self, filename,
                                          base_example,
                                          num_train_examples,
-                                         num_train_mutations):
+                                         mutation_prob):
         '''return a 2d list
         where d1 is a list that represents the training example
         d2 is the individual value of the training example
