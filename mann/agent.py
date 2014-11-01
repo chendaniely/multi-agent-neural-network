@@ -240,6 +240,27 @@ class LensAgent(Agent):
 
         self.reset_step_variables()
 
+    def _create_prototype(num_state_vars, list_of_elements, prob_each_element):
+        '''returns a prototype for the LensAgent class
+        current implementation assumes only 2 elements in both the
+        list_of_elements, and prob_each_element
+        current implementation also does not use the second prob_each_element
+        only to test that the sum is equal to 1
+        '''
+
+        assert sum(prob_each_element) == 1
+
+        prototype = []
+        for i in range(num_state_vars):
+            random_number = random.random()
+            if random_number < prob_each_element[0]:
+                prototype.append(list_of_elements[0])
+            elif random_number >= prob_each_element[0]:
+                prototype.append(list_of_elements[1])
+        assert isinstance(prototype, list)
+        assert len(prototype) == num_state_vars
+        return prototype
+
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
         subprocess.call(['lens', '-nogui', lens_in_file],
