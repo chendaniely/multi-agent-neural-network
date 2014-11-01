@@ -34,9 +34,9 @@ class NetworkAgent(object):
                                              kwargs.get('base_example'),
                                              kwargs.get('num_train_examples'),
                                              kwargs.get('num_train_mutations'),
-                                             kwargs.get('training_criterion'),
-                                             kwargs.get('r_script'),
-                                             kwargs.get('r_status'),
+                                             kwargs.get('training_criterion')
+                                             # kwargs.get('r_script'),
+                                             # kwargs.get('r_status'),
                                              )
 
             else:
