@@ -316,7 +316,7 @@ class LensAgent(Agent):
         assert isinstance(number, int), 'number to flip is not int'
         if number == 0:
             return 1
-        if number == 1:
+        elif number == 1:
             return 0
         else:
             raise ValueError('Number to flip not 0 or 1')
