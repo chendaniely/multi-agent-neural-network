@@ -261,6 +261,14 @@ class LensAgent(Agent):
         assert len(prototype) == num_state_vars
         return prototype
 
+    def set_lens_agent_prototypes(number_of_prototypes):
+        list_of_prototypes = list(LensAgent._create_prototype(20,
+                                                              [0, 1], [.5, .5])
+                                  for x in range(number_of_prototypes))
+        assert isinstance(list_of_prototypes[0], list)
+        LensAgent.prototypes = list_of_prototypes
+        print(str(list_of_prototypes))
+
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
         subprocess.call(['lens', '-nogui', lens_in_file],
