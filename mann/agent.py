@@ -456,26 +456,22 @@ class LensAgent(Agent):
         # print('a environment: ', lens_env.get('a'))
         # print('a environment: ', lens_env.get('a'), file=sys.stderr)
 
-        if r_status is False:
-            assert False
-            base_example = self._str_to_int_list(base_example)
+        # prototype = self._str_to_int_list(self.prototype)
 
-            list_ex = self._create_weight_training_examples(weight_ex_dir,
-                                                            base_example,
-                                                            num_train_examples,
-                                                            num_train_mutations)
-            assert isinstance(list_ex, list), 'list_ex is not a list'
-            self.write_to_ex(weight_ex_dir,
-                             write_type='sit',
-                             weight_ex_list=list_ex)
-        else:
-            subprocess.call(['Rscript', r_script, weight_ex_dir])
+        list_ex = self._create_weight_training_examples(
+            weight_ex_dir,
+            self.prototype,
+            num_train_examples,
+            prototype_mutation_prob)
+
+        assert isinstance(list_ex, list), 'list_ex is not a list'
+        self.write_to_ex(weight_ex_dir,
+                         write_type='sit',
+                         weight_ex_list=list_ex)
+
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', '-nogui',  weight_in_file]
-        # print('lens weight list: ', lens_weight_command)
         subprocess.call(lens_weight_command, env=lens_env)
-        # print('ls call: ', subprocess.call(['ls']))
-        # return weight_file_name
 
     def get_state(self):
         return self.state
