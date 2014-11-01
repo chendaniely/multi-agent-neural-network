@@ -291,7 +291,7 @@ class LensAgent(Agent):
         the 2d list can be used to write weight training examples
         '''
         open(filename, 'w').close()
-        if num_train_mutations == 0:
+        if mutation_prob == 0:
             return [base_example] * num_train_examples
         else:
             list_of_example_values = []
