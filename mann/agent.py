@@ -222,6 +222,7 @@ class BinaryAgent(Agent):
 
 class LensAgent(Agent):
     agent_count = 0
+    prototypes = []
 
     def __init__(self, num_state_vars):
         '''
