@@ -33,7 +33,8 @@ class NetworkAgent(object):
                                              kwargs.get('weight_dir'),
                                              kwargs.get('base_example'),
                                              kwargs.get('num_train_examples'),
-                                             kwargs.get('num_train_mutations'),
+                                             kwargs.get(
+                                                 'prototype_mutation_prob'),
                                              kwargs.get('training_criterion')
                                              # kwargs.get('r_script'),
                                              # kwargs.get('r_status'),
