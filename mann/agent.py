@@ -222,6 +222,7 @@ class BinaryAgent(Agent):
 
 class LensAgent(Agent):
     agent_count = 0
+    prototypes = []
 
     def __init__(self, num_state_vars):
         '''
@@ -237,120 +238,42 @@ class LensAgent(Agent):
         self.predecessors = []
         self.num_update = 0
 
-    # def set_lens_agent_state(self, list_of_processing_unit_activations):
-    #     print(len(list_of_processing_unit_activations))
-    #     print(len(self.state))
-    #     is_len_equal = len(list_of_processing_unit_activations) ==\
-    #         len(self.state)
+        print("All prototypes: ", str(LensAgent.prototypes))
 
-    #     print(is_len_equal)
+        self.prototype = random.sample(LensAgent.prototypes, 1)[0]
+        print('Agent PROTOTYPE: ', str(self.prototype))
+        assert isinstance(self.prototype, list)
 
-    #     if():
-    #         self.state = list_of_processing_unit_activations[:]
-    #     else:
-    #         raise ValueError("length of processing units to assign state\
-    #                          not equal to lengh of state")
+        self.reset_step_variables()
 
-    def get_state(self):
-        return self.state
-
-    def _list_to_str_delim(self, list_to_convert, delim):
+    def _create_prototype(num_state_vars, list_of_elements, prob_each_element):
+        '''returns a prototype for the LensAgent class
+        current implementation assumes only 2 elements in both the
+        list_of_elements, and prob_each_element
+        current implementation also does not use the second prob_each_element
+        only to test that the sum is equal to 1
         '''
-        takes in a list and returns a string of list by the delim
-        used to write out agent state out to file
-        '''
-        return delim.join(map(str, list_to_convert))
 
-    def seed_agent_no_update(self, weightBaseExample):
-        # TODO THIS IS HACKY AS HELL
-        list_of_values = self._str_to_int_list(weightBaseExample)
-        self.set_state(list_of_values)
+        assert sum(prob_each_element) == 1
 
-    def seed_agent(self, weightBaseExample, lens_in_file,
-                   self_ex_file_location, self_state_out_file):
-        # self.state = [1] * len(self.state)
-        # train weights already done during the network creating process
-        # set input as base example
-        list_of_values = self._str_to_int_list(weightBaseExample)
-        self.set_state(list_of_values)
-        self.write_to_ex(self_ex_file_location, write_type='state')
-        # run lens
-        state_env = self.get_env_for_pos_neg_bank_values()
-        self._call_lens(lens_in_file, env=state_env)
-        # capture output and set as state
-        self.new_state_values = self._get_new_state_values_from_out_file(
-            self_state_out_file)
-        print('new', self.new_state_values)
-        self.set_state(self.new_state_values)
+        prototype = []
+        for i in range(num_state_vars):
+            random_number = random.random()
+            if random_number < prob_each_element[0]:
+                prototype.append(list_of_elements[0])
+            elif random_number >= prob_each_element[0]:
+                prototype.append(list_of_elements[1])
+        assert isinstance(prototype, list)
+        assert len(prototype) == num_state_vars
+        return prototype
 
-    def set_state(self, list_of_values):
-        # sets state to list of values
-        # list slicing is the fastest according to stackoverflow:
-        # http://stackoverflow.com/questions/2612802/
-        # how-to-clone-or-copy-a-list-in-python
-        # print('list of values length:', len(list_of_values))
-        # print('state length:', len(self.state))
-        if len(list_of_values) == len(self.state):
-            self.state = list_of_values[:]
-        else:
-            raise ValueError("len of values not equal to len of state")
-
-    def create_weight_file(self, weight_in_file, weight_output_dir,
-                           base_example, num_train_examples,
-                           num_train_mutations, criterion,
-                           r_script, r_status=False):
-        '''
-        calls ._create_weight_training_examples to create list of training examples
-        calls ._write_to_ex to write  list of trianing ex to create the .ex files
-        calls lens to create .wt weight files
-        '''
-        # print('weight in file read: ', weight_in_file)
-        # print('weight output read: ', weight_output_dir)
-
-        # TODO make this lins a function
-        padded_agent_number = "{0:06d}".format(self.get_key())
-        assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
-
-        # weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
-        weight_ex_name = 'AgentWgt' + padded_agent_number + '.ex'
-        # weight_file_dir = weight_output_dir + '/' + weight_file_name
-        weight_ex_dir = weight_output_dir + '/' + weight_ex_name
-
-        # if the path does not exist, create it
-        if not os.path.exists(weight_output_dir):
-            os.makedirs(weight_output_dir)
-        # print('weight file name: ', weight_file_name)
-        # print('weight file dir: ', weight_file_dir)
-
-        # copy current envvironment
-        lens_env = os.environ
-        # export variable w into environment as the padded agent number
-        # TODO make env 'w' env 'a' to match in file name
-        lens_env["a"] = padded_agent_number
-        lens_env["c"] = str(criterion)
-        # print('a environment: ', lens_env.get('a'))
-        # print('a environment: ', lens_env.get('a'), file=sys.stderr)
-
-        if r_status is False:
-            assert False
-            base_example = self._str_to_int_list(base_example)
-
-            list_ex = self._create_weight_training_examples(weight_ex_dir,
-                                                            base_example,
-                                                            num_train_examples,
-                                                            num_train_mutations)
-            assert isinstance(list_ex, list), 'list_ex is not a list'
-            self.write_to_ex(weight_ex_dir,
-                             write_type='sit',
-                             weight_ex_list=list_ex)
-        else:
-            subprocess.call(['Rscript', r_script, weight_ex_dir])
-        # list of 'words' passed into the subprocess call
-        lens_weight_command = ['lens', '-nogui',  weight_in_file]
-        # print('lens weight list: ', lens_weight_command)
-        subprocess.call(lens_weight_command, env=lens_env)
-        # print('ls call: ', subprocess.call(['ls']))
-        # return weight_file_name
+    def set_lens_agent_prototypes(number_of_prototypes):
+        list_of_prototypes = list(LensAgent._create_prototype(20,
+                                                              [0, 1], [.5, .5])
+                                  for x in range(number_of_prototypes))
+        assert isinstance(list_of_prototypes[0], list)
+        LensAgent.prototypes = list_of_prototypes
+        print(str(list_of_prototypes))
 
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
@@ -358,14 +281,47 @@ class LensAgent(Agent):
                         env=kwargs.get('env'))
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
-    def _start_end_update_out(self, f):
-        # enter the actual file line numbers
-        # the 1 offset is used in the actual fxn call
-        # f is the .out file to be read
-        # TODO pass these values in from config file
-        return tuple([5, 14, 15, 24])
+    def _create_weight_training_examples(self, filename,
+                                         base_example,
+                                         num_train_examples,
+                                         mutation_prob):
+        '''return a 2d list
+        where d1 is a list that represents the training example
+        d2 is the individual value of the training example
+        the 2d list can be used to write weight training examples
+        '''
+        open(filename, 'w').close()
+        if mutation_prob == 0:
+            return [base_example] * num_train_examples
+        else:
+            list_of_example_values = []
+            for train_example in range(num_train_examples):
+                train_list = base_example[:]
+                assert isinstance(train_list[0], int)
 
-    def _get_new_state_values_from_out_file(self, file_dir):
+                for idx, training_value in enumerate(train_list):
+                    prob = random.random()
+
+                    if prob < mutation_prob:
+                        train_list[idx] = self._flip_1_0_value(training_value)
+
+                    if (train_list is base_example) or\
+                       (train_list == base_example):
+                        warnings.warn('Mutated example is equal to prototype',
+                                      UserWarning)
+                list_of_example_values.append(train_list)
+            return list_of_example_values
+
+    def _flip_1_0_value(self, number):
+        assert isinstance(number, int), 'number to flip is not int'
+        if number == 0:
+            return 1
+        elif number == 1:
+            return 0
+        else:
+            raise ValueError('Number to flip not 0 or 1')
+
+    def _get_new_state_values_from_out_file(self, file_dir, column=0):
         list_of_new_state = []
 
         # here = os.path.abspath(os.path.dirname(__file__))
@@ -383,8 +339,8 @@ class LensAgent(Agent):
                 if start_bank1 <= line_num <= end_bank1 or \
                    start_bank2 <= line_num <= end_bank2:
                     # in a line that I want to save information for
-                    first_col = line.strip().split(' ')[0]
-                    list_of_new_state.append(float(first_col))
+                    col = line.strip().split(' ')[column]
+                    list_of_new_state.append(float(col))
                     # print('list of new state', list_of_new_state)
         return list_of_new_state
 
@@ -393,17 +349,196 @@ class LensAgent(Agent):
         assert str(num_elements_per_bank).split('.')[1] == '0'
         return int(num_elements_per_bank)
 
+    def _list_to_str_delim(self, list_to_convert, delim):
+        '''
+        takes in a list and returns a string of list by the delim
+        used to write out agent state out to file
+        '''
+        return delim.join(map(str, list_to_convert))
+
+    def _pad_agent_id(self):
+        pass  # TODO
+
+    def _start_end_update_out(self, f):
+        # enter the actual file line numbers
+        # the 1 offset is used in the actual fxn call
+        # f is the .out file to be read
+        # TODO pass these values in from config file
+        return tuple([5, 14, 15, 24])
+
+    def _string_agent_state_to_ex(self):
+        output = io.StringIO()
+        output.write('name: sit1\n')
+        lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
+        output.write(input_line)
+        contents = output.getvalue()
+        output.close()
+        # print(contents)
+        return contents
+
+    def _str_to_int_list(self, string):
+        return list(int(s) for s in string.strip().split(','))
+
+    def _update_agent_state_default(self, lens_in_file, agent_ex_file,
+                                    infl_ex_file, agent_state_out_file):
+        if len(self.predecessors) > 0:
+            predecessor_picked = random.sample(list(self.predecessors), 1)[0]
+            predecessor_picked.write_to_ex(infl_ex_file)
+            state_env = self.get_env_for_pos_neg_bank_values()
+            self._call_lens(lens_in_file, env=state_env)
+            self.new_state_values = self._get_new_state_values_from_out_file(
+                agent_state_out_file)
+            self.set_state(self.new_state_values)
+
+            self.step_input_agent_id = predecessor_picked.get_key()
+            self.step_input_state_values = predecessor_picked.get_state()
+            self.step_lens_target = predecessor_picked\
+                ._get_new_state_values_from_out_file(agent_state_out_file, 1)
+            self.step_update_status = 1
+        else:
+            warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
+                          UserWarning)
+
+    def _write_sit_to_ex(self, list_to_write, sit_num, f):
+        '''
+        parameters
+        ----------
+        list_to_write: list, 1d list
+        '''
+        f.write('name: sit' + str(sit_num) + '\n')
+        lens_agent_state_str = self._list_to_str_delim(list_to_write, " ")
+        # print('weight EX to write: ', lens_agent_state_str)
+        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
+        f.write(input_line)
+
+    # def set_lens_agent_state(self, list_of_processing_unit_activations):
+    #     print(len(list_of_processing_unit_activations))
+    #     print(len(self.state))
+    #     is_len_equal = len(list_of_processing_unit_activations) ==\
+    #         len(self.state)
+
+    #     print(is_len_equal)
+
+    #     if():
+    #         self.state = list_of_processing_unit_activations[:]
+    #     else:
+    #         raise ValueError("length of processing units to assign state\
+    #                          not equal to lengh of state")
+
+    def create_weight_file(self, weight_in_file, weight_output_dir,
+                           base_example, num_train_examples,
+                           prototype_mutation_prob, criterion):
+        '''
+        calls ._create_weight_training_examples to create list of training examples
+        calls ._write_to_ex to write  list of trianing ex to create the .ex files
+        calls lens to create .wt weight files
+        '''
+        # print('weight in file read: ', weight_in_file)
+        # print('weight output read: ', weight_output_dir)
+
+        # TODO make this lins a function
+        padded_agent_number = "{0:06d}".format(self.get_key())
+        assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
+
+        weight_ex_name = 'AgentWgt' + padded_agent_number + '.ex'
+        weight_ex_dir = weight_output_dir + '/' + weight_ex_name
+
+        # if the path does not exist, create it
+        if not os.path.exists(weight_output_dir):
+            os.makedirs(weight_output_dir)
+
+        # copy current envvironment
+        lens_env = os.environ
+
+        lens_env["a"] = padded_agent_number
+        lens_env["c"] = str(criterion)
+        # print('a environment: ', lens_env.get('a'))
+        # print('a environment: ', lens_env.get('a'), file=sys.stderr)
+
+        # prototype = self._str_to_int_list(self.prototype)
+
+        list_ex = self._create_weight_training_examples(
+            weight_ex_dir,
+            self.prototype,
+            num_train_examples,
+            prototype_mutation_prob)
+
+        assert isinstance(list_ex, list), 'list_ex is not a list'
+        self.write_to_ex(weight_ex_dir,
+                         write_type='sit',
+                         weight_ex_list=list_ex)
+
+        # list of 'words' passed into the subprocess call
+        lens_weight_command = ['lens', '-nogui',  weight_in_file]
+        subprocess.call(lens_weight_command, env=lens_env)
+
+    def get_state(self):
+        return self.state
+
+    def reset_step_variables(self):
+        self.step_input_state_values = [None] * len(self.get_state())
+        self.step_update_status = None
+        self.step_lens_target = [None] * len(self.get_state())
+        self.step_input_agent_id = None
+
+    def seed_agent(self, weightBaseExample, lens_in_file,
+                   self_ex_file_location, self_state_out_file):
+        # self.state = [1] * len(self.state)
+        # train weights already done during the network creating process
+        # set input as base example
+
+        # list_of_values = self._str_to_int_list(weightBaseExample)
+        # TODO this is why i'm complaining of hacky code
+        assert self.get_state() == self.prototype
+
+        # self.set_state(list_of_values)
+        self.set_state(self.prototype)
+        self.write_to_ex(self_ex_file_location, write_type='state')
+        # run lens
+        state_env = self.get_env_for_pos_neg_bank_values()
+        self._call_lens(lens_in_file, env=state_env)
+        # capture output and set as state
+        self.new_state_values = self._get_new_state_values_from_out_file(
+            self_state_out_file)
+        print('new', self.new_state_values)
+        self.set_state(self.new_state_values)
+
+    def seed_agent_no_update(self, weightBaseExample):
+        '''Set the agent state to weightBaseExample
+        however do not call lens get output based on trained weights
+        '''
+        # TODO THIS IS HACKY AS HELL becuase the seed_agent sets this
+        # and updates, this funciton should be the 'seed'
+        # and we call the update on this agent independently
+        # currently we are double setting the state
+        self.set_state(self.prototype)
+
+    def set_prototype(self, list_of_values):
+        self.prototype = list_of_values[:]
+
+    def set_state(self, list_of_values):
+        # sets state to list of values
+        # list slicing is the fastest according to stackoverflow:
+        # http://stackoverflow.com/questions/2612802/
+        # how-to-clone-or-copy-a-list-in-python
+        # print('list of values length:', len(list_of_values))
+        # print('state length:', len(self.state))
+        if len(list_of_values) == len(self.state):
+            self.state = list_of_values[:]
+        else:
+            raise ValueError("len of values not equal to len of state")
+
     def get_pos_neg_bank_values(self):
+        # TODO this should be a hidden function
         banks = ('p', 'n')
         num_units_per_bank = self._length_per_bank()
         pos = self.get_state()[:num_units_per_bank]
         neg = self.get_state()[num_units_per_bank:]
         return (pos, neg)
 
-    def _pad_agent_id(self):
-        pass  # TODO
-
     def get_env_for_pos_neg_bank_values(self):
+        # TODO this should be a hidden function
         current_env = os.environ
         padded_agent_number = "{0:06d}".format(self.get_key())
         current_env['a'] = padded_agent_number
@@ -421,27 +556,6 @@ class LensAgent(Agent):
                 # print(current_env.get(var_key))
         return current_env
 
-    def _update_agent_state_default(self, lens_in_file, agent_ex_file,
-                                    infl_ex_file, agent_state_out_file):
-        if len(self.predecessors) > 0:
-            predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-            # predecessor_picked.write_to_ex('../tests/lens/infl.ex')
-            predecessor_picked.write_to_ex(infl_ex_file)
-            # self.write_to_ex('../tests/lens/agent.ex')
-            # self.write_to_ex(agent_ex_file)
-            state_env = self.get_env_for_pos_neg_bank_values()
-            self._call_lens(lens_in_file, env=state_env)
-            # self.new_state_values = self._get_new_state_values_from_out_file(
-            #     '../tests/lens/AgentState.out')
-            self.new_state_values = self._get_new_state_values_from_out_file(
-                agent_state_out_file)
-
-            self.set_state(self.new_state_values)
-        else:
-            # print('no predecessors')
-            warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
-                          UserWarning)
-
     def update_agent_state(self, pick='default', **kwargs):
         # if there is an agent_state_out_file, clear it
         # this makes sure there will be nothing appended
@@ -457,17 +571,6 @@ class LensAgent(Agent):
             self.num_update += 1
         else:
             raise ValueError('Algorithm used for pick unknown')
-
-    def _string_agent_state_to_ex(self):
-        output = io.StringIO()
-        output.write('name: sit1\n')
-        lens_agent_state_str = self._list_to_str_delim(self.state, " ")
-        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
-        output.write(input_line)
-        contents = output.getvalue()
-        output.close()
-        # print(contents)
-        return contents
 
     # def write_to_ex(self, file_dir):
     def write_to_ex(self, file_dir, write_type='state', **kwargs):
@@ -514,57 +617,6 @@ class LensAgent(Agent):
                                               i, f)
             except:
                 assert False, 'write_type == "sit" failed'
-
-    def _write_sit_to_ex(self, list_to_write, sit_num, f):
-        '''
-        parameters
-        ----------
-        list_to_write: list, 1d list
-        '''
-        f.write('name: sit' + str(sit_num) + '\n')
-        lens_agent_state_str = self._list_to_str_delim(list_to_write, " ")
-        # print('weight EX to write: ', lens_agent_state_str)
-        input_line = 'B: ' + lens_agent_state_str + ' ;\n'
-        f.write(input_line)
-
-    def _str_to_int_list(self, string):
-        return list(int(s) for s in string.strip().split(','))
-
-    def _flip_1_0_value(self, number):
-        assert isinstance(number, int), 'number to flip is not int'
-        if number == 0:
-            return 1
-        if number == 1:
-            return 0
-        else:
-            raise ValueError('Number to flip not 0 or 1')
-
-    def _create_weight_training_examples(self, filename,
-                                         base_example,
-                                         num_train_examples,
-                                         num_train_mutations):
-        open(filename, 'w').close()
-        if num_train_mutations == 0:
-            return [base_example] * num_train_examples
-        else:
-            list_of_example_values = []
-            for train_example in range(num_train_examples):
-                # train_list = []
-                train_list = base_example[:]
-                sample_index = range(len(base_example))
-                # random_idx = random.randint(0, len(train_list) - 1)
-                random_idx = random.sample(sample_index, num_train_mutations)
-                for idx in random_idx:
-                    # print('random int: ', random_idx)
-                    # print('train list pre : ', train_list)
-                    new_value = self._flip_1_0_value(train_list[idx])
-                    # print('new value:', new_value)
-                    # print('list idx value: ', train_list[random_idx])
-                    train_list[idx] = new_value
-                    # print('train list post: ', train_list)
-                    assert train_list is not base_example, 'lists are equal'
-                list_of_example_values.append(train_list)
-            return list_of_example_values
 
     # def _train_weights(self, base_example, num_train_examples,
     #                    num_train_mutations):

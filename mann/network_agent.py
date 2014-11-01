@@ -33,10 +33,11 @@ class NetworkAgent(object):
                                              kwargs.get('weight_dir'),
                                              kwargs.get('base_example'),
                                              kwargs.get('num_train_examples'),
-                                             kwargs.get('num_train_mutations'),
-                                             kwargs.get('training_criterion'),
-                                             kwargs.get('r_script'),
-                                             kwargs.get('r_status'),
+                                             kwargs.get(
+                                                 'prototype_mutation_prob'),
+                                             kwargs.get('training_criterion')
+                                             # kwargs.get('r_script'),
+                                             # kwargs.get('r_status'),
                                              )
 
             else:
@@ -99,12 +100,22 @@ class NetworkAgent(object):
                                       file_to_write, file_mode):
         with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
             for node in self.G.__iter__():
-                f.write(str(time_step) +
-                        "," +
-                        str(node.get_key()) +
-                        "," +
-                        str(node.num_update) +
-                        "," +
-                        self.str_list_with_out_brackets(node.get_state()) +
-                        # str(e) for e in list(node.get_state()) +
-                        "\n")
+                f.write(",".join([str(time_step),  # time step
+                                  str(node.get_key()),  # agent ID
+                                  str(node.num_update),  # total num updates
+                                  str(node.step_update_status),  # update state
+                                  str(node.step_input_agent_id),  # infl ID
+                                  # agent state
+                                  self.str_list_with_out_brackets(
+                                      node.get_state()),
+                                  # input state
+                                  self.str_list_with_out_brackets(
+                                      node.step_input_state_values),
+                                  # lens target
+                                  self.str_list_with_out_brackets(
+                                      node.step_lens_target),
+                                  # prototype
+                                  self.str_list_with_out_brackets(
+                                      node.prototype)
+                                  ]) + "\n")
+                node.reset_step_variables()
