@@ -487,8 +487,13 @@ class LensAgent(Agent):
         # self.state = [1] * len(self.state)
         # train weights already done during the network creating process
         # set input as base example
-        list_of_values = self._str_to_int_list(weightBaseExample)
-        self.set_state(list_of_values)
+
+        # list_of_values = self._str_to_int_list(weightBaseExample)
+        # TODO this is why i'm complaining of hacky code
+        assert self.get_state() == self.prototype
+
+        # self.set_state(list_of_values)
+        self.set_state(self.prototype)
         self.write_to_ex(self_ex_file_location, write_type='state')
         # run lens
         state_env = self.get_env_for_pos_neg_bank_values()
@@ -503,9 +508,14 @@ class LensAgent(Agent):
         '''Set the agent state to weightBaseExample
         however do not call lens get output based on trained weights
         '''
-        # TODO THIS IS HACKY AS HELL
-        list_of_values = self._str_to_int_list(weightBaseExample)
-        self.set_state(list_of_values)
+        # TODO THIS IS HACKY AS HELL becuase the seed_agent sets this
+        # and updates, this funciton should be the 'seed'
+        # and we call the update on this agent independently
+        # currently we are double setting the state
+        self.set_state(self.prototype)
+
+    def set_prototype(self, list_of_values):
+        self.prototype = list_of_values[:]
 
     def set_state(self, list_of_values):
         # sets state to list of values
