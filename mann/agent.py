@@ -296,20 +296,19 @@ class LensAgent(Agent):
         else:
             list_of_example_values = []
             for train_example in range(num_train_examples):
-                # train_list = []
                 train_list = base_example[:]
-                sample_index = range(len(base_example))
-                # random_idx = random.randint(0, len(train_list) - 1)
-                random_idx = random.sample(sample_index, num_train_mutations)
-                for idx in random_idx:
-                    # print('random int: ', random_idx)
-                    # print('train list pre : ', train_list)
-                    new_value = self._flip_1_0_value(train_list[idx])
-                    # print('new value:', new_value)
-                    # print('list idx value: ', train_list[random_idx])
-                    train_list[idx] = new_value
-                    # print('train list post: ', train_list)
-                    assert train_list is not base_example, 'lists are equal'
+                assert isinstance(train_list[0], int)
+
+                for idx, training_value in enumerate(train_list):
+                    prob = random.random()
+
+                    if prob < mutation_prob:
+                        train_list[idx] = self._flip_1_0_value(training_value)
+
+                    if (train_list is base_example) or\
+                       (train_list == base_example):
+                        warnings.warn('Mutated example is equal to prototype',
+                                      UserWarning)
                 list_of_example_values.append(train_list)
             return list_of_example_values
 
