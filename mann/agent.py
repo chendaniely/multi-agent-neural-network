@@ -441,21 +441,16 @@ class LensAgent(Agent):
         padded_agent_number = "{0:06d}".format(self.get_key())
         assert len(padded_agent_number) == 6, 'padded key len in wgt file err'
 
-        # weight_file_name = 'AgentWgt' + padded_agent_number + '.wt'
         weight_ex_name = 'AgentWgt' + padded_agent_number + '.ex'
-        # weight_file_dir = weight_output_dir + '/' + weight_file_name
         weight_ex_dir = weight_output_dir + '/' + weight_ex_name
 
         # if the path does not exist, create it
         if not os.path.exists(weight_output_dir):
             os.makedirs(weight_output_dir)
-        # print('weight file name: ', weight_file_name)
-        # print('weight file dir: ', weight_file_dir)
 
         # copy current envvironment
         lens_env = os.environ
-        # export variable w into environment as the padded agent number
-        # TODO make env 'w' env 'a' to match in file name
+
         lens_env["a"] = padded_agent_number
         lens_env["c"] = str(criterion)
         # print('a environment: ', lens_env.get('a'))
