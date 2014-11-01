@@ -238,6 +238,12 @@ class LensAgent(Agent):
         self.predecessors = []
         self.num_update = 0
 
+        print("All prototypes: ", str(LensAgent.prototypes))
+
+        self.prototype = random.sample(LensAgent.prototypes, 1)[0]
+        print('Agent PROTOTYPE: ', str(self.prototype))
+        assert isinstance(self.prototype, list)
+
         self.reset_step_variables()
 
     def _create_prototype(num_state_vars, list_of_elements, prob_each_element):
