@@ -20,7 +20,10 @@ https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
 
 note the older lens link has a capital letter, the one from Stanford has a lower case
 
-#### Ubuntu 14.04 64-bit
+#### Ubuntu 14.04/14.10 64-bit
+You will need to install the following packages
+    sudo apt-get install libx11-dev
+    sudo apt-get install tcl8.4-dev tk8.4-dev
 
 Notes from David Plaut: 
 
