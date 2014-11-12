@@ -16,7 +16,7 @@ https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
 
     wget https://github.com/chendaniely/multi-agent-neural-network/raw/master/Lens.tgz
     wget http://web.stanford.edu/group/mbc/LENSManual/Manual/Dist/lens.tar.gz
-    tar xvzf Lens.tgZ
+    tar xvzf Lens.tgz
 
 note the older lens link has a capital letter, the one from Stanford has a lower case
 
