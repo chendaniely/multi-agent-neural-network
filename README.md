@@ -22,6 +22,7 @@ note the older lens link has a capital letter, the one from Stanford has a lower
 
 #### Ubuntu 14.04/14.10 64-bit
 You will need to install the following packages
+
     sudo apt-get install libx11-dev
     sudo apt-get install tcl8.4-dev tk8.4-dev
 
