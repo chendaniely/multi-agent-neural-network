@@ -6,7 +6,6 @@ import io
 import random
 import os
 import glob
-import pdb
 import subprocess
 import numpy.testing
 
