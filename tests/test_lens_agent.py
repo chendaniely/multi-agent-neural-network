@@ -13,11 +13,15 @@ from mann import agent
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+
 ###############################################################################
 # Unit tests for the LensAgent class
 ###############################################################################
 def reset_LensAgent():
-    agent.LensAgent.lens_agent_count = 0
+    agent.LensAgent.prototypes = [[0, 1, 1, 0]]
+    agent.LensAgent.agent_count = 0
+
+
 
 
 @nose.with_setup(reset_LensAgent)
