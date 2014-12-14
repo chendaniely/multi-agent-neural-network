@@ -120,18 +120,6 @@ class Agent(object):
         raise BaseAgentUpdateStateError(
             'Base agent class has no state to update')
 
-#    def get_agent_step_info(self):
-#        '''
-#        THIS FUNCTION IS NOT USED
-#        returns
-#        -------
-#        a dictionary of values to be saved on each step of a model run
-#        '''
-#        return {
-#            'key': self.get_key(),
-#            'binary_state': self.binary_state
-#        }
-
 
 class BinaryAgent(Agent):
     binary_agent_count = 0
