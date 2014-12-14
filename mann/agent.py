@@ -472,6 +472,11 @@ class LensAgent(Agent):
 
     def seed_agent(self, weightBaseExample, lens_in_file,
                    self_ex_file_location, self_state_out_file):
+        '''Seed agent
+        before this funciton is called, the seed_agent_no_update function
+        needs to be called
+        This is really hacky code that should be fixed.
+        '''
         # self.state = [1] * len(self.state)
         # train weights already done during the network creating process
         # set input as base example
