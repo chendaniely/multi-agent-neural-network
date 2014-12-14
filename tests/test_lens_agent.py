@@ -22,6 +22,9 @@ def reset_LensAgent():
     agent.LensAgent.agent_count = 0
 
 
+def reset_LensAgent_20():
+    agent.LensAgent.prototypes = [[0, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                                   1, 1, 0, 0, 1, 0, 0, 1, 0, 1]]
 
 
 @nose.with_setup(reset_LensAgent)
