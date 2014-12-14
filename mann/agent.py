@@ -418,8 +418,8 @@ class LensAgent(Agent):
                            base_example, num_train_examples,
                            prototype_mutation_prob, criterion):
         '''
-        calls ._create_weight_training_examples to create list of training examples
-        calls ._write_to_ex to write  list of trianing ex to create the .ex files
+        calls ._create_weight_training_examples to create list of training ex
+        calls ._write_to_ex to write list of train ex to create the .ex files
         calls lens to create .wt weight files
         '''
         # print('weight in file read: ', weight_in_file)
