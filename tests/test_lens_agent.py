@@ -72,7 +72,19 @@ def test_list_to_str_delim():
     assert output_string == expected_string
 
 
-@nose.with_setup(reset_LensAgent)
+@nose.with_setup(reset_LensAgent_20)
+def test_lens_agent_seed_agent_no_update():
+    test_lens_agent = agent.LensAgent(20)
+    assert test_lens_agent.get_state() == [0] * 20
+    weight_base_example = '0, 1, 0, 0, 0, 0, 1, 1, 0, 0,' +\
+                          '1, 1, 0, 0, 1, 0, 0, 1, 0, 1'
+    test_lens_agent.seed_agent_no_update(weight_base_example)
+
+    expected_state = [0, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                      1, 1, 0, 0, 1, 0, 0, 1, 0, 1]
+    assert(test_lens_agent.get_state() == expected_state)
+
+
 def test_lens_agent_seed():
     test_lens_agent = agent.LensAgent(4)
     assert test_lens_agent.get_state() == [0] * 4
