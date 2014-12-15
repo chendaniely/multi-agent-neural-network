@@ -471,7 +471,7 @@ class LensAgent(Agent):
         self.step_input_agent_id = None
 
     def seed_agent(self, weightBaseExample, lens_in_file,
-                   self_ex_file_location, self_state_out_file):
+                   self_ex_file_location, self_state_out_file, criterion):
         '''Seed agent
         before this funciton is called, the seed_agent_no_update function
         needs to be called
@@ -490,6 +490,7 @@ class LensAgent(Agent):
         self.write_to_ex(self_ex_file_location, write_type='state')
         # run lens
         state_env = self.get_env_for_pos_neg_bank_values()
+        state_env['c'] = str(criterion)
         self._call_lens(lens_in_file, env=state_env)
         # capture output and set as state
         self.new_state_values = self._get_new_state_values_from_out_file(
