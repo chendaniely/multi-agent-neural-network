@@ -524,7 +524,7 @@ class LensAgent(Agent):
 
     def get_pos_neg_bank_values(self):
         # TODO this should be a hidden function
-        banks = ('p', 'n')
+        # banks = ('p', 'n')
         num_units_per_bank = self._length_per_bank()
         pos = self.get_state()[:num_units_per_bank]
         neg = self.get_state()[num_units_per_bank:]
