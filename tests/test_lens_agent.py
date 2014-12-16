@@ -74,6 +74,36 @@ def test_list_to_str_delim():
 
 
 @nose.with_setup(reset_LensAgent_20)
+def test_create_weight_file():
+    test_lens_agent = agent.LensAgent(20)
+    assert test_lens_agent.get_key() == 0
+
+    search_file = os.path.join(here, 'lens', 'weights', 'AgentWgt000000.wt')
+    if os.path.exists(search_file):
+        globed = glob.glob(search_file)
+        print('glob: ', globed)
+        os.remove(globed[0])
+
+    # where I want the weight file saved
+    weight_output_dir = os.path.join(here, 'lens', 'weights')
+    # where the .in file to create weights is
+    weight_in_file = os.path.join(here, 'lens', 'AutoEncoderArch.in')
+
+    prototype = agent.LensAgent.prototypes[0]
+    assert(isinstance(prototype, list))
+
+    # create the weight file
+    test_lens_agent.create_weight_file(weight_in_file,
+                                       weight_output_dir,
+                                       prototype,
+                                       50, 0, 3)
+
+    # search directory for weight file
+    expected_weight_file_name = os.path.join(here, 'lens', 'weights',
+                                             'wgt000000.wt')
+    assert os.path.exists(expected_weight_file_name) is True
+
+
 def test_lens_agent_seed_agent_no_update():
     test_lens_agent = agent.LensAgent(20)
     assert test_lens_agent.get_state() == [0] * 20
@@ -163,57 +193,6 @@ def test_string_agent_state_to_ex():
     assert test_lens_agent.get_state() == [1, 1, 1, 1]
     generated_file = test_lens_agent._string_agent_state_to_ex()
     assert generated_file == expected_ex_file
-
-
-# @nose.with_setup(reset_LensAgent)
-# def test_create_weight_file():
-#     # pdb.set_trace()
-#     test_lens_agent = agent.LensAgent(10)
-#     assert test_lens_agent.get_key() == 0
-
-#     here = os.path.abspath(os.path.dirname(__file__))
-
-#     # delete AgentWgt000000.wt if it currently exists
-#     search_dir = here + '/lens/weights/AgentWgt000000.wt'
-#     if os.path.exists(search_dir):
-#         globed = glob.glob(search_dir)
-#         print('glob: ', globed)
-#         subprocess.call(['rm', globed[0]])
-
-#     # where I want the weight file saved
-#     weight_output_dir = here + '/' + 'lens'
-#     # where the .in file to create weights is
-#     weight_in_file = here + '/' + 'lens/WgtMakeM1.in'
-
-#     # print('in: ', weight_in_file)
-#     # print('out: ', weight_output_dir)
-
-#     # create the weight file
-#     test_lens_agent.create_weight_file(weight_in_file, weight_output_dir)
-
-#     # search directory for weight file
-#     expected_weight_file_name = here + '/lens/weights/AgentWgt000000.wt'
-#     print('expected file name: ', expected_weight_file_name, file=sys.stderr)
-#     # print('searchdir: ', search_dir)
-#     # globed = glob.glob(search_dir)
-#     # print('glob: ', globed)
-
-#     # expected_weight_file_name = globed[0]
-#     # print(expected_weight_file_name)
-#     # assert expected_weight_file_name == here + '/lens/AgentWgt000000.wt'
-
-#     # print('g :', generated_weight_file_name)
-#     # assert expected_weight_file_namees == generated_weight_file_name
-#     # assert '/home/dchen/git/multi-agent-neural-network/tests/lens/'
-#     # 'AgentWgt000000.wt' in globed
-#     # assert False
-#     # assert len(glob.glob(expected_weight_file_name)) == 1
-#     print('glob of here/lens/weights/*wt: ',
-#           glob.glob(here + '/lens/weights/*wt'),
-#           file=sys.stderr)
-#     print('does this file exist? ', os.path.exists(expected_weight_file_name),
-#           file=sys.stderr)
-#     assert os.path.exists(expected_weight_file_name) is True
 
 
 @nose.with_setup(reset_LensAgent)
