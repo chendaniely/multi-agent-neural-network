@@ -369,11 +369,13 @@ class LensAgent(Agent):
         return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
-                                    infl_ex_file, agent_state_out_file):
+                                    infl_ex_file, agent_state_out_file,
+                                    criterion):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
             predecessor_picked.write_to_ex(infl_ex_file)
             state_env = self.get_env_for_pos_neg_bank_values()
+            state_env['c'] = str(criterion)
             self._call_lens(lens_in_file, env=state_env)
             self.new_state_values = self._get_new_state_values_from_out_file(
                 agent_state_out_file)
@@ -560,7 +562,8 @@ class LensAgent(Agent):
             self._update_agent_state_default(kwargs.get('lens_in_file'),
                                              kwargs.get('agent_ex_file'),
                                              kwargs.get('infl_ex_file'),
-                                             kwargs.get('agent_state_out_file')
+                                             kwargs.get('agent_state_out_file'),
+                                             kwargs.get('criterion')
                                              )
             self.num_update += 1
         else:
