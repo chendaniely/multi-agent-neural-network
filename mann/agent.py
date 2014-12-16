@@ -485,6 +485,7 @@ class LensAgent(Agent):
 
         # list_of_values = self._str_to_int_list(weightBaseExample)
         # TODO this is why i'm complaining of hacky code
+        # this assumes the seed_no_update has already been ran
         assert self.get_state() == self.prototype
 
         # self.set_state(list_of_values)
