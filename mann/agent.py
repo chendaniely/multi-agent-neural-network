@@ -460,7 +460,7 @@ class LensAgent(Agent):
                          weight_ex_list=list_ex)
 
         # list of 'words' passed into the subprocess call
-        lens_weight_command = ['lens', '-nogui',  weight_in_file]
+        lens_weight_command = ['lens', '-batch',  weight_in_file]
         subprocess.call(lens_weight_command, env=lens_env)
 
     def get_state(self):
