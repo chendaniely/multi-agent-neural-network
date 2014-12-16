@@ -23,6 +23,7 @@ def reset_LensAgent():
 
 
 def reset_LensAgent_20():
+    reset_LensAgent()
     agent.LensAgent.prototypes = [[0, 1, 0, 0, 0, 0, 1, 1, 0, 0,
                                    1, 1, 0, 0, 1, 0, 0, 1, 0, 1]]
 
