@@ -315,7 +315,7 @@ def test_flip_1_0_value():
 
 @nose.with_setup(reset_LensAgent)
 def test_create_weight_training_examples():
-    test_lens_agent = agent.LensAgent(10)
+    test_lens_agent = agent.LensAgent(20)
     base_train_example = [0, 1, 0, 0, 0, 0, 1, 1, 0, 0]
     expected_training_list = [[0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
                               [0, 1, 0, 0, 0, 0, 1, 1, 0, 1]]
