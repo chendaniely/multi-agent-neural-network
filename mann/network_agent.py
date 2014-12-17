@@ -36,8 +36,6 @@ class NetworkAgent(object):
                                              kwargs.get(
                                                  'prototype_mutation_prob'),
                                              kwargs.get('training_criterion')
-                                             # kwargs.get('r_script'),
-                                             # kwargs.get('r_status'),
                                              )
 
             else:
