@@ -265,7 +265,7 @@ class LensAgent(Agent):
 
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
-        subprocess.call(['lens', '-nogui', lens_in_file],
+        subprocess.call(['lens', '-batch', lens_in_file],
                         env=kwargs.get('env'))
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
