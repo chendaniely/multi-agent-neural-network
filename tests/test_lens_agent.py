@@ -104,6 +104,7 @@ def test_create_weight_file():
     assert os.path.exists(expected_weight_file_name) is True
 
 
+@nose.with_setup(reset_LensAgent_20)
 def test_lens_agent_seed_agent_no_update():
     test_lens_agent = agent.LensAgent(20)
     assert test_lens_agent.get_state() == [0] * 20
