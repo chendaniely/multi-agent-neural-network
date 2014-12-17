@@ -117,11 +117,41 @@ def test_lens_agent_seed_agent_no_update():
     assert(test_lens_agent.get_state() == expected_state)
 
 
+@nose.with_setup(reset_LensAgent_20)
 def test_lens_agent_seed():
-    test_lens_agent = agent.LensAgent(4)
-    assert test_lens_agent.get_state() == [0] * 4
-    test_lens_agent.seed_agent()
-    assert test_lens_agent.get_state() == [1] * 4
+    test_lens_agent = agent.LensAgent(20)
+    assert test_lens_agent.get_state() == [0] * 20
+
+    expected_prototype = [0, 1, 0, 0, 0, 0, 1, 1, 0, 0,
+                          1, 1, 0, 0, 1, 0, 0, 1, 0, 1]
+    assert(expected_prototype == test_lens_agent.prototype)
+
+    weight_base_example = '0, 1, 0, 0, 0, 0, 1, 1, 0, 0,' +\
+                          '1, 1, 0, 0, 1, 0, 0, 1, 0, 1'
+    lens_in_file = os.path.join(here, 'lens', 'AutoEncoderArch-update.in')
+    agent_self_ex_file = os.path.join(here, 'lens', 'Infl.ex')
+    agent_self_out_file = os.path.join(here, 'lens', 'AgentState.out')
+    criterion = 3
+    epsilon = 0.2
+    test_lens_agent.seed_agent_no_update(weight_base_example)
+
+    test_lens_agent.seed_agent(weight_base_example,
+                               lens_in_file,
+                               agent_self_ex_file,
+                               agent_self_out_file,
+                               criterion, epsilon)
+    print('new state: ', test_lens_agent.get_state(), file=sys.stderr)
+
+    expected_state = [0.00535452, 0.995756, 0.00328139, 0.00315037, 0.00399676,
+                      0.00647343, 0.994951, 0.994197, 0.0038641, 0.00499099,
+                      0.994252, 0.995074, 0.00527825, 0.00148673, 0.995454,
+                      0.00472569, 0.00459107, 0.994304, 0.00434961, 0.998149]
+
+    print('\ncannot fully test lens_agent_seed until we can seed LENS\n',
+          file=sys.stderr)
+    assert(len(test_lens_agent.get_state()) == len(expected_state))
+    assert(len(expected_state) == 20)
+    # assert test_lens_agent.get_state() == expected_state
 
 
 @nose.with_setup(reset_LensAgent)
