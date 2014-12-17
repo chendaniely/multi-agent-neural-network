@@ -362,7 +362,7 @@ def count_lines_in(reader):
 def count_lines(filename):
     reader = open(filename, 'r')
     reader.close()
-    result = count_rect_in(reader)
+    result = count_lines_in(reader)
     return result
 
 
