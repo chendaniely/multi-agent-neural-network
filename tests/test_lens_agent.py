@@ -272,7 +272,7 @@ def test_length_per_bank():
     test_lens_agent = agent.LensAgent(10)
     calculated_bank_length = test_lens_agent._length_per_bank()
     expected_bank_length = 5
-    assert calculated_bank_length == 5
+    assert calculated_bank_length == expected_bank_length
 
 
 @nose.with_setup(reset_LensAgent)
