@@ -570,6 +570,37 @@ class LensAgent(Agent):
                 # print(current_env.get(var_key))
         return current_env
 
+    def mutate(self, list_to_mutate, mutation_prob):
+        '''Mutates each element of a list by the mutation_prob
+        Mutating means flipping the 1 to a 0 or vice versa
+
+        This calculation is usually used to create the training situations
+        by mutating the prototype to create training examples
+
+        This is used by the seeding function to mutate the prototype by
+        the mutation_prob to do the initial seed.
+
+        if the mutation_prob == 0, then the prototype is returned
+        else, there is a probabliy that prototype is still returned
+        '''
+        if mutation_prob > 0.0 and mutation_prob <= 1:
+            post_mutation_list = list_to_mutate[:]
+            for idx, value in enumerate(list_to_mutate):
+                prob = random.random()
+                if prob <= mutation_prob:
+                    post_mutation_list[idx] = self._flip_1_0_value(value)
+            if ((post_mutation_list is list_to_mutate) or
+               (post_mutation_list == list_to_mutate)):
+                warnings.warn('Mutated example is equal to prototype',
+                              UserWarning)
+            return post_mutation_list
+        elif mutation_prob == 0.0:
+            return list_to_mutate
+        else:
+            raise ValueError('Incorrect value for mutation probability ' +
+                             'probability needs to be between ' +
+                             '0 and 1 inclusive')
+
     def update_agent_state(self, pick='default', **kwargs):
         # if there is an agent_state_out_file, clear it
         # this makes sure there will be nothing appended
