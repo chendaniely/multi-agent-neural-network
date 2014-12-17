@@ -366,6 +366,8 @@ class LensAgent(Agent):
         return contents
 
     def _str_to_int_list(self, string):
+        '''Returns a list of ints from a comma separated string of int values
+        '''
         return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
