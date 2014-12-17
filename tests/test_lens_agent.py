@@ -339,6 +339,25 @@ def test_create_weight_training_examples():
           file=sys.stderr)
 
 
+@nose.with_setup(reset_LensAgent)
+def test_mutate():
+    test_lens_agent = agent.LensAgent(10)
+    random.seed(1)
+    prototype = [1, 1, 1, 1, 1,
+                 1, 1, 1, 1, 1]
+    assert(isinstance(prototype, list))
+    post_mutation = test_lens_agent.mutate(prototype, 0)
+    assert(post_mutation == prototype)
+
+    post_mutation = test_lens_agent.mutate(prototype, 1)
+    assert(post_mutation == [0, 0, 0, 0, 0,
+                             0, 0, 0, 0, 0])
+
+    post_mutation = test_lens_agent.mutate(prototype, .7)
+    print(post_mutation, file=sys.stderr)
+    assert(post_mutation == [1, 0, 1, 0, 0, 1, 0, 1, 1, 0])
+
+
 ###############################################################################
 # Unit Test notes
 ###############################################################################
