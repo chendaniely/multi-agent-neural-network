@@ -621,7 +621,6 @@ class LensAgent(Agent):
         else:
             raise ValueError('Algorithm used for pick unknown')
 
-    # def write_to_ex(self, file_dir):
     def write_to_ex(self, file_dir, write_type='state', **kwargs):
         '''
         file_dir should be in the ./tests/lens/ folder
