@@ -487,16 +487,18 @@ class LensAgent(Agent):
         # list_of_values = self._str_to_int_list(weightBaseExample)
         # TODO this is why i'm complaining of hacky code
         # this assumes the seed_no_update has already been ran
-        prototype = self._str_to_int_list(weightBaseExample)
-        assert(prototype == self.prototype)
-        if epsilon == 0:
-            assert self.get_state() == self.prototype
-            self.set_state(self.prototype)
-        else:
-            assert(epsilon >= 0 and epsilon <= 1)
-            seed_values = self.mutate(prototype, epsilon)
-            self.set_state(seed_values)
+        # prototype = self._str_to_int_list(weightBaseExample)
+        # assert(prototype == self.prototype)
+        # if epsilon == 0:
+        #     assert self.get_state() == self.prototype
+        #     self.set_state(self.prototype)
+        # else:
+        #     assert(epsilon >= 0 and epsilon <= 1)
+        #     seed_values = self.mutate(prototype, epsilon)
+        #     self.set_state(seed_values)
         # self.set_state(list_of_values)
+
+        # self.seed_agent_no_update(weightBaseExample, epsilon)
 
         self.write_to_ex(self_ex_file_location, write_type='state')
         # run lens
