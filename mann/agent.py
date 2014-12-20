@@ -219,6 +219,10 @@ class LensAgent(Agent):
         that is, the number of positive valence bank units
         and the number of negative valence bank units
         '''
+        assert(len(LensAgent.prototypes) > 0,
+               "LensAgent prototypes need to be set before creating "
+               "LensAgent instance")
+
         self.agent_id = LensAgent.agent_count
         LensAgent.agent_count += 1
 
