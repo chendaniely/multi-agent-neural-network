@@ -96,6 +96,19 @@ class NetworkAgent(object):
 
     def write_network_agent_step_info(self, time_step,
                                       file_to_write, file_mode):
+        '''Write agent info for each time step
+
+        Writes the following information respectively
+        - time step
+        - agent id
+        - total number of updates
+        - update state for this time step
+        - infl agent ID
+        - agent state at end of time
+        - input agent state
+        - lens target
+        - prototype
+        '''
         with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
             for node in self.G.__iter__():
                 f.write(",".join([str(time_step),  # time step
