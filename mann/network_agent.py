@@ -39,7 +39,7 @@ class NetworkAgent(object):
                                              )
 
             else:
-                raise UnknownAgentTypeError(
+                raise agent.UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
 
             print("agent ", new_agent.get_key(), " created",
