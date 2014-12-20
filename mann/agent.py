@@ -367,6 +367,7 @@ class LensAgent(Agent):
 
     def _str_to_int_list(self, string):
         '''Returns a list of ints from a comma separated string of int values
+        used for creating a prototype list from a config file (which is a str)
         '''
         return list(int(s) for s in string.strip().split(','))
 
@@ -411,6 +412,10 @@ class LensAgent(Agent):
         calls ._create_weight_training_examples to create list of training ex
         calls ._write_to_ex to write list of train ex to create the .ex files
         calls lens to create .wt weight files
+
+        Returns
+        -------
+        None
         '''
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
