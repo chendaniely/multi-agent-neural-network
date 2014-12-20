@@ -472,9 +472,9 @@ class LensAgent(Agent):
         self.step_lens_target = [None] * len(self.get_state())
         self.step_input_agent_id = None
 
-    def seed_agent(self, weightBaseExample, lens_in_file,
-                   self_ex_file_location, self_state_out_file, criterion,
-                   epsilon):
+    def seed_agent_update(self, seed_list, lens_in_file,
+                          self_ex_file_location, self_state_out_file,
+                          criterion, epsilon):
         '''Seed agent
         before this funciton is called, the seed_agent_no_update function
         needs to be called
@@ -509,7 +509,7 @@ class LensAgent(Agent):
         print('new', self.new_state_values)
         self.set_state(self.new_state_values)
 
-    def seed_agent_no_update(self, weightBaseExample, epsilon):
+    def seed_agent_no_update(self, seed_list, epsilon):
         '''Set the agent state to weightBaseExample
         however do not call lens get output based on trained weights
         '''
