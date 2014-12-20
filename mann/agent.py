@@ -600,7 +600,8 @@ class LensAgent(Agent):
             self._update_agent_state_default(kwargs.get('lens_in_file'),
                                              kwargs.get('agent_ex_file'),
                                              kwargs.get('infl_ex_file'),
-                                             kwargs.get('agent_state_out_file'),
+                                             kwargs.get(
+                                                 'agent_state_out_file'),
                                              kwargs.get('criterion')
                                              )
             self.num_update += 1
@@ -624,11 +625,12 @@ class LensAgent(Agent):
                     '''
                     should look something like this:
                     name: sit1
-                    I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
+                    I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
                     '''
                     f.write('name: sit1\n')
                     # assert False
-                    lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+                    lens_agent_state_str = self._list_to_str_delim(
+                        self.state, " ")
                     input_line = 'B: ' + lens_agent_state_str + ' ;'
                     f.write(input_line)
             except:
