@@ -404,20 +404,6 @@ class LensAgent(Agent):
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
 
-    # def set_lens_agent_state(self, list_of_processing_unit_activations):
-    #     print(len(list_of_processing_unit_activations))
-    #     print(len(self.state))
-    #     is_len_equal = len(list_of_processing_unit_activations) ==\
-    #         len(self.state)
-
-    #     print(is_len_equal)
-
-    #     if():
-    #         self.state = list_of_processing_unit_activations[:]
-    #     else:
-    #         raise ValueError("length of processing units to assign state\
-    #                          not equal to lengh of state")
-
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            prototype_mutation_prob, criterion):
@@ -629,17 +615,9 @@ class LensAgent(Agent):
         agent.ex for the agent or
         infl.ex for the influencing agent
         '''
-
-        # here = os.path.abspath(os.path.dirname(__file__))
-        # write_file_path = here + '/' + file_dir
-        # print(here)
-        # print(write_file_path)
         write_file_path = file_dir
 
         if write_type == 'state':
-            # print("###########writefilepath: ", write_file_path)
-            # print('write state: ', self._list_to_str_delim(self.state, " "))
-            # assert False
             try:
                 # print('trying to open file to write state')
                 with open(write_file_path, 'w') as f:
@@ -666,7 +644,3 @@ class LensAgent(Agent):
                                               i, f)
             except:
                 assert False, 'write_type == "sit" failed'
-
-    # def _train_weights(self, base_example, num_train_examples,
-    #                    num_train_mutations):
-    #     self._create_weight_training_examples()
