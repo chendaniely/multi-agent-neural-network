@@ -517,13 +517,17 @@ class LensAgent(Agent):
         # and updates, this funciton should be the 'seed'
         # and we call the update on this agent independently
         # currently we are double setting the state
-        prototype = self._str_to_int_list(weightBaseExample)
-        assert(prototype == self.prototype)
+        assert(len(self.prototype) > 0)
+        assert(isinstance(self.prototype, list))
+        print('prototype: ', str(self.prototype))
+        print('self.prototype: ', str(self.prototype))
+
         if epsilon == 0:
             self.set_state(self.prototype)
+            assert self.get_state() == self.prototype
         else:
             assert(epsilon >= 0 and epsilon <= 1)
-            seed_values = self.mutate(prototype, epsilon)
+            seed_values = self.mutate(self.prototype, epsilon)
             self.set_state(seed_values)
 
     def set_prototype(self, list_of_values):
