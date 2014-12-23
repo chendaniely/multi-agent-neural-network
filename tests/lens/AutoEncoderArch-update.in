@@ -13,9 +13,9 @@ set c $env(c)
 deleteNets *
 
 #LOAD EXAMPLES -- UPDATING
-#loadExamples Infl.ex -s encoder
+loadExamples Infl.ex -s encoder
 #LOAD EXAMPLES -- TRAINING
-loadExamples weights/AgentWgt$a.ex -s encoder
+#loadExamples AgentWgt$a.ex -s encoder
 #loadExamples examples/encoder.sparse.ex -s encoder
 
 #BUILD NETWORK STRUCTURE
@@ -37,26 +37,26 @@ setObj zeroErrorRadius 0.01
 resetNet
 
 #LOAD WEIGHTS -- UPDATING ONLY
-#loadWeights wgt$a.wt
+loadWeights weights/wgt$a.wt
 
 #NO LEARNING ALLOWED -- UPDATING ONLY
-#freezeWeights
+freezeWeights
 
 
 #OUTPUT OPEN -- UPDATING ONLY
-#openNetOutputFile AgentState.out
+openNetOutputFile AgentState.out
 
 #TRAIN -- UPDATING 
-#train 1
+train 1
 
 #TRAIN -- TRAINING 
-train 1000 
+#train 1000 
 
 #OUTPUT CLOSE -- UPDATING ONLY
-#closeNetOutputFile
+closeNetOutputFile
 
 #SAVE WEIGHTS -- TRAINING ONLY
-saveWeights weights/wgt$a.wt
+#saveWeights wgt$a.wt
 
 
 exit

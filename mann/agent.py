@@ -120,18 +120,6 @@ class Agent(object):
         raise BaseAgentUpdateStateError(
             'Base agent class has no state to update')
 
-#    def get_agent_step_info(self):
-#        '''
-#        THIS FUNCTION IS NOT USED
-#        returns
-#        -------
-#        a dictionary of values to be saved on each step of a model run
-#        '''
-#        return {
-#            'key': self.get_key(),
-#            'binary_state': self.binary_state
-#        }
-
 
 class BinaryAgent(Agent):
     binary_agent_count = 0
@@ -231,6 +219,10 @@ class LensAgent(Agent):
         that is, the number of positive valence bank units
         and the number of negative valence bank units
         '''
+        assert(len(LensAgent.prototypes) > 0,
+               "LensAgent prototypes need to be set before creating "
+               "LensAgent instance")
+
         self.agent_id = LensAgent.agent_count
         LensAgent.agent_count += 1
 
@@ -273,11 +265,11 @@ class LensAgent(Agent):
                                   for x in range(number_of_prototypes))
         assert isinstance(list_of_prototypes[0], list)
         LensAgent.prototypes = list_of_prototypes
-        print(str(list_of_prototypes))
+        print('list of prototypes created: ', str(list_of_prototypes))
 
     def _call_lens(self, lens_in_file, **kwargs):
         # pass
-        subprocess.call(['lens', '-nogui', lens_in_file],
+        subprocess.call(['lens', '-batch', lens_in_file],
                         env=kwargs.get('env'))
         # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
 
@@ -378,14 +370,19 @@ class LensAgent(Agent):
         return contents
 
     def _str_to_int_list(self, string):
+        '''Returns a list of ints from a comma separated string of int values
+        used for creating a prototype list from a config file (which is a str)
+        '''
         return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
-                                    infl_ex_file, agent_state_out_file):
+                                    infl_ex_file, agent_state_out_file,
+                                    criterion):
         if len(self.predecessors) > 0:
             predecessor_picked = random.sample(list(self.predecessors), 1)[0]
             predecessor_picked.write_to_ex(infl_ex_file)
             state_env = self.get_env_for_pos_neg_bank_values()
+            state_env['c'] = str(criterion)
             self._call_lens(lens_in_file, env=state_env)
             self.new_state_values = self._get_new_state_values_from_out_file(
                 agent_state_out_file)
@@ -412,27 +409,17 @@ class LensAgent(Agent):
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
 
-    # def set_lens_agent_state(self, list_of_processing_unit_activations):
-    #     print(len(list_of_processing_unit_activations))
-    #     print(len(self.state))
-    #     is_len_equal = len(list_of_processing_unit_activations) ==\
-    #         len(self.state)
-
-    #     print(is_len_equal)
-
-    #     if():
-    #         self.state = list_of_processing_unit_activations[:]
-    #     else:
-    #         raise ValueError("length of processing units to assign state\
-    #                          not equal to lengh of state")
-
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            prototype_mutation_prob, criterion):
         '''
-        calls ._create_weight_training_examples to create list of training examples
-        calls ._write_to_ex to write  list of trianing ex to create the .ex files
+        calls ._create_weight_training_examples to create list of training ex
+        calls ._write_to_ex to write list of train ex to create the .ex files
         calls lens to create .wt weight files
+
+        Returns
+        -------
+        None
         '''
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
@@ -470,33 +457,32 @@ class LensAgent(Agent):
                          weight_ex_list=list_ex)
 
         # list of 'words' passed into the subprocess call
-        lens_weight_command = ['lens', '-nogui',  weight_in_file]
+        lens_weight_command = ['lens', '-batch',  weight_in_file]
         subprocess.call(lens_weight_command, env=lens_env)
 
     def get_state(self):
         return self.state
 
     def reset_step_variables(self):
+        '''Variables and states that will be written to output file
+        This is called after Agent Initialization to set all values to None
+        '''
         self.step_input_state_values = [None] * len(self.get_state())
         self.step_update_status = None
         self.step_lens_target = [None] * len(self.get_state())
         self.step_input_agent_id = None
 
-    def seed_agent(self, weightBaseExample, lens_in_file,
-                   self_ex_file_location, self_state_out_file):
-        # self.state = [1] * len(self.state)
-        # train weights already done during the network creating process
-        # set input as base example
-
-        # list_of_values = self._str_to_int_list(weightBaseExample)
-        # TODO this is why i'm complaining of hacky code
-        assert self.get_state() == self.prototype
-
-        # self.set_state(list_of_values)
-        self.set_state(self.prototype)
+    def seed_agent_update(self, seed_list, lens_in_file,
+                          self_ex_file_location, self_state_out_file,
+                          criterion, epsilon):
+        '''Seed agent
+        before this funciton is called, the seed_agent_no_update function
+        needs to be called
+        '''
         self.write_to_ex(self_ex_file_location, write_type='state')
         # run lens
         state_env = self.get_env_for_pos_neg_bank_values()
+        state_env['c'] = str(criterion)
         self._call_lens(lens_in_file, env=state_env)
         # capture output and set as state
         self.new_state_values = self._get_new_state_values_from_out_file(
@@ -504,15 +490,22 @@ class LensAgent(Agent):
         print('new', self.new_state_values)
         self.set_state(self.new_state_values)
 
-    def seed_agent_no_update(self, weightBaseExample):
+    def seed_agent_no_update(self, seed_list, epsilon):
         '''Set the agent state to weightBaseExample
         however do not call lens get output based on trained weights
         '''
-        # TODO THIS IS HACKY AS HELL becuase the seed_agent sets this
-        # and updates, this funciton should be the 'seed'
-        # and we call the update on this agent independently
-        # currently we are double setting the state
-        self.set_state(self.prototype)
+        assert(len(self.prototype) > 0)
+        assert(isinstance(self.prototype, list))
+        print('prototype: ', str(self.prototype))
+        print('self.prototype: ', str(self.prototype))
+
+        if epsilon == 0:
+            self.set_state(self.prototype)
+            assert self.get_state() == self.prototype
+        else:
+            assert(epsilon >= 0 and epsilon <= 1)
+            seed_values = self.mutate(self.prototype, epsilon)
+            self.set_state(seed_values)
 
     def set_prototype(self, list_of_values):
         self.prototype = list_of_values[:]
@@ -531,7 +524,7 @@ class LensAgent(Agent):
 
     def get_pos_neg_bank_values(self):
         # TODO this should be a hidden function
-        banks = ('p', 'n')
+        # banks = ('p', 'n')
         num_units_per_bank = self._length_per_bank()
         pos = self.get_state()[:num_units_per_bank]
         neg = self.get_state()[num_units_per_bank:]
@@ -556,6 +549,37 @@ class LensAgent(Agent):
                 # print(current_env.get(var_key))
         return current_env
 
+    def mutate(self, list_to_mutate, mutation_prob):
+        '''Mutates each element of a list by the mutation_prob
+        Mutating means flipping the 1 to a 0 or vice versa
+
+        This calculation is usually used to create the training situations
+        by mutating the prototype to create training examples
+
+        This is used by the seeding function to mutate the prototype by
+        the mutation_prob to do the initial seed.
+
+        if the mutation_prob == 0, then the prototype is returned
+        else, there is a probabliy that prototype is still returned
+        '''
+        if mutation_prob > 0.0 and mutation_prob <= 1:
+            post_mutation_list = list_to_mutate[:]
+            for idx, value in enumerate(list_to_mutate):
+                prob = random.random()
+                if prob <= mutation_prob:
+                    post_mutation_list[idx] = self._flip_1_0_value(value)
+            if ((post_mutation_list is list_to_mutate) or
+               (post_mutation_list == list_to_mutate)):
+                warnings.warn('Mutated example is equal to prototype',
+                              UserWarning)
+            return post_mutation_list
+        elif mutation_prob == 0.0:
+            return list_to_mutate
+        else:
+            raise ValueError('Incorrect value for mutation probability ' +
+                             'probability needs to be between ' +
+                             '0 and 1 inclusive')
+
     def update_agent_state(self, pick='default', **kwargs):
         # if there is an agent_state_out_file, clear it
         # this makes sure there will be nothing appended
@@ -566,13 +590,14 @@ class LensAgent(Agent):
             self._update_agent_state_default(kwargs.get('lens_in_file'),
                                              kwargs.get('agent_ex_file'),
                                              kwargs.get('infl_ex_file'),
-                                             kwargs.get('agent_state_out_file')
+                                             kwargs.get(
+                                                 'agent_state_out_file'),
+                                             kwargs.get('criterion')
                                              )
             self.num_update += 1
         else:
             raise ValueError('Algorithm used for pick unknown')
 
-    # def write_to_ex(self, file_dir):
     def write_to_ex(self, file_dir, write_type='state', **kwargs):
         '''
         file_dir should be in the ./tests/lens/ folder
@@ -580,28 +605,21 @@ class LensAgent(Agent):
         agent.ex for the agent or
         infl.ex for the influencing agent
         '''
-
-        # here = os.path.abspath(os.path.dirname(__file__))
-        # write_file_path = here + '/' + file_dir
-        # print(here)
-        # print(write_file_path)
         write_file_path = file_dir
 
         if write_type == 'state':
-            # print("###########writefilepath: ", write_file_path)
-            # print('write state: ', self._list_to_str_delim(self.state, " "))
-            # assert False
             try:
                 # print('trying to open file to write state')
                 with open(write_file_path, 'w') as f:
                     '''
                     should look something like this:
                     name: sit1
-                    I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
+                    I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
                     '''
                     f.write('name: sit1\n')
                     # assert False
-                    lens_agent_state_str = self._list_to_str_delim(self.state, " ")
+                    lens_agent_state_str = self._list_to_str_delim(
+                        self.state, " ")
                     input_line = 'B: ' + lens_agent_state_str + ' ;'
                     f.write(input_line)
             except:
@@ -617,7 +635,3 @@ class LensAgent(Agent):
                                               i, f)
             except:
                 assert False, 'write_type == "sit" failed'
-
-    # def _train_weights(self, base_example, num_train_examples,
-    #                    num_train_mutations):
-    #     self._create_weight_training_examples()
