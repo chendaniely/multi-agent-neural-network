@@ -4,7 +4,7 @@ import random
 import subprocess
 import io
 import os
-import sys
+# import sys  # used to print to stderr for unit testing
 import warnings
 
 
