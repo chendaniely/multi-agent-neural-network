@@ -260,6 +260,21 @@ class LensAgent(Agent):
         return prototype
 
     def set_lens_agent_prototypes(number_of_prototypes):
+        """Create prototypes for the :class:`LensAgent` class
+
+        Args:
+            number_of_prototypes (int): Number of prototypes to create
+
+        Kwargs:
+            None
+
+        Returns:
+            None
+
+        Function does not return any value, rather, it creates prototypes and
+        assigns the prototypes to :py:data:`LensAgent.prototypes`
+
+        """
         list_of_prototypes = list(LensAgent._create_prototype(20,
                                                               [0, 1], [.5, .5])
                                   for x in range(number_of_prototypes))
