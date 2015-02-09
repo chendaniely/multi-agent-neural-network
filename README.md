@@ -7,6 +7,8 @@ Multi Agent Neural Network (MANN)
 
 Agent Based Model in Python Using Lens to Compute a Neural Network Decision Making Process
 
+An experiment that uses this package can be found here at [multidisciplinary-diffusion-model-experiments](https://github.com/chendaniely/multidisciplinary-diffusion-model-experiments).
+
 # Setting up LENS
 Download LENS: http://web.stanford.edu/group/mbc/LENSManual/index.html
 
