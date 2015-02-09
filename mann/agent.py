@@ -264,7 +264,7 @@ class LensAgent(Agent):
                                                               [0, 1], [.5, .5])
                                   for x in range(number_of_prototypes))
         assert isinstance(list_of_prototypes[0], list)
-        LensAgent.prototypes = list_of_prototypes
+        LensAgent.prototypes = list_of_prototypes[:]
         print('list of prototypes created: ', str(list_of_prototypes))
 
     def _call_lens(self, lens_in_file, **kwargs):
