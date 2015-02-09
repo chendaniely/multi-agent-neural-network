@@ -2,6 +2,9 @@
 
 [![Coverage Status](https://coveralls.io/repos/chendaniely/multi-agent-neural-network/badge.png?branch=master)](https://coveralls.io/r/chendaniely/multi-agent-neural-network?branch=master)
 
+[![Docs Status](https://readthedocs.org/projects/multi-agent-neural-network/?badge=latest)](https://readthedocs.org/projects/multi-agent-neural-network/?badge=latest)
+
+
 Multi Agent Neural Network (MANN)
 ====================
 
