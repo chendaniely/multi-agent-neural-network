@@ -275,6 +275,8 @@ class LensAgent(Agent):
         assigns the prototypes to :py:data:`LensAgent.prototypes`
 
         """
+        assert isinstance(number_of_prototypes, int),\
+            "number_of_prototypes is not int"
         list_of_prototypes = list(LensAgent._create_prototype(20,
                                                               [0, 1], [.5, .5])
                                   for x in range(number_of_prototypes))
