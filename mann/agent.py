@@ -509,9 +509,25 @@ class LensAgent(Agent):
         return self.state
 
     def reset_step_variables(self):
-        '''Variables and states that will be written to output file
+        """Resets variables and states that will be written to output file
         This is called after Agent Initialization to set all values to None
-        '''
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        variables reset are:
+
+        self.step_input_agent_id
+
+        self.step_input_state_values
+
+        self.step_lens_target
+
+        self.step_update_status
+        """
         self.step_input_state_values = [None] * len(self.get_state())
         self.step_update_status = None
         self.step_lens_target = [None] * len(self.get_state())
