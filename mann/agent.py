@@ -436,7 +436,6 @@ class LensAgent(Agent):
         network.  The weight file created is a binary file.
 
         Args:
-
             weight_in_file (string): full path to the LENS .in file to generate
             weights
 
@@ -452,14 +451,16 @@ class LensAgent(Agent):
             prototype_mutation_prob (float): probability for each processing
             unit to flip, aka delta
 
-           criterion (int): criterion to stop weight training
+            criterion (int): criterion to stop weight training
 
         Returns:
 
             None
 
         calls ._create_weight_training_examples to create list of training ex
+
         calls ._write_to_ex to write list of train ex to create the .ex files
+
         subprocess call to lens to create .wt weight files
         """
         # print('weight in file read: ', weight_in_file)
