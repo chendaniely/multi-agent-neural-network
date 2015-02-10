@@ -70,13 +70,11 @@ class Agent(object):
         method that returns a tuple of the unique vales of the agent.
         this tuple is then used to hash and do comparisons.
 
-        parameters
-        ----------
-        none
+        Args:
+            none
 
-        return
-        ------
-        a tuple that represents the unique keys of the agent
+        Returns:
+            int: unique keys of the agent
         '''
         return self.agent_id
 
@@ -97,13 +95,11 @@ class Agent(object):
         '''
         Takes a list of predecessors and assigns the list to self.predecessors
 
-        parameters
-        ----------
-        a lit of predecessors
+        Args:
+            list_of_predecessors (list): a list of predecessors
 
-        returns
-        -------
-        none
+        Returns
+            None
         '''
         self.predecessors = list_of_predecessors
 
@@ -151,9 +147,8 @@ class BinaryAgent(Agent):
         generates a random state for the agent as it is created
         raises exception if state cannot be assign
 
-        returns
-        -------
-        returns an integer value of 0 or 1 for a state
+        Returns:
+            int: value of 0 or 1 for a :py:data::self.state
         '''
         random_float = random.random()
         if random_float < .5:
