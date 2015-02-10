@@ -429,15 +429,39 @@ class LensAgent(Agent):
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            prototype_mutation_prob, criterion):
-        '''
+        """Creates the weight file for the :py:class:`LensAgent`
+
+        The weights are needed for LENS, as it defines the weights between each
+        processing unit and the units in the hidden latery of the nerual
+        network.  The weight file created is a binary file.
+
+        Args:
+
+            weight_in_file (string): full path to the LENS .in file to generate
+            weights
+
+            weight_output_dir (string): full path where to save the binary
+            weight files
+
+            base_example (string): comma separated string of prototype, please
+            see #81 in the MANN issues
+
+            num_train_examples (int): number of training examples used to train
+            the weights
+
+            prototype_mutation_prob (float): probability for each processing
+            unit to flip, aka delta
+
+           criterion (int): criterion to stop weight training
+
+        Returns:
+
+            None
+
         calls ._create_weight_training_examples to create list of training ex
         calls ._write_to_ex to write list of train ex to create the .ex files
-        calls lens to create .wt weight files
-
-        Returns
-        -------
-        None
-        '''
+        subprocess call to lens to create .wt weight files
+        """
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
 
