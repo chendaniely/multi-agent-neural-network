@@ -582,8 +582,23 @@ class LensAgent(Agent):
         self.set_state(self.new_state_values)
 
     def seed_agent_no_update(self, seed_list, epsilon):
-        '''Set the agent state to weightBaseExample
-        however do not call lens get output based on trained weights
+        '''Seeds the agent with a given value and epsilon.
+
+        This funciton only seeds the system.  It does not prompt the agent to
+        update itself after seeding.
+
+        Args:
+
+            seed_list (list): list of values that will be used as seed.
+            Typically self.prototype will be passed in for this value, but the
+            parameter exists so other values can be passed in as the seed.
+            It is currently using self.prototype and needs to be fixed
+
+            epsilon (float): probability of mutation on each processing unit
+
+        Returns:
+            None
+
         '''
         assert(len(self.prototype) > 0)
         assert(isinstance(self.prototype, list))
