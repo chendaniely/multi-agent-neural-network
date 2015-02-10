@@ -536,9 +536,39 @@ class LensAgent(Agent):
     def seed_agent_update(self, seed_list, lens_in_file,
                           self_ex_file_location, self_state_out_file,
                           criterion, epsilon):
-        '''Seed agent
-        before this funciton is called, the seed_agent_no_update function
+        '''Update a seeded agent.
+
+        Before this funciton is called, the `seed_agent_no_update` function
         needs to be called
+
+        Args:
+
+            seed_list (list): list of values that will be used as seed.
+            Typically self.prototype will be passed in for this value, but the
+            parameter exists so other values can be passed in as the seed.
+            However this parameter is not needed in this funciton anymore
+            because of a previous refactoring.  This is an artifact, and the
+            seeding is handeled in the `seed_agent_no_update` function
+
+            lens_in_file (string): full path to where the .in file needed to
+            update the agent
+
+            self_ex_file_location (string): full path of where the ex file is.
+            since the seeded agent will use itself as the input, the self ex
+            file location should be what the infl ex file location would
+            normally be in the simulation
+
+            self_state_out_file (string): full path of where the outfile will
+            be.  This is the file that is written out from LENS, and is used to
+            update the agent's current state
+
+            criterion (int): criterion
+
+            epsilon (float): probability of a mutation on each processing unit
+
+        Returns:
+            None
+
         '''
         self.write_to_ex(self_ex_file_location, write_type='state')
         # run lens
