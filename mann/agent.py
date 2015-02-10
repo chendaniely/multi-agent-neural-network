@@ -498,6 +498,14 @@ class LensAgent(Agent):
         subprocess.call(lens_weight_command, env=lens_env)
 
     def get_state(self):
+        """Return the state of the agent
+
+        Args:
+            None
+
+        Returns:
+            :py:data:self.state
+        """
         return self.state
 
     def reset_step_variables(self):
