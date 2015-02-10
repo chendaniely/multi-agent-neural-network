@@ -626,6 +626,16 @@ class LensAgent(Agent):
         self.prototype = list_of_values[:]
 
     def set_state(self, list_of_values):
+        """Set state values
+
+        Args:
+
+            list_of_values (list): list of values to set the agent state to
+
+        Returns:
+
+            None
+        """
         # sets state to list of values
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
