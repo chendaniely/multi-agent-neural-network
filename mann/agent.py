@@ -614,6 +614,15 @@ class LensAgent(Agent):
             self.set_state(seed_values)
 
     def set_prototype(self, list_of_values):
+        """Set prototype values
+
+        Args:
+
+            list_of_values (list): list of values to set the prototype to
+
+        Returns:
+            None
+        """
         self.prototype = list_of_values[:]
 
     def set_state(self, list_of_values):
