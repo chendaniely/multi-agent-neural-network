@@ -212,9 +212,9 @@ class LensAgent(Agent):
 
         :param num_state_vars: Total number of processing units in the LensAgent.
         """
-        assert(len(LensAgent.prototypes) > 1,
-               "LensAgent prototypes need to be set before creating "
-               "LensAgent instance")
+        assert len(LensAgent.prototypes) > 1,\
+               "LensAgent prototypes need to be set before creating "\
+               "LensAgent instance"
 
         self.agent_id = LensAgent.agent_count
         LensAgent.agent_count += 1
