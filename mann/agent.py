@@ -208,12 +208,10 @@ class LensAgent(Agent):
     prototypes = []
 
     def __init__(self, num_state_vars):
-        '''
-        num_state_vars is the total number of elements the agent has as a state
-        for LENS, this is the total number of processing units per agent
-        that is, the number of positive valence bank units
-        and the number of negative valence bank units
-        '''
+        """Creates a LensAgent instance
+
+        :param num_state_vars: Total number of processing units in the LensAgent.
+        """
         assert(len(LensAgent.prototypes) > 1,
                "LensAgent prototypes need to be set before creating "
                "LensAgent instance")
