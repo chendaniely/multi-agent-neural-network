@@ -70,13 +70,11 @@ class Agent(object):
         method that returns a tuple of the unique vales of the agent.
         this tuple is then used to hash and do comparisons.
 
-        parameters
-        ----------
-        none
+        Args:
+            none
 
-        return
-        ------
-        a tuple that represents the unique keys of the agent
+        Returns:
+            int: unique keys of the agent
         '''
         return self.agent_id
 
@@ -97,13 +95,11 @@ class Agent(object):
         '''
         Takes a list of predecessors and assigns the list to self.predecessors
 
-        parameters
-        ----------
-        a lit of predecessors
+        Args:
+            list_of_predecessors (list): a list of predecessors
 
-        returns
-        -------
-        none
+        Returns
+            None
         '''
         self.predecessors = list_of_predecessors
 
@@ -151,9 +147,8 @@ class BinaryAgent(Agent):
         generates a random state for the agent as it is created
         raises exception if state cannot be assign
 
-        returns
-        -------
-        returns an integer value of 0 or 1 for a state
+        Returns:
+            int: value of 0 or 1 for a :py:data::self.state
         '''
         random_float = random.random()
         if random_float < .5:
@@ -213,15 +208,14 @@ class LensAgent(Agent):
     prototypes = []
 
     def __init__(self, num_state_vars):
-        '''
-        num_state_vars is the total number of elements the agent has as a state
-        for LENS, this is the total number of processing units per agent
-        that is, the number of positive valence bank units
-        and the number of negative valence bank units
-        '''
-        assert(len(LensAgent.prototypes) > 1,
+        """Creates a LensAgent instance
+
+        :param num_state_vars: Total number of processing units in the LensAgent.
+        """
+        print('class prototypes: ', LensAgent.prototypes)
+        print(len(LensAgent.prototypes))
+        assert len(LensAgent.prototypes) >= 1,\
                "LensAgent prototypes need to be set before creating "
-               "LensAgent instance")
 
         self.agent_id = LensAgent.agent_count
         LensAgent.agent_count += 1
@@ -260,11 +254,28 @@ class LensAgent(Agent):
         return prototype
 
     def set_lens_agent_prototypes(number_of_prototypes):
+        """Create prototypes for the :class:`LensAgent` class
+
+        Args:
+            number_of_prototypes (int): Number of prototypes to create
+
+        Kwargs:
+            None
+
+        Returns:
+            None
+
+        Function does not return any value, rather, it creates prototypes and
+        assigns the prototypes to :py:data:`LensAgent.prototypes`
+
+        """
+        assert isinstance(number_of_prototypes, int),\
+            "number_of_prototypes is not int"
         list_of_prototypes = list(LensAgent._create_prototype(20,
                                                               [0, 1], [.5, .5])
                                   for x in range(number_of_prototypes))
         assert isinstance(list_of_prototypes[0], list)
-        LensAgent.prototypes = list_of_prototypes
+        LensAgent.prototypes = list_of_prototypes[:]
         print('list of prototypes created: ', str(list_of_prototypes))
 
     def _call_lens(self, lens_in_file, **kwargs):
@@ -412,15 +423,44 @@ class LensAgent(Agent):
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            prototype_mutation_prob, criterion):
-        '''
-        calls ._create_weight_training_examples to create list of training ex
-        calls ._write_to_ex to write list of train ex to create the .ex files
-        calls lens to create .wt weight files
+        """Creates the weight file for the :py:class:`LensAgent`
 
-        Returns
-        -------
-        None
-        '''
+        The weights are needed for LENS, as it defines the weights between each
+        processing unit and the units in the hidden latery of the nerual
+        network.  The weight file created is a binary file.
+
+        :param weight_in_file: full path to the LENS .in file to generate
+            weights
+        :type weight_in_file: string
+
+        :param weight_output_dir:full path where to save the binary
+            weight files
+        :type weight_output_dir: string
+
+        :param base_example: comma separated string of prototype (see
+            #81 in MANN issues)
+        :type base_example: string
+
+        :param num_train_examples: number of examples used to train weights
+        :type num_train_examples: int
+
+        :param prototype_mutation_prob: a.k.a delta, prob training
+            example mutation from prototype
+        :type prototype_mutation_prob: float
+
+        :param criterion:criterion to stop weight training
+        :type criterion: int
+
+        :returns: None
+        :rtype: None
+
+
+        calls ._create_weight_training_examples to create list of training ex
+
+        calls ._write_to_ex to write list of train ex to create the .ex files
+
+        subprocess call to lens to create .wt weight files
+        """
         # print('weight in file read: ', weight_in_file)
         # print('weight output read: ', weight_output_dir)
 
@@ -461,12 +501,36 @@ class LensAgent(Agent):
         subprocess.call(lens_weight_command, env=lens_env)
 
     def get_state(self):
+        """Return the state of the agent
+
+        Args:
+            None
+
+        Returns:
+            :py:data:self.state
+        """
         return self.state
 
     def reset_step_variables(self):
-        '''Variables and states that will be written to output file
+        """Resets variables and states that will be written to output file
         This is called after Agent Initialization to set all values to None
-        '''
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        variables reset are:
+
+        self.step_input_agent_id
+
+        self.step_input_state_values
+
+        self.step_lens_target
+
+        self.step_update_status
+        """
         self.step_input_state_values = [None] * len(self.get_state())
         self.step_update_status = None
         self.step_lens_target = [None] * len(self.get_state())
@@ -475,9 +539,39 @@ class LensAgent(Agent):
     def seed_agent_update(self, seed_list, lens_in_file,
                           self_ex_file_location, self_state_out_file,
                           criterion, epsilon):
-        '''Seed agent
-        before this funciton is called, the seed_agent_no_update function
+        '''Update a seeded agent.
+
+        Before this funciton is called, the `seed_agent_no_update` function
         needs to be called
+
+        Args:
+
+            seed_list (list): list of values that will be used as seed.
+            Typically self.prototype will be passed in for this value, but the
+            parameter exists so other values can be passed in as the seed.
+            However this parameter is not needed in this funciton anymore
+            because of a previous refactoring.  This is an artifact, and the
+            seeding is handeled in the `seed_agent_no_update` function
+
+            lens_in_file (string): full path to where the .in file needed to
+            update the agent
+
+            self_ex_file_location (string): full path of where the ex file is.
+            since the seeded agent will use itself as the input, the self ex
+            file location should be what the infl ex file location would
+            normally be in the simulation
+
+            self_state_out_file (string): full path of where the outfile will
+            be.  This is the file that is written out from LENS, and is used to
+            update the agent's current state
+
+            criterion (int): criterion
+
+            epsilon (float): probability of a mutation on each processing unit
+
+        Returns:
+            None
+
         '''
         self.write_to_ex(self_ex_file_location, write_type='state')
         # run lens
@@ -491,8 +585,23 @@ class LensAgent(Agent):
         self.set_state(self.new_state_values)
 
     def seed_agent_no_update(self, seed_list, epsilon):
-        '''Set the agent state to weightBaseExample
-        however do not call lens get output based on trained weights
+        '''Seeds the agent with a given value and epsilon.
+
+        This funciton only seeds the system.  It does not prompt the agent to
+        update itself after seeding.
+
+        Args:
+
+            seed_list (list): list of values that will be used as seed.
+            Typically self.prototype will be passed in for this value, but the
+            parameter exists so other values can be passed in as the seed.
+            It is currently using self.prototype and needs to be fixed
+
+            epsilon (float): probability of mutation on each processing unit
+
+        Returns:
+            None
+
         '''
         assert(len(self.prototype) > 0)
         assert(isinstance(self.prototype, list))
@@ -508,9 +617,28 @@ class LensAgent(Agent):
             self.set_state(seed_values)
 
     def set_prototype(self, list_of_values):
+        """Set prototype values
+
+        Args:
+
+            list_of_values (list): list of values to set the prototype to
+
+        Returns:
+            None
+        """
         self.prototype = list_of_values[:]
 
     def set_state(self, list_of_values):
+        """Set state values
+
+        Args:
+
+            list_of_values (list): list of values to set the agent state to
+
+        Returns:
+
+            None
+        """
         # sets state to list of values
         # list slicing is the fastest according to stackoverflow:
         # http://stackoverflow.com/questions/2612802/
