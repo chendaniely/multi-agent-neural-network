@@ -454,35 +454,6 @@ class LensAgent(Agent):
         :returns: None
         :rtype: None
 
-        """
-
-        """Creates the weight file for the :py:class:`LensAgent`
-
-        The weights are needed for LENS, as it defines the weights between each
-        processing unit and the units in the hidden latery of the nerual
-        network.  The weight file created is a binary file.
-
-        Args:
-            weight_in_file (string): full path to the LENS .in file to generate
-            weights
-
-            weight_output_dir (string): full path where to save the binary
-            weight files
-
-            base_example (string): comma separated string of prototype, please
-            see #81 in the MANN issues
-
-            num_train_examples (int): number of training examples used to train
-            the weights
-
-            prototype_mutation_prob (float): probability for each processing
-            unit to flip, aka delta
-
-            criterion (int): criterion to stop weight training
-
-        Returns:
-
-            None
 
         calls ._create_weight_training_examples to create list of training ex
 
