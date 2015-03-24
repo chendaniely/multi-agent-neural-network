@@ -678,8 +678,9 @@ class LensAgent(Agent):
     def get_env_for_pos_neg_bank_values(self):
         # TODO this should be a hidden function
         current_env = os.environ
-        padded_agent_number = "{0:06d}".format(self.get_key())
-        current_env['a'] = padded_agent_number
+        # padded_agent_number = "{0:06d}".format(self.get_key())
+        # padded_agent_number = self.get_padded_agent_id()
+        # current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
             # print(bank_values, file=sys.stderr)
