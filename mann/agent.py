@@ -423,6 +423,34 @@ class LensAgent(Agent):
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
 
+    def calculate_new_state(self, influencing_algorithm='default', **kwargs):
+        """Calculates new state values
+
+        TODO: This function is a copy/paste of update_agent_state, and needs
+        to be refactored accordinly
+
+        :returns: New state
+        :rtype: tuple
+        """
+        # if there is an agent_state_out_file, clear it
+        # this makes sure there will be nothing appended
+        if kwargs.get('agent_state_out_file') is not None:
+            open(kwargs.get('agent_state_out_file'), 'w').close()
+            assert os.stat(kwargs.get('agent_state_out_file')).st_size == 0
+        if influencing_algorithm == 'default':
+            #self.num_update += 1
+            new_state = self.calculate_new_state_default_i(
+                kwargs.get('lens_in_file'),
+                kwargs.get('agent_ex_file'),
+                kwargs.get('infl_ex_file'),
+                kwargs.get('agent_state_out_file'),
+                kwargs.get('criterion'))
+            return new_state
+
+        else:
+            raise ValueError('Algorithm used for pick unknown')
+
+
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
                            prototype_mutation_prob, criterion):
