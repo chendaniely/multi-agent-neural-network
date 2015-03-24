@@ -325,6 +325,12 @@ class LensAgent(Agent):
             raise ValueError('Number to flip not 0 or 1')
 
     def _get_new_state_values_from_out_file(self, file_dir, column=0):
+        """Get new state values from .out file_d
+
+        :returns: new state values
+        :rtype: tuple
+        """
+        # creates a list and returns a tuple
         list_of_new_state = []
 
         # here = os.path.abspath(os.path.dirname(__file__))
