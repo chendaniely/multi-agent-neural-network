@@ -351,7 +351,7 @@ class LensAgent(Agent):
                     col = line.strip().split(' ')[column]
                     list_of_new_state.append(float(col))
                     # print('list of new state', list_of_new_state)
-        return list_of_new_state
+        return tuple(list_of_new_state)
 
     def _length_per_bank(self):
         num_elements_per_bank = len(self.get_state())/2
