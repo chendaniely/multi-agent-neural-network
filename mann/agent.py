@@ -654,6 +654,14 @@ class LensAgent(Agent):
             raise ValueError("len of values not equal to len of state")
 
     def get_pos_neg_bank_values(self):
+        """Get the activation values in the positive and negative banks
+
+        Positive values are the first half of the agent state
+        Negative values are the second half of the agent state
+
+        :returns: positive values in the first index, neg values in second index
+        :rtype: typle
+        """
         # TODO this should be a hidden function
         # banks = ('p', 'n')
         num_units_per_bank = self._length_per_bank()
