@@ -359,9 +359,6 @@ class LensAgent(Agent):
         '''
         return delim.join(map(str, list_to_convert))
 
-    def _pad_agent_id(self):
-        pass  # TODO
-
     def _start_end_update_out(self, f):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
@@ -657,6 +654,12 @@ class LensAgent(Agent):
         pos = self.get_state()[:num_units_per_bank]
         neg = self.get_state()[num_units_per_bank:]
         return (pos, neg)
+
+
+    def get_padded_agent_id(self, total_number_of_characters=6):
+        format_string = "{{0:0{}d}}".format(total_number_of_characters)
+        return format_string.format(self.get_key())
+
 
     def get_env_for_pos_neg_bank_values(self):
         # TODO this should be a hidden function
