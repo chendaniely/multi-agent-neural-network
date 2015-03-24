@@ -423,6 +423,42 @@ class LensAgent(Agent):
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
 
+
+    def calculate_new_state_default_i(self, lens_in_file, agent_ex_file,
+                                      infl_ex_file, agent_state_out_file,
+                                      criterion):
+        """Calculates a new state using the default influencing agent algorithm.
+
+        The default influencing agent algorithm picks an influencing agent
+        by picking a random agent in the current agent's local network.
+
+        :returns: New state values
+        :rtype: tuple
+        """
+        if len(self.predecessors) > 0:
+            predecessor_picked = random.sample(list(self.predecessors), 1)[0]
+            predecessor_picked.write_to_ex(infl_ex_file)
+            state_env = self.get_env_for_pos_neg_bank_values()
+            state_env['a'] = self.get_padded_agent_id()
+            state_env['c'] = str(criterion)
+            self._call_lens(lens_in_file, env=state_env)
+            # self.new_state_values = self._get_new_state_values_from_out_file(
+            #     agent_state_out_file)
+            # self.set_state(self.new_state_values)
+
+            self.step_input_agent_id = predecessor_picked.get_key()
+            self.step_input_state_values = predecessor_picked.get_state()
+            self.step_lens_target = predecessor_picked\
+                ._get_new_state_values_from_out_file(agent_state_out_file, 1)
+            self.step_update_status = 1
+            return self._get_new_state_values_from_out_file(
+                agent_state_out_file)
+
+        else:
+            warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
+                          UserWarning)
+
+
     def calculate_new_state(self, influencing_algorithm='default', **kwargs):
         """Calculates new state values
 
