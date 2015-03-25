@@ -362,6 +362,12 @@ class LensAgent(Agent):
         '''
         takes in a list and returns a string of list by the delim
         used to write out agent state out to file
+
+        Example: self._list_to_str_delim([1, 2, 3, ' '])
+        > 1 2 3
+
+        Example self._list_to_str_delim([1, 2, 3], ',')
+        > 1,2,3
         '''
         return delim.join(map(str, list_to_convert))
 
