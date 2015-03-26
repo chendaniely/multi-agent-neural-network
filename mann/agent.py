@@ -814,6 +814,19 @@ class LensAgent(Agent):
         else:
             raise ValueError('Algorithm used for pick unknown')
 
+    def write_ex_attitude(self, list_to_write, base_name_text, base_name_number,
+                          fdir, **kwargs):
+        """
+        kwargs passed into `open()`
+        """
+        print(fdir, file=sys.stderr)
+        with open(fdir, kwargs['mode']) as f:
+            write_string = 'name: {}{}\nI: {};\n'.format(base_name_text,
+                                                       base_name_number,
+                                                       self._list_to_str_delim(
+                                                           list_to_write, ' '))
+            f.write(write_string)
+
     def write_to_ex(self, file_dir, write_type='state', **kwargs):
         '''
         file_dir should be in the ./tests/lens/ folder
