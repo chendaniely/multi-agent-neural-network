@@ -253,7 +253,7 @@ class LensAgent(Agent):
         assert len(prototype) == num_state_vars
         return prototype
 
-    def set_lens_agent_prototypes(number_of_prototypes):
+    def set_lens_agent_prototypes(number_of_prototypes, num_units):
         """Create prototypes for the :class:`LensAgent` class
 
         Args:
@@ -271,7 +271,7 @@ class LensAgent(Agent):
         """
         assert isinstance(number_of_prototypes, int),\
             "number_of_prototypes is not int"
-        list_of_prototypes = list(LensAgent._create_prototype(20,
+        list_of_prototypes = list(LensAgent._create_prototype(num_units,
                                                               [0, 1], [.5, .5])
                                   for x in range(number_of_prototypes))
         assert isinstance(list_of_prototypes[0], list)
