@@ -8,6 +8,11 @@ def test_convert_str_to_int_list():
     expected = np.array([1, 2, 3])
     assert np.array_equal(converted, expected)
 
+def test_convert_list_to_delim_str():
+    converted = helper.convert_list_to_delim_str([1, 2, 3])
+    expected = '1,2,3'
+    assert converted == expected
+
 def test_flip_1_0():
     calculated = helper.flip_1_0(1)
     expected = 0
