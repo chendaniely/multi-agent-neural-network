@@ -37,7 +37,6 @@ def convert_list_to_delim_str(list_to_convert, delim=','):
     """
     return delim.join(map(str, list_to_convert))
 
-
 def flip_1_0(number):
     """Flip 1 to 0, and vice versa
     :parm number: 1 or 0 to flip
