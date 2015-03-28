@@ -763,7 +763,7 @@ class LensAgent(Agent):
         """
         kwargs passed into `open()`
         """
-        print(fdir, file=sys.stderr)
+        # print(fdir, file=sys.stderr)
         with open(fdir, kwargs['mode']) as f:
             write_string = 'name: {}{}\nI: {};\n'.format(base_name_text,
                                                        base_name_number,
