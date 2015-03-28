@@ -320,7 +320,7 @@ class LensAgent(Agent):
                 list_of_example_values.append(train_list)
             return list_of_example_values
 
-    def _get_new_state_values_from_out_file(self, file_dir, column=0):
+    def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
         """Get new state values from .out file_d
 
         :returns: new state values
