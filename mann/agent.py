@@ -31,7 +31,11 @@ class AssignAgentIdError(Error):
     already has an ID
     """
 
-
+###############################################################################
+#
+# Agent Class
+#
+###############################################################################
 class Agent(object):
     '''
     This is the agent class.
@@ -121,6 +125,12 @@ class Agent(object):
         raise BaseAgentUpdateStateError(
             'Base agent class has no state to update')
 
+###############################################################################
+#
+# Binary Agent Class
+#
+###############################################################################
+
 
 class BinaryAgent(Agent):
     binary_agent_count = 0
@@ -207,7 +217,11 @@ class BinaryAgent(Agent):
         else:
             pass
 
-
+###############################################################################
+#
+# Lens Agent Class
+#
+###############################################################################
 class LensAgent(Agent):
     agent_count = 0
     prototypes = []
