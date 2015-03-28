@@ -315,15 +315,6 @@ class LensAgent(Agent):
                 list_of_example_values.append(train_list)
             return list_of_example_values
 
-    def _flip_1_0_value(self, number):
-        assert isinstance(number, int), 'number to flip is not int'
-        if number == 0:
-            return 1
-        elif number == 1:
-            return 0
-        else:
-            raise ValueError('Number to flip not 0 or 1')
-
     def _get_new_state_values_from_out_file(self, file_dir, column=0):
         """Get new state values from .out file_d
 
