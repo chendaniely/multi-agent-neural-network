@@ -371,12 +371,15 @@ class LensAgent(Agent):
         '''
         return delim.join(map(str, list_to_convert))
 
-    def _start_end_update_out(self, f):
+    def _start_end_update_out(self, f, sim_type='attitude'):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
         # TODO pass these values in from config file
-        return tuple([5, 14, 15, 24])
+        if(sim_type == 'global_cascade'):
+           return tuple([5, 14, 15, 24])
+        elif(sim_type == 'attitude'):
+           return tuple([254, 258, 260, 264])
 
     def _string_agent_state_to_ex(self):
         output = io.StringIO()
@@ -428,7 +431,6 @@ class LensAgent(Agent):
         # print('weight EX to write: ', lens_agent_state_str)
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
-
 
     def calculate_new_state_default_i(self, lens_in_file, agent_ex_file,
                                       infl_ex_file, agent_state_out_file,
