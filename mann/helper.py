@@ -17,6 +17,27 @@ def convert_str_to_int_array(string, delim=','):
     assert string != '', 'string parameter is empty'
     return np.array([int(s) for s in string.strip().split(delim)])
 
+def convert_list_to_delim_str(list_to_convert, delim=','):
+    """Return a string delimited by delim from a list
+
+    :parm list_to_convert: list of values to convert
+    :type list_to_convert: list
+
+    :parm delim: delimeter used in returned string
+    :type delim: str
+
+    :returns: string delimited with the delim
+    :rtype: str
+
+    Example: self._list_to_str_delim([1, 2, 3, ' '])
+    > 1 2 3
+
+    Example self._list_to_str_delim([1, 2, 3], ',')
+    > 1,2,3
+    """
+    return delim.join(map(str, list_to_convert))
+
+
 def flip_1_0(number):
     """Flip 1 to 0, and vice versa
     :parm number: 1 or 0 to flip

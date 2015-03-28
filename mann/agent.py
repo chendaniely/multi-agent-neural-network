@@ -349,19 +349,6 @@ class LensAgent(Agent):
         assert str(num_elements_per_bank).split('.')[1] == '0'
         return int(num_elements_per_bank)
 
-    def _list_to_str_delim(self, list_to_convert, delim):
-        '''
-        takes in a list and returns a string of list by the delim
-        used to write out agent state out to file
-
-        Example: self._list_to_str_delim([1, 2, 3, ' '])
-        > 1 2 3
-
-        Example self._list_to_str_delim([1, 2, 3], ',')
-        > 1,2,3
-        '''
-        return delim.join(map(str, list_to_convert))
-
     def _start_end_update_out(self, f, sim_type='attitude'):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
