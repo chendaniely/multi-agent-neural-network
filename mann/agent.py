@@ -610,6 +610,7 @@ class LensAgent(Agent):
         self.step_update_status = None
         self.step_lens_target = [None] * len(self.get_state())
         self.step_input_agent_id = None
+        self.temp_new_state = None
 
     def seed_agent_update(self, seed_list, lens_in_file,
                           self_ex_file_location, self_state_out_file,
