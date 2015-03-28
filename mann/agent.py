@@ -354,14 +354,14 @@ class LensAgent(Agent):
         assert str(num_elements_per_bank).split('.')[1] == '0'
         return int(num_elements_per_bank)
 
-    def _start_end_update_out(self, f, sim_type='attitude'):
+    def _start_end_update_out(self, f, sim_type='LensAgentRecurrent_attitude'):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
         # TODO pass these values in from config file
         if(sim_type == 'global_cascade'):
            return tuple([5, 14, 15, 24])
-        elif(sim_type == 'attitude'):
+        elif(sim_type == 'LensAgentRecurrent_attitude'):
            return tuple([254, 258, 260, 264])
 
     def _string_agent_state_to_ex(self):
