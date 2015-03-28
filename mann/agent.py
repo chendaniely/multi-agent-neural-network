@@ -26,6 +26,11 @@ class BaseAgentUpdateStateError(Error):
     '''Raised when the update_agent_state method
     is called from the Agent class'''
 
+class AssignAgentIdError(Error):
+    """Raised when trying to assign an agent id to an agent that
+    already has an ID
+    """
+
 
 class Agent(object):
     '''
