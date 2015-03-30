@@ -55,7 +55,7 @@ class NetworkAgent(object):
             print("agent ", new_agent.get_key(), " created",
                   "; type: ", type(new_agent))
 
-            all_agents[new_agent.get_key()] = new_agent
+            all_agents[new_agent.agent_id] = new_agent
 
         print('total number of agents created: ', new_agent.agent_count)
 
