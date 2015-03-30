@@ -4,7 +4,7 @@ setup(
     name='mann',
     packages=['mann'],  # this must be the same as the name above
     version='0.0.1',
-    description='Multidisciplinary diffusion models',
+    description='Multi-Agent Neural-Network',
     author='Daniel Chen',
     author_email='chend@vbi.vt.edu',
     license="MIT",
