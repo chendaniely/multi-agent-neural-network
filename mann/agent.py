@@ -307,8 +307,10 @@ class LensAgent(Agent):
         be a variable that contains all the enviornment variables needed
         for lens to run the .in file properly
         """
-        subprocess.call(['lens', '-batch', lens_in_file],
-                        env=kwargs.get('env'))
+        subprocess.call(['lens', '-batch', lens_in_file_dir], **kwargs)
+
+        # subprocess.call(['lens', '-batch', lens_in_file],
+        #                env=kwargs.get('env'))
 
     def _create_weight_training_examples(self, filename,
                                          base_example,
