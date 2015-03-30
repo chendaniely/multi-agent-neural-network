@@ -786,6 +786,14 @@ class LensAgent(Agent):
         else:
             raise ValueError('Algorithm used for pick unknown')
 
+    def pick_random_predecessor(self, list_of_predecessors, num_pick):
+        """Pick a random number of predecessor(s) depending on num_pick
+
+        :returns: randomly selected predecessor from list_of_predecessors
+        :rtype: tuple
+        """
+        return tuple(random.sample(self.predecessors), num_pick)
+
     def write_ex_attitude(self, list_to_write, base_name_text, base_name_number,
                           fdir, **kwargs):
         """
