@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import re
 
 import mann.agent as agent
+import mann as mann
 
 
 class NetworkAgent(object):
@@ -28,16 +29,25 @@ class NetworkAgent(object):
             if agent_type[0] == 'binary':
                 new_agent = agent.BinaryAgent()
             elif agent_type[0] == 'lens':
-                new_agent = agent.LensAgent(agent_type[1])
-                new_agent.create_weight_file(kwargs.get('weight_in_file'),
-                                             kwargs.get('weight_dir'),
-                                             kwargs.get('base_example'),
-                                             kwargs.get('num_train_examples'),
-                                             kwargs.get(
-                                                 'prototype_mutation_prob'),
-                                             kwargs.get('training_criterion')
+                if agent_type[2] == 'feed_forward_global_cascade':
+                    new_agent = agent.LensAgent(agent_type[1])
+                    new_agent.create_weight_file(kwargs.get('weight_in_file'),
+                                                 kwargs.get('weight_dir'),
+                                                 kwargs.get('base_example'),
+                                                 kwargs.get(
+                                                     'num_train_examples'),
+                                                 kwargs.get(
+                                                     'prototype_mutation_prob'),
+                                                 kwargs.get(
+                                                     'training_criterion')
                                              )
-
+                elif agent_type[2] == 'recurrent_attitude':
+                    # nothing really happens after the agent gets created
+                    # this is more of a place holder for later training
+                    # procedures
+                    new_agent = mann.agents.LensAgentRecurrent(agent_type[1])
+                else:
+                    raise ValueError('Unknown Lens Agent Type')
             else:
                 raise agent.UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
