@@ -5,7 +5,7 @@ various .in files used to interface with LENS
 
 import re
 
-import mann.helper
+# from mann import helper
 
 class LensInWriterHelper(object):
     def __init__(self):

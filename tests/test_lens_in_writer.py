@@ -2,8 +2,9 @@
 
 import sys
 
-import mann.lens_in_writer as lens_writer
-import mann.helper as helper
+from mann import helper
+from mann import lens_in_writer
+
 
 def test_generate_lens_recurrent_attitude():
     test_writer = lens_writer.LensInWriterHelper()

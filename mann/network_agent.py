@@ -5,9 +5,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import re
 
-import mann.agent as agent
-import mann as mann
 
+#import mann.agent as agent
+from mann import agent
+from mann import agent_lens_recurrent
 
 class NetworkAgent(object):
     def __init__(self):
