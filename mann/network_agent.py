@@ -102,7 +102,7 @@ class NetworkAgent(object):
         # http://stackoverflow.com/questions/6116978/python-replace-multiple-strings
         # dict.iteritems() is a python 2 syntax
         # python 3 has dict.itemd()
-        rep = {"[": "", "]": ""}
+        rep = {"[": "", "]": "", "(": "", ")": ""}
         rep = dict((re.escape(k), v) for k, v in rep.items())
         pattern = re.compile("|".join(rep.keys()))
         text = pattern.sub(lambda m: rep[re.escape(m.group(0))],
