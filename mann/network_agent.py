@@ -77,7 +77,7 @@ class NetworkAgent(object):
         return self.G
 
     def export_edge_list(self, export_file_dir, **kwargs):
-        self.G.write_edgelist(export_file_dir, **kwargs)
+        nx.write_edgelist(self.G, export_file_dir, **kwargs)
 
     def set_predecessors_for_each_node(self):
         # iterate through all nodes in network
