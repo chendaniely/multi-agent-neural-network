@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 
 import random
-import networkx as nx
-import matplotlib.pyplot as plt
 import re
 
+import networkx as nx
+import matplotlib.pyplot as plt
 
 #import mann.agent as agent
 from mann import agent
