@@ -21,7 +21,7 @@ def test_generate_lens_recurrent_attitude():
     assert calculated == expected
 
 def test_generate_lens_recurrent_attitude_list():
-    test_writer = lens_writer.LensInWriterHelper()
+    test_writer = lens_in_writer.LensInWriterHelper()
     array_to_string_agent = helper.convert_list_to_delim_str([1, 2, 3], ' ')
     array_to_string_infl = helper.convert_list_to_delim_str([4, 5, 6], ' ')
     calculated = test_writer.generate_lens_recurrent_attitude(
