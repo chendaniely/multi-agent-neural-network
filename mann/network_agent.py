@@ -6,7 +6,6 @@ import re
 import networkx as nx
 import matplotlib.pyplot as plt
 
-#import mann.agent as agent
 from mann import agent
 from mann import agent_lens_recurrent
 
