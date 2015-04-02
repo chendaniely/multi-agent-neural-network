@@ -14,6 +14,9 @@ class NetworkAgent(object):
     def __init__(self):
         pass
 
+    def __eq__(self, x, y):
+        return x.agent_id == y.agent_id
+
     def create_multidigraph_of_agents_from_edge_list(
             self, number_of_agents, edge_list, fig_path,
             agent_type=tuple(['None']), **kwargs):
