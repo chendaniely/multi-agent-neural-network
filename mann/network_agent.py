@@ -49,7 +49,8 @@ class NetworkAgent(object):
                     # nothing really happens after the agent gets created
                     # this is more of a place holder for later training
                     # procedures
-                    new_agent = mann.agents.LensAgentRecurrent(agent_type[1])
+                    new_agent = agent_lens_recurrent.LensAgentRecurrent(
+                        agent_type[1])
                 else:
                     raise ValueError('Unknown Lens Agent Type')
             else:
