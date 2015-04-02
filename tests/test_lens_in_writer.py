@@ -7,7 +7,7 @@ from mann import lens_in_writer
 
 
 def test_generate_lens_recurrent_attitude():
-    test_writer = lens_writer.LensInWriterHelper()
+    test_writer = lens_in_writer.LensInWriterHelper()
     calculated = test_writer.generate_lens_recurrent_attitude(
         '1, 2, 3', '4, 5, 6')
     expected =\
