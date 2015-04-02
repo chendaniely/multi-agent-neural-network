@@ -38,5 +38,5 @@ class LensInWriterHelper(object):
     def write_in_file(file_dir, string):
         """Writes a given string to the given file_dir
         """
-        with open(file_dir) as f:
+        with open(file_dir, 'w') as f:
             f.write(string)
