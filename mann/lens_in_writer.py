@@ -35,7 +35,7 @@ class LensInWriterHelper(object):
                  format(agent_state_clean, infl_state_clean)
         return(string)
 
-    def write_in_file(file_dir, string):
+    def write_in_file(self, file_dir, string):
         """Writes a given string to the given file_dir
         """
         with open(file_dir, 'w') as f:
