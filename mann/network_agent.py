@@ -133,7 +133,7 @@ class NetworkAgent(object):
                                   # str(node.step_input_agent_id),  # infl ID
                                   # agent state
                                   self.str_list_with_out_brackets(
-                                      node.get_state()),
+                                      node.state)#,
                                   # input state
                                   # self.str_list_with_out_brackets(
                                   #     node.step_input_state_values),
