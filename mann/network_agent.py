@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from mann import agent
 from mann import agent_lens_recurrent
 
+
 class NetworkAgent(object):
     def __init__(self):
         pass
@@ -43,8 +44,7 @@ class NetworkAgent(object):
                                                  kwargs.get(
                                                      'prototype_mutation_prob'),
                                                  kwargs.get(
-                                                     'training_criterion')
-                                             )
+                                                     'training_criterion'))
                 elif agent_type[2] == 'recurrent_attitude':
                     # nothing really happens after the agent gets created
                     # this is more of a place holder for later training
@@ -129,11 +129,12 @@ class NetworkAgent(object):
                 f.write(",".join([str(time_step),  # time step
                                   str(node.get_key()),  # agent ID
                                   str(node.num_update),  # total num updates
-                                  # str(node.step_update_status),  # update state
+                                  # update state
+                                  # str(node.step_update_status),
                                   # str(node.step_input_agent_id),  # infl ID
                                   # agent state
                                   self.str_list_with_out_brackets(
-                                      node.state)#,
+                                      node.state)  # ,
                                   # input state
                                   # self.str_list_with_out_brackets(
                                   #     node.step_input_state_values),
