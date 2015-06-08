@@ -24,6 +24,9 @@ https://cmu.app.box.com/s/8dbuauusbm9bamggesv6
     tar xvzf Lens.tgz
 
 note the older lens link has a capital letter, the one from Stanford has a lower case
+#### Arch Linux
+The commands below (without any of the apt-get commands) should *just* work.
+Remember to export the variables listed at the bottom of the document
 
 #### Ubuntu 14.04/14.10 64-bit
 You will need to install the following packages
