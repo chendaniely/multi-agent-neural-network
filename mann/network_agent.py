@@ -170,22 +170,35 @@ class NetworkAgent(object):
         """
         with open(file_to_write, mode=file_mode, encoding='utf-8') as f:
             for node in self.G.__iter__():
-                f.write(",".join([str(time_step),  # time step
-                                  str(node.get_key()),  # agent ID
-                                  str(node.num_update),  # total num updates
-                                  str(node.step_update_status),  # update state
-                                  str(node.step_input_agent_id),  # infl ID
-                                  # agent state
-                                  self.str_list_with_out_brackets(
-                                      node.get_state()),
-                                  # input state
-                                  self.str_list_with_out_brackets(
-                                      node.step_input_state_values),
-                                  # lens target
-                                  self.str_list_with_out_brackets(
-                                      node.step_lens_target),
-                                  # prototype
-                                  self.str_list_with_out_brackets(
-                                      node.prototype)
-                                  ]) + "\n")
+                if agent_type == 'binary':
+                    f.write(",".join([
+                        str(time_step),  # time step
+                        str(node.agent_id),  # agent ID
+                        str(node.num_update),  # total num updates
+                        str(node.step_update_status),  # update state
+                        # str(node.step_input_agent_id),  # infl ID
+                        # agent state
+                        self.str_list_with_out_brackets(node.state)
+                        # input state
+                        # self.str_list_with_out_brackets(
+                        #     node.step_input_state_values),
+                    ]) + "\n")
+
+                elif agent_type == 'lens':
+                    f.write(",".join([
+                        str(time_step),  # time step
+                        str(node.agent_id),  # agent ID
+                        str(node.num_update),  # total num updates
+                        str(node.step_update_status),  # update state
+                        str(node.step_input_agent_id),  # infl ID
+                        # agent state
+                        self.str_list_with_out_brackets(node.state),
+                        # input state
+                        self.str_list_with_out_brackets(
+                            node.step_input_state_values),
+                        # lens target
+                        self.str_list_with_out_brackets(node.step_lens_target),
+                        # prototype
+                        self.str_list_with_out_brackets(node.prototype)
+                    ]) + "\n")
                 node.reset_step_variables()
