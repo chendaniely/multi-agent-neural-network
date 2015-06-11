@@ -125,103 +125,7 @@ class Agent(object):
         raise BaseAgentUpdateStateError(
             'Base agent class has no state to update')
 
-###############################################################################
-#
-# Binary Agent Class
-#
-###############################################################################
 
-
-class BinaryAgent(Agent):
-    binary_agent_count = 0
-
-    def __init__(self):
-        self.agent_id = BinaryAgent.binary_agent_count
-        BinaryAgent.binary_agent_count += 1
-        self.binary_state = 0
-        self.predecessors = []
-
-    def set_binary_state(self, value):
-        # binary state means 0 or 1
-        assert value in [0, 1],\
-            "binary state can only be 0 or 1, got %r" % value
-
-        # make sure we are only changing the state when the value is different
-        assert value != self.binary_state, "changing state to same value"
-
-        self.binary_state = value
-
-    def get_state(self):
-        return self.binary_state
-
-    def seed_agent(self):
-        self.set_binary_state(1)
-
-    def random_binary_state(self):
-        '''
-        generates a random state for the agent as it is created
-        raises exception if state cannot be assign
-
-        Returns:
-            int: value of 0 or 1 for a :py:data::self.state
-        '''
-        random_float = random.random()
-        if random_float < .5:
-            return 0
-        elif random_float >= .5:
-            return 1
-        # else:
-        #     return -1
-        #     raise Exception("Error in _random_state")
-
-    def _update_agent_state_default(self):
-        '''
-        Looks at the list of predessors for the selected agent
-        randomly picks one of them
-        if the selected predessor is has a different state
-        there will be a 70% chance that the selected agent will change states
-        to match the predessor's state
-        otherwise no state is changed
-        '''
-        # print('in _update_agent_state_default')
-        # print("type of predecssors: ",  type(self.predecessors))  # list
-        # print("container of predessors: ", self.predecessors)
-        predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-        # print("predecessor picked: ", predecessor_picked)
-        # print("predecessor picked key: ", predecessor_picked.get_key())
-        if self.binary_state == predecessor_picked.binary_state:
-            # print("no update required, binary states are the same")
-            # print("self.binary_state = ", self.binary_state)
-            # print("predecessor_picked.binary_state = ",
-            #       predecessor_picked.binary_state)
-            pass
-        else:
-            # print('updateing agent state')
-            random_number = random.random()
-            if random_number < 0.7:
-                self.set_binary_state(predecessor_picked.binary_state)
-            else:
-                pass
-
-    def update_agent_state(self, pick='default'):
-        '''
-        pick = 'default': uses the update_agent__state_default algorithm
-        '''
-        # print('in update_agent_state')
-        # print('has predecessors', self.has_predessor())
-        if self.has_predessor():
-            if pick == 'default':
-                self._update_agent_state_default()
-            else:
-                raise ValueError("Algorithm used for pick unknown")
-        else:
-            pass
-
-###############################################################################
-#
-# Lens Agent Class
-#
-###############################################################################
 class LensAgent(Agent):
     agent_count = 0
     prototypes = []
@@ -398,6 +302,12 @@ class LensAgent(Agent):
         output.close()
         # print(contents)
         return contents
+
+    def _str_to_int_list(self, string):
+        '''Returns a list of ints from a comma separated string of int values
+        used for creating a prototype list from a config file (which is a str)
+        '''
+        return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file,
@@ -752,9 +662,8 @@ class LensAgent(Agent):
     def get_env_for_pos_neg_bank_values(self):
         # TODO this should be a hidden function
         current_env = os.environ
-        # padded_agent_number = "{0:06d}".format(self.get_key())
-        # padded_agent_number = self.get_padded_agent_id()
-        # current_env['a'] = padded_agent_number
+        padded_agent_number = "{0:06d}".format(self.get_key())
+        current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
             # print(bank_values, file=sys.stderr)
@@ -768,6 +677,37 @@ class LensAgent(Agent):
                 # print(current_env.get(var_to_export))
                 # print(current_env.get(var_key))
         return current_env
+
+    def mutate(self, list_to_mutate, mutation_prob):
+        '''Mutates each element of a list by the mutation_prob
+        Mutating means flipping the 1 to a 0 or vice versa
+
+        This calculation is usually used to create the training situations
+        by mutating the prototype to create training examples
+
+        This is used by the seeding function to mutate the prototype by
+        the mutation_prob to do the initial seed.
+
+        if the mutation_prob == 0, then the prototype is returned
+        else, there is a probabliy that prototype is still returned
+        '''
+        if mutation_prob > 0.0 and mutation_prob <= 1:
+            post_mutation_list = list_to_mutate[:]
+            for idx, value in enumerate(list_to_mutate):
+                prob = random.random()
+                if prob <= mutation_prob:
+                    post_mutation_list[idx] = self._flip_1_0_value(value)
+            if ((post_mutation_list is list_to_mutate) or
+               (post_mutation_list == list_to_mutate)):
+                warnings.warn('Mutated example is equal to prototype',
+                              UserWarning)
+            return post_mutation_list
+        elif mutation_prob == 0.0:
+            return list_to_mutate
+        else:
+            raise ValueError('Incorrect value for mutation probability ' +
+                             'probability needs to be between ' +
+                             '0 and 1 inclusive')
 
     def update_agent_state(self, pick='default', **kwargs):
         # if there is an agent_state_out_file, clear it
