@@ -54,7 +54,7 @@ class NetworkAgent(object):
 
             # createing the different types of agents for the network
             if agent_type[0] == 'binary':
-                new_agent = agent.BinaryAgent()
+                new_agent = mann.agent_binary.BinaryAgent(agent_type[1])
             elif agent_type[0] == 'lens':
                 if agent_type[2] == 'feed_forward_global_cascade':
                     new_agent = agent.LensAgent(agent_type[1])
@@ -76,7 +76,7 @@ class NetworkAgent(object):
                 else:
                     raise ValueError('Unknown Lens Agent Type')
             else:
-                raise agent.UnknownAgentTypeError(
+                raise mann.agent.UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
 
             logging.info("agent {} created: type: {}".
