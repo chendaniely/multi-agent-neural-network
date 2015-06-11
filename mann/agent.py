@@ -103,7 +103,7 @@ class Agent(object):
         '''
         self.predecessors = list_of_predecessors
 
-    def has_predessor(self):
+    def has_predecessor(self):
         if len(self.predecessors) == 0:
             return False
         else:
