@@ -178,6 +178,8 @@ class NetworkAgent(object):
                                     selected_agent.state))
             selected_agent.temp_new_state = None
 
+    def update_sequential(self, num_agent_update):
+        pass
 
     def write_network_agent_step_info(self, time_step, file_to_write,
                                       file_mode, agent_type):
