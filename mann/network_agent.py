@@ -49,9 +49,9 @@ class NetworkAgent(object):
         # dictonary container for agents, key values will be the agent.get_key
         all_agents = {}
 
-        # create all the agents
         for i in range(number_of_agents):
-            print("creating agent # ", i)
+            logging.info("creating agent # {}".format(i))
+
             # createing the different types of agents for the network
             if agent_type[0] == 'binary':
                 new_agent = agent.BinaryAgent()
@@ -79,20 +79,28 @@ class NetworkAgent(object):
                 raise agent.UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
 
-            print("agent ", new_agent.get_key(), " created",
-                  "; type: ", type(new_agent))
+            logging.info("agent {} created: type: {}".
+                         format(new_agent.get_key(), type(new_agent)))
+            logging.info("agent {} state: {}".
+                         format(new_agent.get_key(), str(new_agent.state)))
+            logging.info("agent {} threshold: {}".
+                         format(new_agent.get_key(), str(new_agent.threshold)))
 
             all_agents[new_agent.agent_id] = new_agent
 
-        print('total number of agents created: ', new_agent.agent_count)
+
+        logging.info('total number of agents created: {}'.
+                     format(new_agent.agent_count))
 
         self.G.add_nodes_from(all_agents.values())
-        print('number of nodes created: ', len(self.G))
+        logging.info('number of nodes created: {}'.format(len(self.G)))
 
+        logging.info('Creating edges')
         for edge in edge_list:
             u, v = edge
             self.G.add_edge(all_agents[u], all_agents[v])
 
+        logging.info('Saving plot of mann copied graph')
         nx.draw_circular(self.G)
         # plt.show()
         plt.savefig(fig_path)
@@ -110,6 +118,9 @@ class NetworkAgent(object):
             # since the nodes are an Agent class we can
             # assign the predecessors agent instance variable to the iter
             node_agent.set_predecessors(predecessors)
+            logging.info('Agent {} predecessors assigned'.
+                         format(node_agent.agent_id))
+            print(node_agent.predecessors)
 
     def sample_network(self, number_of_agents_to_sample):
         '''
