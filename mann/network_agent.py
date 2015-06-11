@@ -145,6 +145,39 @@ class NetworkAgent(object):
                            str(list_to_str))
         return text
 
+    def update_simultaneous(self, num_agents_update, pick,
+                            update='simultaneous'):
+        assert isinstance(num_agents_update, int)
+        agents_for_update = self.sample_network(num_agents_update)
+
+        logging.info('Num agents for update: {}'.
+                     format(len(agents_for_update)))
+
+        # assign new temp value
+        for selected_agent in agents_for_update:
+            logging.info('Updating: {}'.
+                         format(self.G.nodes()[selected_agent.agent_id]))
+            assert selected_agent.temp_new_state is None
+            selected_agent.update_agent_state(update, pick)
+
+        # assign new temp value as final state simultaneous update
+        logging.info('Performing simultaneous update')
+        for selected_agent in agents_for_update:
+            if selected_agent.temp_new_state == 1:
+                logging.info('Update agent {}: setting state to {}, was {}'.
+                             format(selected_agent.agent_id,
+                                    selected_agent.temp_new_state,
+                                    selected_agent.state))
+                assert selected_agent.temp_new_state is not None
+                selected_agent.state = selected_agent.temp_new_state
+                selected_agent.num_update += 1
+            else:
+                logging.info('Agent {}: No state change to {}, was {}'.
+                             format(selected_agent.agent_id,
+                                    selected_agent.temp_new_state,
+                                    selected_agent.state))
+            selected_agent.temp_new_state = None
+
 
     def write_network_agent_step_info(self, time_step, file_to_write,
                                       file_mode, agent_type):
