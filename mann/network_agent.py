@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import re
 import logging
 
-import mann.agent as agent
+import mann.agent
+import mann.agent_binary
 
 
 class NetworkAgent(object):
