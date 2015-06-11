@@ -19,7 +19,30 @@ class NetworkAgent(object):
 
     def create_multidigraph_of_agents_from_edge_list(
             self, number_of_agents, edge_list, fig_path,
-            agent_type=tuple(['None']), **kwargs):
+            agent_type=tuple(['None']), logger=None, **kwargs):
+        """Create multi directed networkx graph of agents from an edge list
+
+        :param num_of_agents: number of agents in the network
+        :type num_of_agents: int
+
+        :param edge_list: edge list of network
+        :type edge_list: iterable
+
+        :param fig_path: figure path of output network image
+        :type fig_path: str
+
+        :param agent_type: type of agent, binary or lens
+        :type agent_type: tuple
+
+        :param logger: logger object, not used
+        :type logger: None
+
+        :param **kwargs: kwargs used for lens agent creation
+        :type **kwargs: dict
+        """
+        logging.info('In mann.network_agent.'
+                     'create_multidigraph_of_agents_from_edge_list()')
+
         # create the graph
         self.G = nx.MultiDiGraph()
 
