@@ -51,9 +51,9 @@ class NetworkAgent(object):
 
             # createing the different types of agents for the network
             if agent_type[0] == 'binary':
-                new_agent = agent.BinaryAgent()
+                new_agent = mann.agent_binary.BinaryAgent(agent_type[1])
             elif agent_type[0] == 'lens':
-                new_agent = agent.LensAgent(agent_type[1])
+                new_agent = mann.agent.LensAgent(agent_type[1])
                 new_agent.create_weight_file(kwargs.get('weight_in_file'),
                                              kwargs.get('weight_dir'),
                                              kwargs.get('base_example'),
@@ -64,7 +64,7 @@ class NetworkAgent(object):
                                              )
 
             else:
-                raise agent.UnknownAgentTypeError(
+                raise mann.agent.UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
 
             logging.info("agent {} created: type: {}".
