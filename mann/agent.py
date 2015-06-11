@@ -229,7 +229,8 @@ class LensAgent(Agent):
     def __init__(self, num_state_vars):
         """Creates a LensAgent instance
 
-        :param num_state_vars: Total number of processing units in the LensAgent.
+        :param num_state_vars:
+        Total number of processing units in the LensAgent.
         """
         print('class prototypes: ', LensAgent.prototypes)
         print(len(LensAgent.prototypes))
