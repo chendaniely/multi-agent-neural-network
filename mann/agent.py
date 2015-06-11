@@ -235,7 +235,7 @@ class LensAgent(Agent):
         print('class prototypes: ', LensAgent.prototypes)
         print(len(LensAgent.prototypes))
         assert len(LensAgent.prototypes) >= 1,\
-               "LensAgent prototypes need to be set before creating "
+            "LensAgent prototypes need to be set before creating "
 
         self.agent_id = LensAgent.agent_count
         LensAgent.agent_count += 1
