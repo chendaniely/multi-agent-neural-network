@@ -74,8 +74,8 @@ class NetworkAgent(object):
             logging.info("agent {} threshold: {}".
                          format(new_agent.get_key(), str(new_agent.threshold)))
 
-            all_agents[new_agent.get_key()] = new_agent
 
+            all_agents[new_agent.agent_id] = new_agent
 
         logging.info('total number of agents created: {}'.
                      format(new_agent.agent_count))
