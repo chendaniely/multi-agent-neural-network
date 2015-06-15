@@ -16,7 +16,8 @@ setup(
     scripts=['mann/agent.py',
              'mann/agent_binary.py',
              'mann/network_agent.py',
-             'mann/network.py'],
+             'mann/network.py',
+             'mann/batch_sweep.py'],
     classifiers=['Natural Language :: English', ],
     long_description='README.md',
 )
