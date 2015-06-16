@@ -1,16 +1,21 @@
 #! /usr/bin/env python
 
 import random
-import networkx as nx
-import matplotlib.pyplot as plt
 import re
 
-import mann.agent as agent
+import networkx as nx
+import matplotlib.pyplot as plt
 
+#import mann.agent as agent
+from mann import agent
+from mann import agent_lens_recurrent
 
 class NetworkAgent(object):
     def __init__(self):
         pass
+
+    def __eq__(self, x, y):
+        return x.agent_id == y.agent_id
 
     def create_multidigraph_of_agents_from_edge_list(
             self, number_of_agents, edge_list, fig_path,
@@ -28,16 +33,26 @@ class NetworkAgent(object):
             if agent_type[0] == 'binary':
                 new_agent = agent.BinaryAgent()
             elif agent_type[0] == 'lens':
-                new_agent = agent.LensAgent(agent_type[1])
-                new_agent.create_weight_file(kwargs.get('weight_in_file'),
-                                             kwargs.get('weight_dir'),
-                                             kwargs.get('base_example'),
-                                             kwargs.get('num_train_examples'),
-                                             kwargs.get(
-                                                 'prototype_mutation_prob'),
-                                             kwargs.get('training_criterion')
+                if agent_type[2] == 'feed_forward_global_cascade':
+                    new_agent = agent.LensAgent(agent_type[1])
+                    new_agent.create_weight_file(kwargs.get('weight_in_file'),
+                                                 kwargs.get('weight_dir'),
+                                                 kwargs.get('base_example'),
+                                                 kwargs.get(
+                                                     'num_train_examples'),
+                                                 kwargs.get(
+                                                     'prototype_mutation_prob'),
+                                                 kwargs.get(
+                                                     'training_criterion')
                                              )
-
+                elif agent_type[2] == 'recurrent_attitude':
+                    # nothing really happens after the agent gets created
+                    # this is more of a place holder for later training
+                    # procedures
+                    new_agent = agent_lens_recurrent.LensAgentRecurrent(
+                        agent_type[1])
+                else:
+                    raise ValueError('Unknown Lens Agent Type')
             else:
                 raise agent.UnknownAgentTypeError(
                     'Unknown agent specified as nodes for network')
@@ -45,7 +60,7 @@ class NetworkAgent(object):
             print("agent ", new_agent.get_key(), " created",
                   "; type: ", type(new_agent))
 
-            all_agents[new_agent.get_key()] = new_agent
+            all_agents[new_agent.agent_id] = new_agent
 
         print('total number of agents created: ', new_agent.agent_count)
 
@@ -87,7 +102,7 @@ class NetworkAgent(object):
         # http://stackoverflow.com/questions/6116978/python-replace-multiple-strings
         # dict.iteritems() is a python 2 syntax
         # python 3 has dict.itemd()
-        rep = {"[": "", "]": ""}
+        rep = {"[": "", "]": "", "(": "", ")": ""}
         rep = dict((re.escape(k), v) for k, v in rep.items())
         pattern = re.compile("|".join(rep.keys()))
         text = pattern.sub(lambda m: rep[re.escape(m.group(0))],
@@ -114,19 +129,19 @@ class NetworkAgent(object):
                 f.write(",".join([str(time_step),  # time step
                                   str(node.get_key()),  # agent ID
                                   str(node.num_update),  # total num updates
-                                  str(node.step_update_status),  # update state
-                                  str(node.step_input_agent_id),  # infl ID
+                                  # str(node.step_update_status),  # update state
+                                  # str(node.step_input_agent_id),  # infl ID
                                   # agent state
                                   self.str_list_with_out_brackets(
-                                      node.get_state()),
+                                      node.state)#,
                                   # input state
-                                  self.str_list_with_out_brackets(
-                                      node.step_input_state_values),
+                                  # self.str_list_with_out_brackets(
+                                  #     node.step_input_state_values),
                                   # lens target
-                                  self.str_list_with_out_brackets(
-                                      node.step_lens_target),
+                                  # self.str_list_with_out_brackets(
+                                  #     node.step_lens_target),
                                   # prototype
-                                  self.str_list_with_out_brackets(
-                                      node.prototype)
+                                  # self.str_list_with_out_brackets(
+                                  #     node.prototype)
                                   ]) + "\n")
                 node.reset_step_variables()

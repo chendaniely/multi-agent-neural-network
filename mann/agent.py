@@ -26,7 +26,16 @@ class BaseAgentUpdateStateError(Error):
     '''Raised when the update_agent_state method
     is called from the Agent class'''
 
+class AssignAgentIdError(Error):
+    """Raised when trying to assign an agent id to an agent that
+    already has an ID
+    """
 
+###############################################################################
+#
+# Agent Class
+#
+###############################################################################
 class Agent(object):
     '''
     This is the agent class.
@@ -116,6 +125,12 @@ class Agent(object):
         raise BaseAgentUpdateStateError(
             'Base agent class has no state to update')
 
+###############################################################################
+#
+# Binary Agent Class
+#
+###############################################################################
+
 
 class BinaryAgent(Agent):
     binary_agent_count = 0
@@ -202,7 +217,11 @@ class BinaryAgent(Agent):
         else:
             pass
 
-
+###############################################################################
+#
+# Lens Agent Class
+#
+###############################################################################
 class LensAgent(Agent):
     agent_count = 0
     prototypes = []
@@ -278,11 +297,20 @@ class LensAgent(Agent):
         LensAgent.prototypes = list_of_prototypes[:]
         print('list of prototypes created: ', str(list_of_prototypes))
 
-    def _call_lens(self, lens_in_file, **kwargs):
-        # pass
-        subprocess.call(['lens', '-batch', lens_in_file],
-                        env=kwargs.get('env'))
-        # '/home/dchen/Desktop/ModelTesting/MainM1PlautFix2.in'])
+    def call_lens(self, lens_in_file_dir, **kwargs):
+        """Calls LENS
+
+        :param lens_in_file_dir: file dir of .in file to use for LENS
+        :type lens_in_file_dir: str
+
+        Typically the 'env' key is passed in the kwargs, where 'env' will
+        be a variable that contains all the enviornment variables needed
+        for lens to run the .in file properly
+        """
+        subprocess.call(['lens', '-batch', lens_in_file_dir], **kwargs)
+
+        # subprocess.call(['lens', '-batch', lens_in_file],
+        #                env=kwargs.get('env'))
 
     def _create_weight_training_examples(self, filename,
                                          base_example,
@@ -315,16 +343,7 @@ class LensAgent(Agent):
                 list_of_example_values.append(train_list)
             return list_of_example_values
 
-    def _flip_1_0_value(self, number):
-        assert isinstance(number, int), 'number to flip is not int'
-        if number == 0:
-            return 1
-        elif number == 1:
-            return 0
-        else:
-            raise ValueError('Number to flip not 0 or 1')
-
-    def _get_new_state_values_from_out_file(self, file_dir, column=0):
+    def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
         """Get new state values from .out file_d
 
         :returns: new state values
@@ -358,27 +377,14 @@ class LensAgent(Agent):
         assert str(num_elements_per_bank).split('.')[1] == '0'
         return int(num_elements_per_bank)
 
-    def _list_to_str_delim(self, list_to_convert, delim):
-        '''
-        takes in a list and returns a string of list by the delim
-        used to write out agent state out to file
-
-        Example: self._list_to_str_delim([1, 2, 3, ' '])
-        > 1 2 3
-
-        Example self._list_to_str_delim([1, 2, 3], ',')
-        > 1,2,3
-        '''
-        return delim.join(map(str, list_to_convert))
-
-    def _start_end_update_out(self, f, sim_type='attitude'):
+    def _start_end_update_out(self, f, sim_type='LensAgentRecurrent_attitude'):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
         # TODO pass these values in from config file
         if(sim_type == 'global_cascade'):
            return tuple([5, 14, 15, 24])
-        elif(sim_type == 'attitude'):
+        elif(sim_type == 'LensAgentRecurrent_attitude'):
            return tuple([254, 258, 260, 264])
 
     def _string_agent_state_to_ex(self):
@@ -391,12 +397,6 @@ class LensAgent(Agent):
         output.close()
         # print(contents)
         return contents
-
-    def _str_to_int_list(self, string):
-        '''Returns a list of ints from a comma separated string of int values
-        used for creating a prototype list from a config file (which is a str)
-        '''
-        return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file,
@@ -768,37 +768,6 @@ class LensAgent(Agent):
                 # print(current_env.get(var_key))
         return current_env
 
-    def mutate(self, list_to_mutate, mutation_prob):
-        '''Mutates each element of a list by the mutation_prob
-        Mutating means flipping the 1 to a 0 or vice versa
-
-        This calculation is usually used to create the training situations
-        by mutating the prototype to create training examples
-
-        This is used by the seeding function to mutate the prototype by
-        the mutation_prob to do the initial seed.
-
-        if the mutation_prob == 0, then the prototype is returned
-        else, there is a probabliy that prototype is still returned
-        '''
-        if mutation_prob > 0.0 and mutation_prob <= 1:
-            post_mutation_list = list_to_mutate[:]
-            for idx, value in enumerate(list_to_mutate):
-                prob = random.random()
-                if prob <= mutation_prob:
-                    post_mutation_list[idx] = self._flip_1_0_value(value)
-            if ((post_mutation_list is list_to_mutate) or
-               (post_mutation_list == list_to_mutate)):
-                warnings.warn('Mutated example is equal to prototype',
-                              UserWarning)
-            return post_mutation_list
-        elif mutation_prob == 0.0:
-            return list_to_mutate
-        else:
-            raise ValueError('Incorrect value for mutation probability ' +
-                             'probability needs to be between ' +
-                             '0 and 1 inclusive')
-
     def update_agent_state(self, pick='default', **kwargs):
         # if there is an agent_state_out_file, clear it
         # this makes sure there will be nothing appended
@@ -817,12 +786,20 @@ class LensAgent(Agent):
         else:
             raise ValueError('Algorithm used for pick unknown')
 
+    def pick_random_predecessor(self, list_of_predecessors, num_pick):
+        """Pick a random number of predecessor(s) depending on num_pick
+
+        :returns: randomly selected predecessor from list_of_predecessors
+        :rtype: tuple
+        """
+        return tuple(random.sample(self.predecessors), num_pick)
+
     def write_ex_attitude(self, list_to_write, base_name_text, base_name_number,
                           fdir, **kwargs):
         """
         kwargs passed into `open()`
         """
-        print(fdir, file=sys.stderr)
+        # print(fdir, file=sys.stderr)
         with open(fdir, kwargs['mode']) as f:
             write_string = 'name: {}{}\nI: {};\n'.format(base_name_text,
                                                        base_name_number,

@@ -4,7 +4,7 @@ setup(
     name='mann',
     packages=['mann'],  # this must be the same as the name above
     version='0.0.1',
-    description='Multidisciplinary diffusion models',
+    description='Multi-Agent Neural-Network',
     author='Daniel Chen',
     author_email='chend@vbi.vt.edu',
     license="MIT",
@@ -13,9 +13,10 @@ setup(
                   tarball/0.0.1',
     keywords=['agent-based model', 'abm', 'neural network', 'learning',
               'diffusion'],
-    scripts=['mann/agent.py',
-             'mann/network_agent.py',
-             'mann/network.py'],
+    # scripts=['mann/agent.py',
+    #          'mann/network_agent.py',
+    #          'mann/network.py',
+    #          'mann/agent_lens_recurrent.py'],
     classifiers=['Natural Language :: English', ],
     long_description='README.md',
 )
