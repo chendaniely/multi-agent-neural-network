@@ -4,6 +4,8 @@ import multiprocessing as mp
 import numpy as np
 import os
 import shutil
+import configparser
+import subprocess
 
 """Module that contains functions to help run batches and parameter sweeps
 """
@@ -260,13 +262,12 @@ def create_folder(base_directory, here, **kwargs):
         dir_to_copy_to = _create_folder_watts(base_directory, here, **kwargs)
     return dir_to_copy_to
 
-
-def update_init_file(folder_name,
-                     agents,
-                     delta,
-                     epsilon,
-                     criterion,
-                     run):
+def _update_init_file_lens(folder_name,
+                           agents,
+                           delta,
+                           epsilon,
+                           criterion,
+                           run):
     """Updates the config file for a particular set of parameters for sweep
 
     Args:
@@ -306,6 +307,51 @@ def update_init_file(folder_name,
 
     # set run
     sim_config.set('General', 'RunNumber', str(run))
+
+    #
+    # Write new config file
+    #
+    with open(sim_config_file_dir, 'w') as update_config:
+        sim_config.write(update_config)
+        # print('config file updated: ', sim_config_file_dir)
+
+
+def _update_init_file_watts(config,
+                            agents,
+                            run):
+    """Updates the config file for a particular set of parameters for sweep
+
+    Args:
+        run_number (int): run number for a set of value parameters for sweep
+    """
+    assert isinstance(agents, int)
+    assert isinstance(run, int)
+
+    # set agents
+    sim_config.set('General', 'NumberOfAgents',
+                   str(agents))
+    # set run
+    sim_config.set('General', 'RunNumber', str(run))
+
+    return sim_config
+
+def update_init_file(folder_name, **kwargs):
+    """Updates the config file for a particular set of parameters for sweep
+    """
+    #
+    # Read in config file
+    #
+    sim_config = configparser.SafeConfigParser()
+    sim_config_file_dir = os.path.join(folder_name, 'config.ini')
+    sim_config.read(sim_config_file_dir)
+
+    if sim_config.get("General", "BaseDirectory") == "01-watts":
+        sim_config = _update_init_file_watts(sim_config,
+                                             agents=kwargs.get('agents'),
+                                             run=kwargs.get('run'))
+    else:
+        print('pass')
+        pass
 
     #
     # Write new config file
