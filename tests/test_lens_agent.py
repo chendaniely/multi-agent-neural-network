@@ -357,6 +357,40 @@ def test_mutate():
     print(post_mutation, file=sys.stderr)
     assert(post_mutation == [1, 0, 1, 0, 0, 1, 0, 1, 1, 0])
 
+@nose.with_setup(reset_LensAgent)
+def test_write_ex_attitude_agent():
+    test_lens_agent = agent.LensAgent(10)
+    test_lens_agent.set_state([1, 0, 1, 0, 1,
+                               0, 1, 0, 1, 0])
+    ex_file = os.path.join(here, 'lens', 'test_write_ex_attitude')
+    test_lens_agent.write_ex_attitude(test_lens_agent.get_state(),
+                                      'old_state',
+                                      1,
+                                      ex_file, mode='w')
+
+@nose.with_setup(reset_LensAgent)
+def test_write_ex_attitude_agent_infl():
+    test_lens_agent = agent.LensAgent(10)
+    print(str((test_lens_agent.get_state())), file=sys.stderr)
+    test_lens_agent.set_state([1, 0, 1, 0, 1,
+                               0, 1, 0, 1, 0])
+    print(str((test_lens_agent.get_state())), file=sys.stderr)
+    test_lens_infl = agent.LensAgent(10)
+    test_lens_infl.set_state([0, 1, 0, 1, 0,
+                              1, 0, 1, 0, 1])
+    print(str(test_lens_infl.get_state()), file=sys.stderr)
+
+    ex_file = os.path.join(here, 'lens', 'test_write_ex_attitude')
+    print(ex_file, file=sys.stderr)
+    test_lens_agent.write_ex_attitude(test_lens_agent.get_state(),
+                                      'old_state',
+                                      1,
+                                      ex_file, mode='w')
+    test_lens_infl.write_ex_attitude(test_lens_infl.get_state(),
+                                     'update',
+                                      1,
+                                      ex_file, mode='a')
+
 
 ###############################################################################
 # Unit Test notes

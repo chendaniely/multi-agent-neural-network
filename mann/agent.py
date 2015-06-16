@@ -253,7 +253,7 @@ class LensAgent(Agent):
         assert len(prototype) == num_state_vars
         return prototype
 
-    def set_lens_agent_prototypes(number_of_prototypes):
+    def set_lens_agent_prototypes(number_of_prototypes, num_units):
         """Create prototypes for the :class:`LensAgent` class
 
         Args:
@@ -271,7 +271,7 @@ class LensAgent(Agent):
         """
         assert isinstance(number_of_prototypes, int),\
             "number_of_prototypes is not int"
-        list_of_prototypes = list(LensAgent._create_prototype(20,
+        list_of_prototypes = list(LensAgent._create_prototype(num_units,
                                                               [0, 1], [.5, .5])
                                   for x in range(number_of_prototypes))
         assert isinstance(list_of_prototypes[0], list)
@@ -325,6 +325,12 @@ class LensAgent(Agent):
             raise ValueError('Number to flip not 0 or 1')
 
     def _get_new_state_values_from_out_file(self, file_dir, column=0):
+        """Get new state values from .out file_d
+
+        :returns: new state values
+        :rtype: tuple
+        """
+        # creates a list and returns a tuple
         list_of_new_state = []
 
         # here = os.path.abspath(os.path.dirname(__file__))
@@ -345,7 +351,7 @@ class LensAgent(Agent):
                     col = line.strip().split(' ')[column]
                     list_of_new_state.append(float(col))
                     # print('list of new state', list_of_new_state)
-        return list_of_new_state
+        return tuple(list_of_new_state)
 
     def _length_per_bank(self):
         num_elements_per_bank = len(self.get_state())/2
@@ -356,18 +362,24 @@ class LensAgent(Agent):
         '''
         takes in a list and returns a string of list by the delim
         used to write out agent state out to file
+
+        Example: self._list_to_str_delim([1, 2, 3, ' '])
+        > 1 2 3
+
+        Example self._list_to_str_delim([1, 2, 3], ',')
+        > 1,2,3
         '''
         return delim.join(map(str, list_to_convert))
 
-    def _pad_agent_id(self):
-        pass  # TODO
-
-    def _start_end_update_out(self, f):
+    def _start_end_update_out(self, f, sim_type='attitude'):
         # enter the actual file line numbers
         # the 1 offset is used in the actual fxn call
         # f is the .out file to be read
         # TODO pass these values in from config file
-        return tuple([5, 14, 15, 24])
+        if(sim_type == 'global_cascade'):
+           return tuple([5, 14, 15, 24])
+        elif(sim_type == 'attitude'):
+           return tuple([254, 258, 260, 264])
 
     def _string_agent_state_to_ex(self):
         output = io.StringIO()
@@ -419,6 +431,69 @@ class LensAgent(Agent):
         # print('weight EX to write: ', lens_agent_state_str)
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
         f.write(input_line)
+
+    def calculate_new_state_default_i(self, lens_in_file, agent_ex_file,
+                                      infl_ex_file, agent_state_out_file,
+                                      criterion):
+        """Calculates a new state using the default influencing agent algorithm.
+
+        The default influencing agent algorithm picks an influencing agent
+        by picking a random agent in the current agent's local network.
+
+        :returns: New state values
+        :rtype: tuple
+        """
+        if len(self.predecessors) > 0:
+            predecessor_picked = random.sample(list(self.predecessors), 1)[0]
+            predecessor_picked.write_to_ex(infl_ex_file)
+            state_env = self.get_env_for_pos_neg_bank_values()
+            state_env['a'] = self.get_padded_agent_id()
+            state_env['c'] = str(criterion)
+            self._call_lens(lens_in_file, env=state_env)
+            # self.new_state_values = self._get_new_state_values_from_out_file(
+            #     agent_state_out_file)
+            # self.set_state(self.new_state_values)
+
+            self.step_input_agent_id = predecessor_picked.get_key()
+            self.step_input_state_values = predecessor_picked.get_state()
+            self.step_lens_target = predecessor_picked\
+                ._get_new_state_values_from_out_file(agent_state_out_file, 1)
+            self.step_update_status = 1
+            return self._get_new_state_values_from_out_file(
+                agent_state_out_file)
+
+        else:
+            warnings.warn('No predecessors for LensAgent ' + str(self.get_key),
+                          UserWarning)
+
+
+    def calculate_new_state(self, influencing_algorithm='default', **kwargs):
+        """Calculates new state values
+
+        TODO: This function is a copy/paste of update_agent_state, and needs
+        to be refactored accordinly
+
+        :returns: New state
+        :rtype: tuple
+        """
+        # if there is an agent_state_out_file, clear it
+        # this makes sure there will be nothing appended
+        if kwargs.get('agent_state_out_file') is not None:
+            open(kwargs.get('agent_state_out_file'), 'w').close()
+            assert os.stat(kwargs.get('agent_state_out_file')).st_size == 0
+        if influencing_algorithm == 'default':
+            #self.num_update += 1
+            new_state = self.calculate_new_state_default_i(
+                kwargs.get('lens_in_file'),
+                kwargs.get('agent_ex_file'),
+                kwargs.get('infl_ex_file'),
+                kwargs.get('agent_state_out_file'),
+                kwargs.get('criterion'))
+            return new_state
+
+        else:
+            raise ValueError('Algorithm used for pick unknown')
+
 
     def create_weight_file(self, weight_in_file, weight_output_dir,
                            base_example, num_train_examples,
@@ -535,6 +610,7 @@ class LensAgent(Agent):
         self.step_update_status = None
         self.step_lens_target = [None] * len(self.get_state())
         self.step_input_agent_id = None
+        self.temp_new_state = None
 
     def seed_agent_update(self, seed_list, lens_in_file,
                           self_ex_file_location, self_state_out_file,
@@ -651,6 +727,14 @@ class LensAgent(Agent):
             raise ValueError("len of values not equal to len of state")
 
     def get_pos_neg_bank_values(self):
+        """Get the activation values in the positive and negative banks
+
+        Positive values are the first half of the agent state
+        Negative values are the second half of the agent state
+
+        :returns: positive values in the first index, neg values in second index
+        :rtype: typle
+        """
         # TODO this should be a hidden function
         # banks = ('p', 'n')
         num_units_per_bank = self._length_per_bank()
@@ -658,11 +742,18 @@ class LensAgent(Agent):
         neg = self.get_state()[num_units_per_bank:]
         return (pos, neg)
 
+
+    def get_padded_agent_id(self, total_number_of_characters=6):
+        format_string = "{{0:0{}d}}".format(total_number_of_characters)
+        return format_string.format(self.get_key())
+
+
     def get_env_for_pos_neg_bank_values(self):
         # TODO this should be a hidden function
         current_env = os.environ
-        padded_agent_number = "{0:06d}".format(self.get_key())
-        current_env['a'] = padded_agent_number
+        # padded_agent_number = "{0:06d}".format(self.get_key())
+        # padded_agent_number = self.get_padded_agent_id()
+        # current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
             # print(bank_values, file=sys.stderr)
@@ -725,6 +816,19 @@ class LensAgent(Agent):
             self.num_update += 1
         else:
             raise ValueError('Algorithm used for pick unknown')
+
+    def write_ex_attitude(self, list_to_write, base_name_text, base_name_number,
+                          fdir, **kwargs):
+        """
+        kwargs passed into `open()`
+        """
+        print(fdir, file=sys.stderr)
+        with open(fdir, kwargs['mode']) as f:
+            write_string = 'name: {}{}\nI: {};\n'.format(base_name_text,
+                                                       base_name_number,
+                                                       self._list_to_str_delim(
+                                                           list_to_write, ' '))
+            f.write(write_string)
 
     def write_to_ex(self, file_dir, write_type='state', **kwargs):
         '''
