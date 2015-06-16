@@ -6,9 +6,9 @@ import re
 import networkx as nx
 import matplotlib.pyplot as plt
 
-#import mann.agent as agent
 from mann import agent
 from mann import agent_lens_recurrent
+
 
 class NetworkAgent(object):
     def __init__(self):
@@ -43,8 +43,7 @@ class NetworkAgent(object):
                                                  kwargs.get(
                                                      'prototype_mutation_prob'),
                                                  kwargs.get(
-                                                     'training_criterion')
-                                             )
+                                                     'training_criterion'))
                 elif agent_type[2] == 'recurrent_attitude':
                     # nothing really happens after the agent gets created
                     # this is more of a place holder for later training
@@ -76,6 +75,9 @@ class NetworkAgent(object):
         plt.savefig(fig_path)
 
         return self.G
+
+    def export_edge_list(self, export_file_dir, **kwargs):
+        nx.write_edgelist(self.G, export_file_dir, **kwargs)
 
     def set_predecessors_for_each_node(self):
         # iterate through all nodes in network
@@ -129,11 +131,12 @@ class NetworkAgent(object):
                 f.write(",".join([str(time_step),  # time step
                                   str(node.get_key()),  # agent ID
                                   str(node.num_update),  # total num updates
-                                  # str(node.step_update_status),  # update state
+                                  # update state
+                                  # str(node.step_update_status),
                                   # str(node.step_input_agent_id),  # infl ID
                                   # agent state
                                   self.str_list_with_out_brackets(
-                                      node.state)#,
+                                      node.state)  # ,
                                   # input state
                                   # self.str_list_with_out_brackets(
                                   #     node.step_input_state_values),
