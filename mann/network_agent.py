@@ -144,8 +144,8 @@ class NetworkAgent(object):
                            str(list_to_str))
         return text
 
-    def update_simultaneous(self, num_agents_update, pick,
-                            update='simultaneous'):
+    def update_simultaneous(self, num_agents_update, update_algorithm,
+                            update_type='simultaneous'):
         assert isinstance(num_agents_update, int)
         agents_for_update = self.sample_network(num_agents_update)
 
@@ -157,7 +157,8 @@ class NetworkAgent(object):
             logging.info('Updating: {}'.
                          format(self.G.nodes()[selected_agent.agent_id]))
             assert selected_agent.temp_new_state is None
-            selected_agent.update_agent_state(update, pick)
+            selected_agent.update_agent_state(update_type,
+                                              update_algorithm)
 
         # assign new temp value as final state simultaneous update
         logging.info('Performing simultaneous update')
@@ -177,8 +178,8 @@ class NetworkAgent(object):
                                     selected_agent.state))
             selected_agent.temp_new_state = None
 
-    def update_sequential(self, num_agents_update, pick,
-                          update='sequential'):
+    def update_sequential(self, num_agents_update, update_algorithm,
+                          update_type='sequential'):
         assert isinstance(num_agents_update, int)
         agents_for_update = self.sample_network(num_agents_update)
 
@@ -189,7 +190,7 @@ class NetworkAgent(object):
         for selected_agent in agents_for_update:
             logging.info('Updating: {}'.
                          format(self.G.nodes()[selected_agent.agent_id]))
-            selected_agent.update_agent_state(update, pick)
+            selected_agent.update_agent_state(update_type, update_algorithm)
 
     def write_network_agent_step_info(self, time_step, file_to_write,
                                       file_mode, agent_type):
