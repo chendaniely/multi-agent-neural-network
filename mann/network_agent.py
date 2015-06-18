@@ -88,7 +88,6 @@ class NetworkAgent(object):
 
             all_agents[new_agent.agent_id] = new_agent
 
-
         logging.info('total number of agents created: {}'.
                      format(new_agent.agent_count))
 
@@ -178,8 +177,19 @@ class NetworkAgent(object):
                                     selected_agent.state))
             selected_agent.temp_new_state = None
 
-    def update_sequential(self, num_agent_update):
-        pass
+    def update_sequential(self, num_agents_update, pick,
+                          update='sequential'):
+        assert isinstance(num_agents_update, int)
+        agents_for_update = self.sample_network(num_agents_update)
+
+        logging.info('Num agents for update: {}'.
+                     format(len(agents_for_update)))
+
+        # assign new temp value
+        for selected_agent in agents_for_update:
+            logging.info('Updating: {}'.
+                         format(self.G.nodes()[selected_agent.agent_id]))
+            selected_agent.update_agent_state(update, pick)
 
     def write_network_agent_step_info(self, time_step, file_to_write,
                                       file_mode, agent_type):
