@@ -135,6 +135,58 @@ class BinaryAgent(mann.agent.Agent):
         else:
             return(self)
 
+    def _update_agent_state_threshold_watts_flip(self, update):
+        """Uses the watts threshold model to calculate state change, however
+        this method allows the agent to flip back to 0, instead of just
+        flipping to a 1 state.
+
+        :param update: simultaneous or sequential updateing
+        :type update: str
+        """
+        if self.has_predecessor():
+            total_opposite = 0
+            total_predecessors = 0
+            if self.state == 1:
+                for predecessor in self.predecessors:
+                    if predecessor.state == 0:
+                        total_opposite =+ 1
+                    total_predecessors += 1
+            elif self.state == 0:
+                for predecessor in self.predecessors:
+                    if predecessor.state == 1:
+                        total_opposite += 1
+                    total_predecessors += 1
+            else:
+                raise ValueError("Unknown state for watts flip")
+
+            assert total_predecessors == len(self.predecessors)
+            prop_opposite = total_opposite / float(total_predecessors)
+            if prop_opposite >= self.threshold:
+                if self.state == 1:
+                    new_state = 0
+                elif self.state == 0:
+                    new_state = 0
+                else:
+                    ValueError("Unknown state")
+            else:
+                logging.info("State unchanged: {}".format(self.state))
+                new_state = self.state
+
+            if update == 'simultaneous':
+                logging.info('SIMULTANEOUS: Assign temp_new_state to {}'.
+                             format(new_state))
+                self.temp_new_state = new_state
+
+            elif update == 'sequential':
+                logging.info('SEQUENTIAL: Assing state to {}'.
+                             format(new_state))
+                self.state = new_state
+            else:
+                raise ValueError("Unknown update type")
+        else:
+            logging.info("Agent {} has no predecessors".format(self.agent_id))
+            return(self)
+
     def update_agent_state(self, update, pick='default'):
         '''
         update: simultaneous or sequential
@@ -148,6 +200,8 @@ class BinaryAgent(mann.agent.Agent):
                 self._update_agent_state_default()
             elif pick == 'threshold_watts':
                 self._update_agent_state_threshold_watts(update)
+            elif pick == 'threshold_watts_flip':
+                self._update_agent_state_threshold_watts_flip(update)
             else:
                 raise ValueError("Algorithm used for pick unknown")
         else:
