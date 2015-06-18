@@ -137,7 +137,9 @@ class BinaryAgent(mann.agent.Agent):
 
     def update_agent_state(self, update, pick='default'):
         '''
+        update: simultaneous or sequential
         pick = 'default': uses the update_agent__state_default algorithm
+        can be 'threshold_watts'
         '''
         # print('in update_agent_state')
         # print('has predecessors', self.has_predecessor())
