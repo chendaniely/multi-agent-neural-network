@@ -149,7 +149,7 @@ class BinaryAgent(mann.agent.Agent):
             if self.state == 1:
                 for predecessor in self.predecessors:
                     if predecessor.state == 0:
-                        total_opposite =+ 1
+                        total_opposite += 1
                     total_predecessors += 1
             elif self.state == 0:
                 for predecessor in self.predecessors:
