@@ -9,7 +9,7 @@ import mann.agent
 class BinaryAgent(mann.agent.Agent):
     binary_agent_count = 0
 
-    def __init__(self, threshold):
+    def __init__(self, threshold, max_flips):
         self.agent_id = BinaryAgent.binary_agent_count
         BinaryAgent.binary_agent_count += 1
 
@@ -20,6 +20,7 @@ class BinaryAgent(mann.agent.Agent):
         self.temp_new_state = None
 
         self.threshold = threshold
+        self.max_flips = float(max_flips)
 
         self.reset_step_variables()
 
@@ -226,6 +227,16 @@ class BinaryAgent(mann.agent.Agent):
             "Tried to increment num_update by {}, which is not 1".\
             format(str(num))
         self._num_update = num
+
+    @property
+    def max_flips(self):
+        return self._max_flip
+
+    @max_flip.setter
+    def max_flips(self, value):
+        assert value >= 0,\
+            "Max flip needs to be greater than 0, {} given".format(value)
+        self._max_flip = value
 
     @property
     def state(self):
