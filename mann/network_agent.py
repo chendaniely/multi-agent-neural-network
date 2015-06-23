@@ -54,7 +54,8 @@ class NetworkAgent(object):
 
             # createing the different types of agents for the network
             if agent_type[0] == 'binary':
-                new_agent = mann.agent_binary.BinaryAgent(agent_type[1])
+                new_agent = mann.agent_binary.BinaryAgent(agent_type[1],
+                                                          agent_type[2])
             elif agent_type[0] == 'lens':
                 if agent_type[2] == 'feed_forward_global_cascade':
                     new_agent = agent.LensAgent(agent_type[1])
