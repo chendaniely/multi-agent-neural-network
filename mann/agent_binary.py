@@ -229,6 +229,12 @@ class BinaryAgent(mann.agent.Agent):
         self._num_update = num
 
     @property
+    def num_flipped(self):
+        return self._num_flipped
+
+    @num_flipped.setter
+    def num_flipped(self, value):
+        self._num_flipped = value
     def max_flips(self):
         return self._max_flip
 
