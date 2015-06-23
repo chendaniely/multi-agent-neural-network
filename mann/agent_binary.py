@@ -21,6 +21,7 @@ class BinaryAgent(mann.agent.Agent):
 
         self.threshold = threshold
         self.max_flips = float(max_flips)
+        self.num_flipped = 0
 
         self.reset_step_variables()
 
