@@ -167,7 +167,7 @@ class BinaryAgent(mann.agent.Agent):
                 if self.state == 1:
                     new_state = 0
                 elif self.state == 0:
-                    new_state = 0
+                    new_state = 1
                 else:
                     ValueError("Unknown state")
             else:
