@@ -164,10 +164,14 @@ class BinaryAgent(mann.agent.Agent):
             assert total_predecessors == len(self.predecessors)
             prop_opposite = total_opposite / float(total_predecessors)
             if prop_opposite >= self.threshold:
+            if prop_opposite >= self.threshold and \
+               self.num_flipped < self.max_flips:
                 if self.state == 1:
                     new_state = 0
+                    self.num_flipped += 1
                 elif self.state == 0:
                     new_state = 1
+                    self.num_flipped += 1
                 else:
                     ValueError("Unknown state")
             else:
