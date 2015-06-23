@@ -235,10 +235,12 @@ class BinaryAgent(mann.agent.Agent):
     @num_flipped.setter
     def num_flipped(self, value):
         self._num_flipped = value
+
+    @property
     def max_flips(self):
         return self._max_flip
 
-    @max_flip.setter
+    @max_flips.setter
     def max_flips(self, value):
         assert value >= 0,\
             "Max flip needs to be greater than 0, {} given".format(value)
