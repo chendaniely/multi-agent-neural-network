@@ -110,6 +110,8 @@ class BinaryAgent(mann.agent.Agent):
                              'because self.state is 1')
                 return(self)
             else:
+                logging.info("total number of flips: {}".
+                             format(self.num_flipped))
                 total_1 = 0
                 total_p = 0
                 for idx, predecessor in enumerate(self.predecessors):
@@ -163,7 +165,9 @@ class BinaryAgent(mann.agent.Agent):
 
             assert total_predecessors == len(self.predecessors)
             prop_opposite = total_opposite / float(total_predecessors)
-            if prop_opposite >= self.threshold:
+            logging.info("Prop opposite = {} / {} = {}".
+                         format(total_opposite, total_predecessors,
+                                prop_opposite))
             if prop_opposite >= self.threshold and \
                self.num_flipped < self.max_flips:
                 if self.state == 1:
