@@ -198,7 +198,7 @@ class NetworkAgent(object):
             selected_agent.update_agent_state(update_type, update_algorithm)
 
     def write_network_agent_step_info(self, time_step, file_to_write,
-                                      file_mode, agent_type):
+                                      file_mode, agent_type, **kwargs):
         """Write agent info for each time step
 
         Writes the following information respectively for binary agent
