@@ -8,6 +8,7 @@ import logging
 
 import mann.agent
 import mann.agent_binary
+import mann.agent_lens_recurrent
 
 
 class NetworkAgent(object):
@@ -70,7 +71,7 @@ class NetworkAgent(object):
                     # nothing really happens after the agent gets created
                     # this is more of a place holder for later training
                     # procedures
-                    new_agent = agent_lens_recurrent.LensAgentRecurrent(
+                    new_agent = mann.agent_lens_recurrent.LensAgentRecurrent(
                         agent_type[1])
                 else:
                     raise ValueError('Unknown Lens Agent Type')
