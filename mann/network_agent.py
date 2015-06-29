@@ -83,8 +83,13 @@ class NetworkAgent(object):
                          format(new_agent.get_key(), type(new_agent)))
             logging.info("agent {} state: {}".
                          format(new_agent.get_key(), str(new_agent.state)))
-            logging.info("agent {} threshold: {}".
-                         format(new_agent.get_key(), str(new_agent.threshold)))
+
+            try:
+                logging.info("agent {} threshold: {}".
+                             format(new_agent.get_key(),
+                                    str(new_agent.threshold)))
+            except AttributeError:  # threshold is not a parameter for agent
+                pass
 
             all_agents[new_agent.agent_id] = new_agent
 
