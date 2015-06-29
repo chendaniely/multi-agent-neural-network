@@ -3,6 +3,7 @@
 from mann import agent
 # from mann import helper
 
+
 class LensAgentRecurrent(agent.LensAgent):
     agent_count = 0
 
@@ -39,7 +40,8 @@ class LensAgentRecurrent(agent.LensAgent):
         predecessors_picked = self.pick_random_predecessor(
             num_predecessors_pick)
 
-    def calculate_new_state_values(self, pick_method = 'random_predecessor_single',
+    def calculate_new_state_values(self,
+                                   pick_method='random_predecessor_single',
                                    **kwargs):
         """Calculate new state values
 
@@ -57,12 +59,12 @@ class LensAgentRecurrent(agent.LensAgent):
         new_state_values = None
 
         if pick_method == 'random_predecessor_single':
-            new_state_values = calc_new_state_values_rps_1(1)
+            new_state_values = self.calc_new_state_values_rps_1(1)
 
         return tuple(new_state_values)
 
-
-    def get_new_state_values_from_out_file(self, file_dir, agent_type, column=0):
+    def get_new_state_values_from_out_file(self, file_dir, agent_type,
+                                           column=0):
         """Get new state values from .out file
 
         :param file_dir: file directory of .out file
@@ -102,10 +104,10 @@ class LensAgentRecurrent(agent.LensAgent):
                     # print('list of new state', list_of_new_state)
         return tuple(list_of_new_state)
 
-
     @property
     def agent_id(self):
         return self._agent_id
+
     @agent_id.setter
     def agent_id(self, value):
         try:
@@ -121,6 +123,7 @@ class LensAgentRecurrent(agent.LensAgent):
     @property
     def len_per_bank(self):
         return self._len_per_pos_neg_bank
+
     @len_per_bank.setter
     def len_per_bank(self, value):
         self._len_per_bank
@@ -128,6 +131,7 @@ class LensAgentRecurrent(agent.LensAgent):
     @property
     def agent_type(self):
         return self._agent_type
+
     @agent_type.setter
     def agent_type(self, value):
         self._agent_type = value
@@ -135,6 +139,7 @@ class LensAgentRecurrent(agent.LensAgent):
     @property
     def state(self):
         return self._state
+
     @state.setter
     def state(self, new_state_values):
         print('len new state values: {}'.format(len(new_state_values)))
@@ -153,6 +158,7 @@ class LensAgentRecurrent(agent.LensAgent):
     @property
     def predecessors(self):
         return self._predecessors
+
     @predecessors.setter
     def predecessors(self, predecessors_list):
         self._predecessors = predecessors_list
@@ -160,11 +166,13 @@ class LensAgentRecurrent(agent.LensAgent):
     @property
     def num_update(self):
         return self._num_update
+
     @num_update.setter
     def num_update(self, value):
         if value == self.num_update:
             raise ValueError("Number update cannot be equal current count")
         elif value < self.num_update:
-            raise ValueError("Number update cannot be lower than current count")
+            raise ValueError(
+                "Number update cannot be lower than current count")
         else:
             self._num_update = value

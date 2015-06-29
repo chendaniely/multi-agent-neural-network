@@ -1,5 +1,7 @@
 /classes_Pyreverse.png
 /packages_Pyreverse.png
+.idea/*
+
 /tests/lens/Infl.ex
 /tests/lens/weights/AgentWgt000000.wt
 ##### PROJECT IGNORE

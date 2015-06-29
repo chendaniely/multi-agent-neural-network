@@ -9,7 +9,7 @@ import mann.agent
 class BinaryAgent(mann.agent.Agent):
     binary_agent_count = 0
 
-    def __init__(self, threshold):
+    def __init__(self, threshold, max_flips):
         self.agent_id = BinaryAgent.binary_agent_count
         BinaryAgent.binary_agent_count += 1
 
@@ -20,6 +20,8 @@ class BinaryAgent(mann.agent.Agent):
         self.temp_new_state = None
 
         self.threshold = threshold
+        self.max_flips = float(max_flips)
+        self.num_flipped = 0
 
         self.reset_step_variables()
 
@@ -108,6 +110,8 @@ class BinaryAgent(mann.agent.Agent):
                              'because self.state is 1')
                 return(self)
             else:
+                logging.info("total number of flips: {}".
+                             format(self.num_flipped))
                 total_1 = 0
                 total_p = 0
                 for idx, predecessor in enumerate(self.predecessors):
@@ -149,7 +153,7 @@ class BinaryAgent(mann.agent.Agent):
             if self.state == 1:
                 for predecessor in self.predecessors:
                     if predecessor.state == 0:
-                        total_opposite =+ 1
+                        total_opposite += 1
                     total_predecessors += 1
             elif self.state == 0:
                 for predecessor in self.predecessors:
@@ -161,11 +165,17 @@ class BinaryAgent(mann.agent.Agent):
 
             assert total_predecessors == len(self.predecessors)
             prop_opposite = total_opposite / float(total_predecessors)
-            if prop_opposite >= self.threshold:
+            logging.info("Prop opposite = {} / {} = {}".
+                         format(total_opposite, total_predecessors,
+                                prop_opposite))
+            if prop_opposite >= self.threshold and \
+               self.num_flipped < self.max_flips:
                 if self.state == 1:
                     new_state = 0
+                    self.num_flipped += 1
                 elif self.state == 0:
-                    new_state = 0
+                    new_state = 1
+                    self.num_flipped += 1
                 else:
                     ValueError("Unknown state")
             else:
@@ -226,6 +236,24 @@ class BinaryAgent(mann.agent.Agent):
             "Tried to increment num_update by {}, which is not 1".\
             format(str(num))
         self._num_update = num
+
+    @property
+    def num_flipped(self):
+        return self._num_flipped
+
+    @num_flipped.setter
+    def num_flipped(self, value):
+        self._num_flipped = value
+
+    @property
+    def max_flips(self):
+        return self._max_flip
+
+    @max_flips.setter
+    def max_flips(self, value):
+        assert value >= 0,\
+            "Max flip needs to be greater than 0, {} given".format(value)
+        self._max_flip = value
 
     @property
     def state(self):

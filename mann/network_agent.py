@@ -8,6 +8,7 @@ import logging
 
 import mann.agent
 import mann.agent_binary
+import mann.agent_lens_recurrent
 
 
 class NetworkAgent(object):
@@ -54,24 +55,23 @@ class NetworkAgent(object):
 
             # createing the different types of agents for the network
             if agent_type[0] == 'binary':
-                new_agent = mann.agent_binary.BinaryAgent(agent_type[1])
+                new_agent = mann.agent_binary.BinaryAgent(agent_type[1],
+                                                          agent_type[2])
             elif agent_type[0] == 'lens':
                 if agent_type[2] == 'feed_forward_global_cascade':
-                    new_agent = agent.LensAgent(agent_type[1])
-                    new_agent.create_weight_file(kwargs.get('weight_in_file'),
-                                                 kwargs.get('weight_dir'),
-                                                 kwargs.get('base_example'),
-                                                 kwargs.get(
-                                                     'num_train_examples'),
-                                                 kwargs.get(
-                                                     'prototype_mutation_prob'),
-                                                 kwargs.get(
-                                                     'training_criterion'))
+                    new_agent = mann.agent.LensAgent(agent_type[1])
+                    new_agent.create_weight_file(
+                        kwargs.get('weight_in_file'),
+                        kwargs.get('weight_dir'),
+                        kwargs.get('base_example'),
+                        kwargs.get('num_train_examples'),
+                        kwargs.get('prototype_mutation_prob'),
+                        kwargs.get('training_criterion'))
                 elif agent_type[2] == 'recurrent_attitude':
                     # nothing really happens after the agent gets created
                     # this is more of a place holder for later training
                     # procedures
-                    new_agent = agent_lens_recurrent.LensAgentRecurrent(
+                    new_agent = mann.agent_lens_recurrent.LensAgentRecurrent(
                         agent_type[1])
                 else:
                     raise ValueError('Unknown Lens Agent Type')
@@ -83,8 +83,13 @@ class NetworkAgent(object):
                          format(new_agent.get_key(), type(new_agent)))
             logging.info("agent {} state: {}".
                          format(new_agent.get_key(), str(new_agent.state)))
-            logging.info("agent {} threshold: {}".
-                         format(new_agent.get_key(), str(new_agent.threshold)))
+
+            try:
+                logging.info("agent {} threshold: {}".
+                             format(new_agent.get_key(),
+                                    str(new_agent.threshold)))
+            except AttributeError:  # threshold is not a parameter for agent
+                pass
 
             all_agents[new_agent.agent_id] = new_agent
 
@@ -193,7 +198,7 @@ class NetworkAgent(object):
             selected_agent.update_agent_state(update_type, update_algorithm)
 
     def write_network_agent_step_info(self, time_step, file_to_write,
-                                      file_mode, agent_type):
+                                      file_mode, agent_type, **kwargs):
         """Write agent info for each time step
 
         Writes the following information respectively for binary agent
@@ -230,7 +235,29 @@ class NetworkAgent(object):
                         #     node.step_input_state_values),
                     ]) + "\n")
 
-                elif agent_type == 'lens':
+                elif agent_type == 'lens' and \
+                    kwargs['lens_agent_type'] == \
+                        'recurrent_attitude':
+                    f.write(",".join([
+                        str(time_step),  # time step
+                        str(node.agent_id),  # agent ID
+                        str(node.num_update),  # total num updates
+                        # str(node.step_update_status),  # update state
+                        # str(node.step_input_agent_id),  # infl ID
+                        # agent state
+                        self.str_list_with_out_brackets(node.state)  # ,
+                        # input state
+                        # self.str_list_with_out_brackets(
+                        #     node.step_input_state_values),
+                        # lens target
+                        # self.str_list_with_out_brackets(node.step_lens_target),
+                        # prototype
+                        # self.str_list_with_out_brackets(node.prototype)
+                    ]) + "\n")
+
+                elif agent_type == 'lens' and \
+                    kwargs['lens_agent_type'] == \
+                        'feed_forward_global_cascade':
                     f.write(",".join([
                         str(time_step),  # time step
                         str(node.agent_id),  # agent ID
