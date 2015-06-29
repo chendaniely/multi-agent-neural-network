@@ -59,7 +59,7 @@ class LensAgentRecurrent(agent.LensAgent):
         new_state_values = None
 
         if pick_method == 'random_predecessor_single':
-            new_state_values = calc_new_state_values_rps_1(1)
+            new_state_values = self.calc_new_state_values_rps_1(1)
 
         return tuple(new_state_values)
 
