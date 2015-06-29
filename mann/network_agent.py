@@ -58,16 +58,14 @@ class NetworkAgent(object):
                                                           agent_type[2])
             elif agent_type[0] == 'lens':
                 if agent_type[2] == 'feed_forward_global_cascade':
-                    new_agent = agent.LensAgent(agent_type[1])
-                    new_agent.create_weight_file(kwargs.get('weight_in_file'),
-                                                 kwargs.get('weight_dir'),
-                                                 kwargs.get('base_example'),
-                                                 kwargs.get(
-                                                     'num_train_examples'),
-                                                 kwargs.get(
-                                                     'prototype_mutation_prob'),
-                                                 kwargs.get(
-                                                     'training_criterion'))
+                    new_agent = mann.agent.LensAgent(agent_type[1])
+                    new_agent.create_weight_file(
+                        kwargs.get('weight_in_file'),
+                        kwargs.get('weight_dir'),
+                        kwargs.get('base_example'),
+                        kwargs.get('num_train_examples'),
+                        kwargs.get('prototype_mutation_prob'),
+                        kwargs.get('training_criterion'))
                 elif agent_type[2] == 'recurrent_attitude':
                     # nothing really happens after the agent gets created
                     # this is more of a place holder for later training
