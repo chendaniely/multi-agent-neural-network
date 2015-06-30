@@ -15,6 +15,7 @@ class LensInWriterHelper(object):
     def generate_lens_recurrent_attitude(self, agent_state, infl_state):
         """Generate a string to be used as an update step for LENS agents
         that are using a recurrent network for the attitude model
+
         :param agent_state: comma delimited string of agent state values
         :type agent_state: str
 
