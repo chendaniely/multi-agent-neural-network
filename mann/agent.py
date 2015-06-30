@@ -270,34 +270,34 @@ class LensAgent(Agent):
             'final number of output units not equal to num processing units'
         return(new_state)
 
-    def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
-        """Get new state values from .out file_d
+    # def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
+    #     """Get new state values from .out file_d
 
-        :returns: new state values
-        :rtype: tuple
-        """
-        # creates a list and returns a tuple
-        list_of_new_state = []
+    #     :returns: new state values
+    #     :rtype: tuple
+    #     """
+    #     # creates a list and returns a tuple
+    #     list_of_new_state = []
 
-        # here = os.path.abspath(os.path.dirname(__file__))
-        # read_file_path = here + '/' + file_dir
-        read_file_path = file_dir
-        # print('read_file_path: ', read_file_path)
-        # print('files here', os.listdir("./"))
+    #     # here = os.path.abspath(os.path.dirname(__file__))
+    #     # read_file_path = here + '/' + file_dir
+    #     read_file_path = file_dir
+    #     # print('read_file_path: ', read_file_path)
+    #     # print('files here', os.listdir("./"))
 
-        with open(read_file_path, 'r') as f:
-            start_bank1, end_bank1, start_bank2, end_bank2 = \
-                self._start_end_update_out(f)
-            for line_idx, line in enumerate(f):
-                # print(line)
-                line_num = line_idx + 1  # python starts from line 0
-                if start_bank1 <= line_num <= end_bank1 or \
-                   start_bank2 <= line_num <= end_bank2:
-                    # in a line that I want to save information for
-                    col = line.strip().split(' ')[column]
-                    list_of_new_state.append(float(col))
-                    # print('list of new state', list_of_new_state)
-        return tuple(list_of_new_state)
+    #     with open(read_file_path, 'r') as f:
+    #         start_bank1, end_bank1, start_bank2, end_bank2 = \
+    #             self._start_end_update_out(f)
+    #         for line_idx, line in enumerate(f):
+    #             # print(line)
+    #             line_num = line_idx + 1  # python starts from line 0
+    #             if start_bank1 <= line_num <= end_bank1 or \
+    #                start_bank2 <= line_num <= end_bank2:
+    #                 # in a line that I want to save information for
+    #                 col = line.strip().split(' ')[column]
+    #                 list_of_new_state.append(float(col))
+    #                 # print('list of new state', list_of_new_state)
+    #     return tuple(list_of_new_state)
 
     def _length_per_bank(self):
         num_elements_per_bank = len(self.get_state())/2
