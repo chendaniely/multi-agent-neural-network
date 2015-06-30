@@ -29,15 +29,15 @@ class LensInWriterHelper(object):
         should return a string like this: (the -1 shows this is the agent that
         was marked for update)
         name: agent1-1
-        I: 0 0 0 0 0 1 1 1 1 1
+        I: 0 0 0 0 0 1 1 1 1 1;
 
         or
         name: agent42
-        I: 1 1 1 1 1 0 0 0 0 0
+        I: 1 1 1 1 1 0 0 0 0 0;
         """
         # if comma separated, make it space separated
         agent_state_clean = re.sub(',\s+', ' ', agent_state)
-        string = "name: agent{}\nI: {}\n".\
+        string = "name: agent{}\nI: {};\n".\
                  format(agent_id_str, agent_state_clean)
         return(string)
 
