@@ -4,6 +4,7 @@ import warnings
 
 import numpy as np
 
+
 def convert_str_to_int_array(string, delim=','):
     """Returns a list of ints from a delimited separated string of ints
     :parm string: delimited string of ints
@@ -19,6 +20,7 @@ def convert_str_to_int_array(string, delim=','):
     assert isinstance(delim, str), "delim parameter passed is not type str"
     assert string != '', 'string parameter is empty'
     return np.array([float(s) for s in string.strip().split(delim)])
+
 
 def convert_list_to_delim_str(list_to_convert, delim=','):
     """Return a string delimited by delim from a list
@@ -39,6 +41,7 @@ def convert_list_to_delim_str(list_to_convert, delim=','):
     > 1,2,3
     """
     return delim.join(map(str, list_to_convert))
+
 
 def flip_1_0(number):
     """Flip 1 to 0, and vice versa
