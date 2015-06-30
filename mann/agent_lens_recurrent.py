@@ -205,8 +205,8 @@ class LensAgentRecurrent(agent.LensAgent):
 
     @state.setter
     def state(self, new_state_values):
-        print('len new state values: {}'.format(len(new_state_values)))
-        print('len old state values: {}'.format(len(self.state)))
+        print('len new state values: {}'.format((new_state_values)))
+        print('len old state values: {}'.format((self.state)))
         assert len(new_state_values) == len(self.state)
         self._state = new_state_values[:]
 
