@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+import logging
+import random
+
 from mann import agent
-# from mann import helper
+import mann.helper
+import mann.lens_in_writer
 
 
 class LensAgentRecurrent(agent.LensAgent):
@@ -63,46 +67,105 @@ class LensAgentRecurrent(agent.LensAgent):
 
         return tuple(new_state_values)
 
-    def get_new_state_values_from_out_file(self, file_dir, agent_type,
-                                           column=0):
-        """Get new state values from .out file
+    # def get_new_state_values_from_out_file(self, file_dir, agent_type,
+    #                                        column=0):
+    #     """Get new state values from .out file
 
-        :param file_dir: file directory of .out file
-        :type file_dir: str
+    #     :param file_dir: file directory of .out file
+    #     :type file_dir: str
 
-        :parm agent_type: agent type
-        :type agent_type: str
+    #     :parm agent_type: agent type
+    #     :type agent_type: str
 
-        :parm column: column in the .out file to get new values from
-        :type column: int
+    #     :parm column: column in the .out file to get new values from
+    #     :type column: int
 
-        typically agent_type is type(AGENT).__name__
+    #     typically agent_type is type(AGENT).__name__
 
-        :returns: new state values
-        :rtype: tuple
+    #     :returns: new state values
+    #     :rtype: tuple
+    #     """
+    #     """Get new state values from .out file_d
+
+    #     :returns: new state values
+    #     :rtype: tuple
+    #     """
+    #     # creates a list and returns a tuple
+    #     list_of_new_state = []
+    #     read_file_path = file_dir
+
+    #     with open(read_file_path, 'r') as f:
+    #         start_bank1, end_bank1, start_bank2, end_bank2 = \
+    #             self._start_end_update_out(f, self.agent_type)
+    #         for line_idx, line in enumerate(f):
+    #             # print(line)
+    #             line_num = line_idx + 1  # python starts from line 0
+    #             if start_bank1 <= line_num <= end_bank1 or \
+    #                start_bank2 <= line_num <= end_bank2:
+    #                 # in a line that I want to save information for
+    #                 col = line.strip().split(' ')[column]
+    #                 list_of_new_state.append(float(col))
+    #                 # print('list of new state', list_of_new_state)
+    #     return tuple(list_of_new_state)
+
+    def _update_random_n(self, update_type, n, **kwargs):
+        """Uses `n` neighbors to update
+        Does not handle if you pick `n` to be greater than the nunber of
+        predecessors
         """
-        """Get new state values from .out file_d
+        predecessors_picked = random.sample(self.predecessors, n)
+        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+        lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
+        lens_ex_file_strings = []
+        agent_for_update = "{}-1".format(self.agent_id)
 
-        :returns: new state values
-        :rtype: tuple
+        agent_for_update_ex_str = \
+            lens_in_writer_helper.clean_agent_state_in_file(
+                agent_for_update,
+                mann.helper.convert_list_to_delim_str(self.state, delim=' '))
+        lens_ex_file_strings.append(agent_for_update_ex_str)
+
+        for predecessor in predecessors_picked:
+            predecessor_ex_str = \
+                lens_in_writer_helper.clean_agent_state_in_file(
+                    str(predecessor.agent_id),
+                    mann.helper.convert_list_to_delim_str(predecessor.state,
+                                                          delim=' '))
+            lens_ex_file_strings.append(predecessor_ex_str)
+
+        ex_file_strings = '\n'.join(lens_ex_file_strings)
+        ex_file_path = kwargs['lens_parameters']['ex_file_path']
+        with open(ex_file_path, 'w') as f:
+            f.write(ex_file_strings)
+        lens_in_file_path = kwargs['lens_parameters']['in_file_path']
+        self.call_lens(lens_in_file_path)
+        if update_type == 'sequential':
+            new_state_path = kwargs['lens_parameters']['new_state_path']
+            new_state = self.get_new_state_values_from_out_file(new_state_path)
+            self.state = new_state
+        else:
+            raise ValueError('Only implemented sequential')
+
+    def update_agent_state(self, update_type, update_algorithm, **kwargs):
+        """Updates the agent
+
+        :param update_type: Can be either 'simultaneous' or 'sequential'
+        :type update_type: str
+
+        :param update_algorithm: 'random_1', 'random_all'
+        :type update_algorithm: str
         """
-        # creates a list and returns a tuple
-        list_of_new_state = []
-        read_file_path = file_dir
-
-        with open(read_file_path, 'r') as f:
-            start_bank1, end_bank1, start_bank2, end_bank2 = \
-                self._start_end_update_out(f, self.agent_type)
-            for line_idx, line in enumerate(f):
-                # print(line)
-                line_num = line_idx + 1  # python starts from line 0
-                if start_bank1 <= line_num <= end_bank1 or \
-                   start_bank2 <= line_num <= end_bank2:
-                    # in a line that I want to save information for
-                    col = line.strip().split(' ')[column]
-                    list_of_new_state.append(float(col))
-                    # print('list of new state', list_of_new_state)
-        return tuple(list_of_new_state)
+        if self.has_predecessor():
+            if update_algorithm == 'random_1':
+                self._update_random_n(update_type, 1, **kwargs)
+            elif update_algorithm == 'random_all':
+                self._update_random_n(update_type, len(self.predecessors),
+                                      **kwargs)
+            else:
+                raise ValueError("update algorithm unknown")
+        else:
+            logging.debug('Agent {} has no precessors.'.
+                          format(self.agent_id))
 
     @property
     def agent_id(self):
@@ -142,8 +205,8 @@ class LensAgentRecurrent(agent.LensAgent):
 
     @state.setter
     def state(self, new_state_values):
-        print('len new state values: {}'.format(len(new_state_values)))
-        print('len old state values: {}'.format(len(self.state)))
+        print('len new state values: {}'.format((new_state_values)))
+        print('len old state values: {}'.format((self.state)))
         assert len(new_state_values) == len(self.state)
         self._state = new_state_values[:]
 
