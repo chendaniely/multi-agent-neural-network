@@ -108,7 +108,7 @@ class LensAgentRecurrent(agent.LensAgent):
                     # print('list of new state', list_of_new_state)
         return tuple(list_of_new_state)
 
-    def _update_random_n(self, update_type, n, ex_file_path):
+    def _update_random_n(self, update_type, n, **kwargs):
         """Uses `n` neighbors to update
         Does not handle if you pick `n` to be greater than the nunber of
         predecessors
@@ -134,10 +134,16 @@ class LensAgentRecurrent(agent.LensAgent):
             lens_ex_file_strings.append(predecessor_ex_str)
 
         ex_file_strings = '\n'.join(lens_ex_file_strings)
+        ex_file_path = kwargs['lens_parameters']['ex_file_path']
         with open(ex_file_path, 'w') as f:
             f.write(ex_file_strings)
+        lens_in_file_path = kwargs['lens_parameters']['in_file_path']
 
-    def update_agent_state(self, update_type, update_algorithm, ex_file_path):
+        print(lens_in_file_path)
+        print("~" * 80)
+        self.call_lens(lens_in_file_path)
+
+    def update_agent_state(self, update_type, update_algorithm, **kwargs):
         """Updates the agent
 
         :param update_type: Can be either 'simultaneous' or 'sequential'
@@ -148,10 +154,10 @@ class LensAgentRecurrent(agent.LensAgent):
         """
         if self.has_predecessor():
             if update_algorithm == 'random_1':
-                self._update_random_n(update_type, 1, ex_file_path)
+                self._update_random_n(update_type, 1, kwargs)
             elif update_algorithm == 'random_all':
                 self._update_random_n(update_type, len(self.predecessors),
-                                      ex_file_path)
+                                      **kwargs)
             else:
                 raise ValueError("update algorithm unknown")
         else:
