@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+import logging
+import random
+
 from mann import agent
-# from mann import helper
+import mann.helper
+import mann.lens_in_writer
 
 
 class LensAgentRecurrent(agent.LensAgent):
