@@ -184,6 +184,7 @@ class NetworkAgent(object):
             selected_agent.temp_new_state = None
 
     def update_sequential(self, num_agents_update, update_algorithm,
+                          ex_file_path,
                           update_type='sequential'):
         assert isinstance(num_agents_update, int)
         agents_for_update = self.sample_network(num_agents_update)
@@ -195,7 +196,8 @@ class NetworkAgent(object):
         for selected_agent in agents_for_update:
             logging.info('Updating: {}'.
                          format(self.G.nodes()[selected_agent.agent_id]))
-            selected_agent.update_agent_state(update_type, update_algorithm)
+            selected_agent.update_agent_state(update_type, update_algorithm,
+                                              ex_file_path)
 
     def write_network_agent_step_info(self, time_step, file_to_write,
                                       file_mode, agent_type, **kwargs):
