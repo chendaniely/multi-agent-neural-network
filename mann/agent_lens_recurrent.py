@@ -67,46 +67,46 @@ class LensAgentRecurrent(agent.LensAgent):
 
         return tuple(new_state_values)
 
-    def get_new_state_values_from_out_file(self, file_dir, agent_type,
-                                           column=0):
-        """Get new state values from .out file
+    # def get_new_state_values_from_out_file(self, file_dir, agent_type,
+    #                                        column=0):
+    #     """Get new state values from .out file
 
-        :param file_dir: file directory of .out file
-        :type file_dir: str
+    #     :param file_dir: file directory of .out file
+    #     :type file_dir: str
 
-        :parm agent_type: agent type
-        :type agent_type: str
+    #     :parm agent_type: agent type
+    #     :type agent_type: str
 
-        :parm column: column in the .out file to get new values from
-        :type column: int
+    #     :parm column: column in the .out file to get new values from
+    #     :type column: int
 
-        typically agent_type is type(AGENT).__name__
+    #     typically agent_type is type(AGENT).__name__
 
-        :returns: new state values
-        :rtype: tuple
-        """
-        """Get new state values from .out file_d
+    #     :returns: new state values
+    #     :rtype: tuple
+    #     """
+    #     """Get new state values from .out file_d
 
-        :returns: new state values
-        :rtype: tuple
-        """
-        # creates a list and returns a tuple
-        list_of_new_state = []
-        read_file_path = file_dir
+    #     :returns: new state values
+    #     :rtype: tuple
+    #     """
+    #     # creates a list and returns a tuple
+    #     list_of_new_state = []
+    #     read_file_path = file_dir
 
-        with open(read_file_path, 'r') as f:
-            start_bank1, end_bank1, start_bank2, end_bank2 = \
-                self._start_end_update_out(f, self.agent_type)
-            for line_idx, line in enumerate(f):
-                # print(line)
-                line_num = line_idx + 1  # python starts from line 0
-                if start_bank1 <= line_num <= end_bank1 or \
-                   start_bank2 <= line_num <= end_bank2:
-                    # in a line that I want to save information for
-                    col = line.strip().split(' ')[column]
-                    list_of_new_state.append(float(col))
-                    # print('list of new state', list_of_new_state)
-        return tuple(list_of_new_state)
+    #     with open(read_file_path, 'r') as f:
+    #         start_bank1, end_bank1, start_bank2, end_bank2 = \
+    #             self._start_end_update_out(f, self.agent_type)
+    #         for line_idx, line in enumerate(f):
+    #             # print(line)
+    #             line_num = line_idx + 1  # python starts from line 0
+    #             if start_bank1 <= line_num <= end_bank1 or \
+    #                start_bank2 <= line_num <= end_bank2:
+    #                 # in a line that I want to save information for
+    #                 col = line.strip().split(' ')[column]
+    #                 list_of_new_state.append(float(col))
+    #                 # print('list of new state', list_of_new_state)
+    #     return tuple(list_of_new_state)
 
     def _update_random_n(self, update_type, n, **kwargs):
         """Uses `n` neighbors to update
