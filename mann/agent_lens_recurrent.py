@@ -157,7 +157,7 @@ class LensAgentRecurrent(agent.LensAgent):
         """
         if self.has_predecessor():
             if update_algorithm == 'random_1':
-                self._update_random_n(update_type, 1, kwargs)
+                self._update_random_n(update_type, 1, **kwargs)
             elif update_algorithm == 'random_all':
                 self._update_random_n(update_type, len(self.predecessors),
                                       **kwargs)
