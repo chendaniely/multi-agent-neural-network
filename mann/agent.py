@@ -250,6 +250,26 @@ class LensAgent(Agent):
                 list_of_example_values.append(train_list)
             return list_of_example_values
 
+    def get_new_state_values_from_out_file(self, lens_output_dir,
+                                           num_processing_unts=10,
+                                           column=0):
+        num_lines = sum(1 for line in open(lens_output_dir))
+        final_lens_output = []
+        start_line = num_lines - (num_processing_unts + 3)
+        print(start_line)
+        with open(lens_output_dir, 'r') as f:
+            for line_num, line in enumerate(f):
+                if line_num >= start_line:
+                    final_lens_output.append(line.strip())
+        assert num_processing_unts % 2 == 0, 'num_processing_unts not even'
+        per_bank = int(num_processing_unts / 2)
+        new_state = final_lens_output[2:(2+per_bank)]
+        new_state.extend(final_lens_output[2+per_bank+1:])
+        new_state = [float(x) for x in new_state]
+        assert len(new_state) == num_processing_unts, \
+            'final number of output units not equal to num processing units'
+        return(new_state)
+
     def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
         """Get new state values from .out file_d
 
