@@ -108,6 +108,56 @@ class LensAgentRecurrent(agent.LensAgent):
                     # print('list of new state', list_of_new_state)
         return tuple(list_of_new_state)
 
+    def _update_random_n(self, update_type, n, ex_file_path):
+        """Uses `n` neighbors to update
+        Does not handle if you pick `n` to be greater than the nunber of
+        predecessors
+        """
+        predecessors_picked = random.sample(self.predecessors, n)
+        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+        lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
+        lens_ex_file_strings = []
+        agent_for_update = "{}-1".format(self.agent_id)
+
+        agent_for_update_ex_str = \
+            lens_in_writer_helper.clean_agent_state_in_file(
+                agent_for_update,
+                mann.helper.convert_list_to_delim_str(self.state, delim=' '))
+        lens_ex_file_strings.append(agent_for_update_ex_str)
+
+        for predecessor in predecessors_picked:
+            predecessor_ex_str = \
+                lens_in_writer_helper.clean_agent_state_in_file(
+                    str(predecessor.agent_id),
+                    mann.helper.convert_list_to_delim_str(predecessor.state,
+                                                          delim=' '))
+            lens_ex_file_strings.append(predecessor_ex_str)
+
+        ex_file_strings = '\n'.join(lens_ex_file_strings)
+        with open(ex_file_path, 'w') as f:
+            f.write(ex_file_strings)
+
+    def update_agent_state(self, update_type, update_algorithm, ex_file_path):
+        """Updates the agent
+
+        :param update_type: Can be either 'simultaneous' or 'sequential'
+        :type update_type: str
+
+        :param update_algorithm: 'random_1', 'random_all'
+        :type update_algorithm: str
+        """
+        if self.has_predecessor():
+            if update_algorithm == 'random_1':
+                self._update_random_n(update_type, 1, ex_file_path)
+            elif update_algorithm == 'random_all':
+                self._update_random_n(update_type, len(self.predecessors),
+                                      ex_file_path)
+            else:
+                raise ValueError("update algorithm unknown")
+        else:
+            logging.debug('Agent {} has no precessors.'.
+                          format(self.agent_id))
+
     @property
     def agent_id(self):
         return self._agent_id
