@@ -138,10 +138,13 @@ class LensAgentRecurrent(agent.LensAgent):
         with open(ex_file_path, 'w') as f:
             f.write(ex_file_strings)
         lens_in_file_path = kwargs['lens_parameters']['in_file_path']
-
-        print(lens_in_file_path)
-        print("~" * 80)
         self.call_lens(lens_in_file_path)
+        if update_type == 'sequential':
+            new_state_path = kwargs['lens_parameters']['new_state_path']
+            new_state = self.get_new_state_values_from_out_file(new_state_path)
+            self.state = new_state
+        else:
+            raise ValueError('Only implemented sequential')
 
     def update_agent_state(self, update_type, update_algorithm, **kwargs):
         """Updates the agent
