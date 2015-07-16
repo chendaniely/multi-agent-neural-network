@@ -21,3 +21,12 @@ class DirectedFastGNPRandomGraph(nx.MultiDiGraph):
         # nx.draw_networkx_labels(self.G, pos=nx.draw_circular(self.G))
         # plt.show()
         plt.savefig(path_and_name)
+
+
+class BidirectionalBarabasiAlbertGraph(nx.MultiGraph):
+    def __init__(self, n, m, seed=None):
+        self.G = nx.barabasi_albert_graph(n, m, seed)
+
+    def show_graph(self, path_and_name):
+        nx.draw_spring(self.G)
+        plt.savefig(path_and_name)
