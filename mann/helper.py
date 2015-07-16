@@ -60,6 +60,7 @@ def flip_1_0(number):
     else:
         raise ValueError('Number to flip not 0 or 1')
 
+
 def mutate(list_to_mutate, mutation_prob):
     """Mutates each element of a list by the mutation_prob
     Mutating means flipping the 1 to a 0 or vice versa
@@ -80,7 +81,7 @@ def mutate(list_to_mutate, mutation_prob):
             if prob <= mutation_prob:
                 post_mutation_list[idx] = flip_1_0(value)
         if ((post_mutation_list is list_to_mutate) or
-            (post_mutation_list == list_to_mutate)):
+                (post_mutation_list == list_to_mutate)):
             warnings.warn('Mutated example is equal to prototype',
                           UserWarning)
         return post_mutation_list

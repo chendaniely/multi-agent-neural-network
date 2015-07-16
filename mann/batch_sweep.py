@@ -10,6 +10,7 @@ import subprocess
 """Module that contains functions to help run batches and parameter sweeps
 """
 
+
 def _parse_config_fr_to_by(config_string):
     """Returns the value for the fr, to, and by, range in the config file.
 
@@ -152,22 +153,26 @@ def _ftb_string_to_values(ftb_string):
 
 
 def _format_values_lens(tuple_of_values):
-    assert(len(tuple_of_values) == 5)
-    agents, delta, epsilon, criterion, run = tuple_of_values
+    # assert(len(tuple_of_values) == 5)
+    assert(len(tuple_of_values) == 2)
+    # agents, delta, epsilon, criterion, run = tuple_of_values
+    agents, run = tuple_of_values
 
     agents = int(agents)
-    delta = float("{0:.2f}".format(delta))
-    epsilon = float("{0:.2f}".format(epsilon))
-    criterion = int(criterion)
+    # delta = float("{0:.2f}".format(delta))
+    # epsilon = float("{0:.2f}".format(epsilon))
+    # criterion = int(criterion)
     run = int(run)
 
     assert isinstance(agents, int)
-    assert isinstance(delta, float)
-    assert isinstance(epsilon, float)
-    assert isinstance(criterion, int)
+    # assert isinstance(delta, float)
+    # assert isinstance(epsilon, float)
+    # assert isinstance(criterion, int)
     assert isinstance(run, int)
 
-    return tuple((agents, delta, epsilon, criterion, run))
+    # return tuple((agents, delta, epsilon, criterion, run))
+    return tuple((agents, run))
+
 
 def _format_values_watts(tuple_of_values):
     assert(len(tuple_of_values) == 2)
@@ -181,47 +186,81 @@ def _format_values_watts(tuple_of_values):
 
     return tuple((agents, run))
 
+
 def format_values(base_directory, tuple_of_values):
     if base_directory in ["02-lens"]:
-        pass
+        return(_format_values_lens(tuple_of_values))
     elif base_directory in ["01-watts"]:
         return(_format_values_watts(tuple_of_values))
 
 
+# def _create_folder_lens(base_directory,
+#                         current_time,
+#                         agents_str,
+#                         delta_str,
+#                         epsilon_str,
+#                         criterion_str,
+#                         run_str):
+
+#     new_sim_folder_name = '_'.join(['a'+agents_str,
+#                                     'd'+delta_str,
+#                                     'e'+epsilon_str,
+#                                     'c'+criterion_str,
+#                                     'r'+run_str])
+#     print(new_sim_folder_name, " created")
+
+#     batch_folder_name = '_'.join([base_directory, 'batch', current_time])
+#     # print('batch folder name: ', batch_folder_name)
+
+#     dir_to_copy_from = os.path.join(here, base_directory)
+#     # print('from: ', dir_to_copy_from)
+
+#     batch_folder_full_path = os.path.join(here, '..', 'results', 'simulations',
+#                                           batch_folder_name)
+
+#     if not os.path.exists(batch_folder_full_path):
+#         # print('created: ', batch_folder_full_path)
+#         os.makedirs(batch_folder_full_path)
+
+#     dir_to_copy_to = os.path.join(batch_folder_full_path,
+#                                   new_sim_folder_name)
+#     # print('to : ', dir_to_copy_to)
+
+#     copy_directory(dir_to_copy_from, dir_to_copy_to)
+#     return dir_to_copy_to
+
+
 def _create_folder_lens(base_directory,
+                        here,
                         current_time,
                         agents_str,
-                        delta_str,
-                        epsilon_str,
-                        criterion_str,
                         run_str):
 
     new_sim_folder_name = '_'.join(['a'+agents_str,
-                                    'd'+delta_str,
-                                    'e'+epsilon_str,
-                                    'c'+criterion_str,
                                     'r'+run_str])
     print(new_sim_folder_name, " created")
 
     batch_folder_name = '_'.join([base_directory, 'batch', current_time])
-    # print('batch folder name: ', batch_folder_name)
+    print('batch folder name: ', batch_folder_name)
 
-    dir_to_copy_from = os.path.join(here, base_directory)
-    # print('from: ', dir_to_copy_from)
+    dir_to_copy_from = os.path.join(here, '..', base_directory)
+    print('from: ', dir_to_copy_from)
 
-    batch_folder_full_path = os.path.join(here, '..', 'results', 'simulations',
-                                          batch_folder_name)
+    batch_folder_path = os.path.join(here, '..', '..',
+                                     'results', 'simulations',
+                                     batch_folder_name)
 
-    if not os.path.exists(batch_folder_full_path):
-        # print('created: ', batch_folder_full_path)
-        os.makedirs(batch_folder_full_path)
+    if not os.path.exists(batch_folder_path):
+        print('created: ', batch_folder_path)
+        os.makedirs(batch_folder_path)
 
-    dir_to_copy_to = os.path.join(batch_folder_full_path,
+    dir_to_copy_to = os.path.join(batch_folder_path,
                                   new_sim_folder_name)
-    # print('to : ', dir_to_copy_to)
+    print('to : ', dir_to_copy_to)
 
     copy_directory(dir_to_copy_from, dir_to_copy_to)
     return dir_to_copy_to
+
 
 def _create_folder_watts(base_directory,
                          here,
@@ -257,10 +296,12 @@ def _create_folder_watts(base_directory,
 
 def create_folder(base_directory, here, **kwargs):
     if base_directory in ["02-lens"]:
-        dir_to_copy_to = _create_folder_lens(**kwargs)
+        # dir_to_copy_to = _create_folder_lens(**kwargs)
+        dir_to_copy_to = _create_folder_lens(base_directory, here, **kwargs)
     elif base_directory in ["01-watts"]:
         dir_to_copy_to = _create_folder_watts(base_directory, here, **kwargs)
     return dir_to_copy_to
+
 
 def _update_init_file_lens(folder_name,
                            agents,
