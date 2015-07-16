@@ -20,7 +20,8 @@ class NetworkAgent(object):
 
     def create_multidigraph_of_agents_from_edge_list(
             self, number_of_agents, edge_list, fig_path,
-            agent_type=tuple(['None']), logger=None, **kwargs):
+            agent_type=tuple(['None']), add_reverse_edge=False, logger=None,
+            **kwargs):
         """Create multi directed networkx graph of agents from an edge list
 
         :param num_of_agents: number of agents in the network
@@ -103,6 +104,8 @@ class NetworkAgent(object):
         for edge in edge_list:
             u, v = edge
             self.G.add_edge(all_agents[u], all_agents[v])
+            if add_reverse_edge is True:
+                self.G.add_edge(all_agents[v], all_agents[u])
 
         logging.info('Saving plot of mann copied graph')
         nx.draw_circular(self.G)
