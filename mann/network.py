@@ -30,6 +30,6 @@ class BidirectionalBarabasiAlbertGraph(MannGraph):
         self.G = nx.barabasi_albert_graph(n, m, seed)
 
 
-class WattsStrogatzGraph(nx.MultiGraph):
+class WattsStrogatzGraph(MannGraph):
     def __init__(self, n, k, p, seed=None):
         self.G = nx.watts_strogatz_graph(n, k, p, seed=None)
