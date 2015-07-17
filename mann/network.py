@@ -12,10 +12,7 @@ class Network(object):
         pass
 
 
-class DirectedFastGNPRandomGraph(nx.MultiDiGraph):
-    def __init__(self, n, p):
-        self.G = nx.fast_gnp_random_graph(n, p, directed=True)
-
+class MannGraph(nx.MultiDiGraph):
     def show_graph(self, path_and_name):
         nx.draw_circular(self.G)
         # nx.draw_networkx_labels(self.G, pos=nx.draw_circular(self.G))
@@ -23,10 +20,16 @@ class DirectedFastGNPRandomGraph(nx.MultiDiGraph):
         plt.savefig(path_and_name)
 
 
-class BidirectionalBarabasiAlbertGraph(nx.MultiGraph):
+class DirectedFastGNPRandomGraph(MannGraph):
+    def __init__(self, n, p):
+        self.G = nx.fast_gnp_random_graph(n, p, directed=True)
+
+
+class BidirectionalBarabasiAlbertGraph(MannGraph):
     def __init__(self, n, m, seed=None):
         self.G = nx.barabasi_albert_graph(n, m, seed)
 
-    def show_graph(self, path_and_name):
-        nx.draw_spring(self.G)
-        plt.savefig(path_and_name)
+
+class WattsStrogatzGraph(MannGraph):
+    def __init__(self, n, k, p, seed=None):
+        self.G = nx.watts_strogatz_graph(n, k, p, seed=None)
