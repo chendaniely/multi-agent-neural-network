@@ -376,6 +376,7 @@ def _update_init_file_watts(config,
 
     return sim_config
 
+
 def update_init_file(folder_name, **kwargs):
     """Updates the config file for a particular set of parameters for sweep
     """
