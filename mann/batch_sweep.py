@@ -403,13 +403,16 @@ def update_init_file(folder_name, **kwargs):
         # print('config file updated: ', sim_config_file_dir)
 
 
-def num_cores():
-    cores = mp.cpu_count()
-    print("Number of cores on this computer: ", cores)
-    if cores <= 12:
-        return cores
+def num_cores(num_cores=None):
+    if num_cores is not None:
+        return int(num_cores)
     else:
-        return int(cores * (2/3.0))
+        cores = mp.cpu_count()
+        print("Number of cores on this computer: ", cores)
+        if cores <= 12:
+            return cores
+        else:
+            return int(cores * (2/3.0))
 
 
 def run_simulation(folder_name):
