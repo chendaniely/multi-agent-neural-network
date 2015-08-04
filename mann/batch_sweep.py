@@ -415,6 +415,15 @@ def num_cores(num_cores=None):
             return int(cores * (2/3.0))
 
 
+def chmod_recursive(directory):
+    for root, dirs, files in os.walk(directory):
+        for sim_dir in dirs:
+            os.chmod(os.path.join(root, sim_dir), 0o555)
+        for sim_file in files:
+            os.chmod(os.path.join(root, sim_file), 0o444)
+
+
 def run_simulation(folder_name):
         ex_file = os.path.join(folder_name, 'main.py')
         subprocess.call(['python', ex_file])
+        chmod_recursive(folder_name)
