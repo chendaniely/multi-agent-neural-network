@@ -415,12 +415,13 @@ def num_cores(num_cores=None):
             return int(cores * (2/3.0))
 
 
-def chmod_recursive(directory):
+def chmod_recursive(directory, dir_chmod=0o555, file_chmod=0o444):
+    os.chmod(directory, dir_chmod)
     for root, dirs, files in os.walk(directory):
         for sim_dir in dirs:
-            os.chmod(os.path.join(root, sim_dir), 0o555)
+            os.chmod(os.path.join(root, sim_dir), dir_chmod)
         for sim_file in files:
-            os.chmod(os.path.join(root, sim_file), 0o444)
+            os.chmod(os.path.join(root, sim_file), file_chmod)
 
 
 def run_simulation(folder_name):
