@@ -144,7 +144,7 @@ class LensAgentRecurrent(agent.LensAgent):
             new_state = self.get_new_state_values_from_out_file(new_state_path)
             self.state = new_state
         else:
-            raise ValueError('Only implemented sequential')
+            raise ValueError('Only implemented sequential updating so far')
 
     def update_agent_state(self, update_type, update_algorithm, **kwargs):
         """Updates the agent
