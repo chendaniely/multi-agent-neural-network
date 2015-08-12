@@ -11,6 +11,27 @@ def test_convert_str_to_int_array():
     expected = np.array([1, 2, 3])
     assert np.array_equal(converted, expected)
 
+
+
+def test_convert_str_to_2d_int_array():
+    calculated = helper.convert_str_to_2d_int_array('1, 2, 3; 4, 5, 6; 7 8 9')
+    expected = [np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])]
+    # assert False
+    assert np.array_equal(calculated, expected)
+
+    calculated = helper.convert_str_to_2d_int_array('1, 2, 3\n4, 5, 6;7 8 9')
+    assert np.array_equal(calculated, expected)
+
+    calculated = helper.convert_str_to_2d_int_array(
+        '\n\n1, 2, 3\n4, 5, 6;7 8 9\n\n')
+    assert np.array_equal(calculated, expected)
+
+    calculated = helper.convert_str_to_2d_int_array('None')
+    expected = None
+    assert calculated is expected
+    assert calculated == expected
+
+
 def test_convert_list_to_delim_str():
     converted = helper.convert_list_to_delim_str([1, 2, 3])
     expected = '1,2,3'
