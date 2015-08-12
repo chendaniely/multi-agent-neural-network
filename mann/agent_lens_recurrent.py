@@ -215,7 +215,13 @@ class LensAgentRecurrent(agent.LensAgent):
                 self._update_random_n(update_type, 1,
                                       manual_predecessor_inputs, **kwargs)
             elif update_algorithm == 'random_all':
-                self._update_random_n(update_type, len(self.predecessors),
+                if manual_predecessor_inputs is not None:
+                    n = len(manual_predecessor_inputs)
+                elif manual_predecessor_inputs is None:
+                    n = len(self.predecessors)
+                else:
+                    raise ValueError
+                self._update_random_n(update_type, n,
                                       manual_predecessor_inputs, **kwargs)
             else:
                 raise ValueError("update algorithm unknown")
