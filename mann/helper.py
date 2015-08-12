@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 import random
 import warnings
+import re
 
 import numpy as np
 
 
-def convert_str_to_int_array(string, delim=','):
+def convert_str_to_int_array(string, delims=['\s*,\s*', '\s*']):
     """Returns a list of ints from a delimited separated string of ints
     :parm string: delimited string of ints
     :type string: str
@@ -13,13 +14,36 @@ def convert_str_to_int_array(string, delim=','):
     .. note::
     The string parameter cannot be empty
 
-    :parm delim: string delimited, default is ',' (a comma)
-    :type delim: numpy.ndarray
+    :param delim: list of characters for delimiter
+    :type delim: list
+
+    :returns: string delimited, default is ',' (a comma)
+    :rtype: numpy.ndarray
+
+    Example: mann.helper.convert_str_to_int_array('1, 2, 3')
+    > array([ 1.,  2.,  3.])
     """
     assert isinstance(string, str), "string parameter passed is not type str"
-    assert isinstance(delim, str), "delim parameter passed is not type str"
+    assert isinstance(delims, list), "delim parameter passed is not type str"
     assert string != '', 'string parameter is empty'
-    return np.array([float(s) for s in string.strip().split(delim)])
+    split = [x.strip() for x in re.split('|'.join(delims), string)]
+    return_value = np.array([int(x) for x in split])
+    return return_value
+
+
+def convert_str_to_2d_int_array(string,
+                                delim_array=[', ', ' ', '', ','],
+                                delim_array_values=['\n', ';']):
+    string = string.strip()
+    if string == "None":
+        return None
+    else:
+        arrays = re.split('|'.join(delim_array_values), string)
+        arrays = [x.strip()  for x in arrays if x.strip() != '']
+        arrays = np.array(
+            [convert_str_to_int_array(x, delims=delim_array) for x in arrays])
+        print(arrays)
+        return(arrays)
 
 
 def convert_list_to_delim_str(list_to_convert, delim=','):

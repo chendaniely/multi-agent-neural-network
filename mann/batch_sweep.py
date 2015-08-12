@@ -403,15 +403,28 @@ def update_init_file(folder_name, **kwargs):
         # print('config file updated: ', sim_config_file_dir)
 
 
-def num_cores():
-    cores = mp.cpu_count()
-    print("Number of cores on this computer: ", cores)
-    if cores <= 12:
-        return cores
+def num_cores(num_cores=None):
+    if num_cores is not None:
+        return int(num_cores)
     else:
-        return int(cores * (2/3.0))
+        cores = mp.cpu_count()
+        print("Number of cores on this computer: ", cores)
+        if cores <= 12:
+            return cores
+        else:
+            return int(cores * (2/3.0))
+
+
+def chmod_recursive(directory, dir_chmod=0o555, file_chmod=0o444):
+    os.chmod(directory, dir_chmod)
+    for root, dirs, files in os.walk(directory):
+        for sim_dir in dirs:
+            os.chmod(os.path.join(root, sim_dir), dir_chmod)
+        for sim_file in files:
+            os.chmod(os.path.join(root, sim_file), file_chmod)
 
 
 def run_simulation(folder_name):
         ex_file = os.path.join(folder_name, 'main.py')
         subprocess.call(['python', ex_file])
+        chmod_recursive(folder_name)

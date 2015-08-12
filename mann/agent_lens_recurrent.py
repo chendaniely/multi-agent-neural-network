@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-
 import logging
 import random
+import numpy.random
 
 from mann import agent
 import mann.helper
@@ -108,13 +108,7 @@ class LensAgentRecurrent(agent.LensAgent):
     #                 # print('list of new state', list_of_new_state)
     #     return tuple(list_of_new_state)
 
-    def _update_random_n(self, update_type, n, **kwargs):
-        """Uses `n` neighbors to update
-        Does not handle if you pick `n` to be greater than the nunber of
-        predecessors
-        """
-        predecessors_picked = random.sample(self.predecessors, n)
-        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+    def _pick_self(self):
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
         lens_ex_file_strings = []
         agent_for_update = "{}-1".format(self.agent_id)
@@ -124,17 +118,77 @@ class LensAgentRecurrent(agent.LensAgent):
                 agent_for_update,
                 mann.helper.convert_list_to_delim_str(self.state, delim=' '))
         lens_ex_file_strings.append(agent_for_update_ex_str)
+        return(lens_ex_file_strings)
 
+    def _pick_network(self, n):
+        """Picks n from the predecessors and returns a list, lens_ex_file_string
+        where each element in the list is the example case used to write an .ex
+        LENS file
+        """
+        predecessors_picked = random.sample(self.predecessors, n)
+        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+        lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
+        lens_ex_file_strings = []
+        lens_ex_file_string_self_1 = self._pick_self()
+        # agent_for_update = "{}-1".format(self.agent_id)
+
+        # agent_for_update_ex_str = \
+        #     lens_in_writer_helper.clean_agent_state_in_file(
+        #         agent_for_update,
+        #         mann.helper.convert_list_to_delim_str(self.state, delim=' '))
+        # lens_ex_file_strings.append(agent_for_update_ex_str)
         for predecessor in predecessors_picked:
             predecessor_ex_str = \
                 lens_in_writer_helper.clean_agent_state_in_file(
                     str(predecessor.agent_id),
-                    mann.helper.convert_list_to_delim_str(predecessor.state,
-                                                          delim=' '))
+                    mann.helper.convert_list_to_delim_str(
+                        predecessor.state,
+                        delim=' '))
             lens_ex_file_strings.append(predecessor_ex_str)
+            # print(lens_ex_file_strings)
+        lens_ex_file_string_self_1.extend(lens_ex_file_strings)
+        return(lens_ex_file_string_self_1)
+
+    def _pick_manual_predecessor_inputs(self, manual_predecessor_inputs, n):
+        lens_ex_file_string_self_1 = self._pick_self()
+        predecessors_picked = manual_predecessor_inputs[
+            numpy.random.choice(manual_predecessor_inputs.shape[0],
+                                size=n,
+                                replace=False),
+            :]
+        logging.debug('manual_predecessors_picked: {}'.
+                      format(predecessors_picked))
+        lens_ex_file_strings = []
+        lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
+        for idx, predecessor in enumerate(predecessors_picked):
+            predecessor_ex_str = \
+                lens_in_writer_helper.clean_agent_state_in_file(
+                    str(idx) + "_manual",
+                    mann.helper.convert_list_to_delim_str(
+                        predecessor,
+                        delim=' '))
+            lens_ex_file_strings.append(predecessor_ex_str)
+        lens_ex_file_string_self_1.extend(lens_ex_file_strings)
+        return(lens_ex_file_string_self_1)
+
+    def _update_random_n(self, update_type, n, manual_predecessor_inputs,
+                         **kwargs):
+        """Uses `n` neighbors to update
+        Does not handle if you pick `n` to be greater than the nunber of
+        predecessors
+        """
+        # manual_predecessor_inputs = None
+        if manual_predecessor_inputs is not None:
+            logging.debug('Picking from manual_predecessor_inputs')
+            lens_ex_file_strings = self._pick_manual_predecessor_inputs(
+                manual_predecessor_inputs, n)
+        else:
+            logging.debug('Picking from self.predecessors')
+            lens_ex_file_strings = self._pick_network(n)
 
         ex_file_strings = '\n'.join(lens_ex_file_strings)
         ex_file_path = kwargs['lens_parameters']['ex_file_path']
+
         with open(ex_file_path, 'w') as f:
             f.write(ex_file_strings)
         lens_in_file_path = kwargs['lens_parameters']['in_file_path']
@@ -144,9 +198,10 @@ class LensAgentRecurrent(agent.LensAgent):
             new_state = self.get_new_state_values_from_out_file(new_state_path)
             self.state = new_state
         else:
-            raise ValueError('Only implemented sequential')
+            raise ValueError('Only implemented sequential updating so far')
 
-    def update_agent_state(self, update_type, update_algorithm, **kwargs):
+    def update_agent_state(self, update_type, update_algorithm,
+                           manual_predecessor_inputs, **kwargs):
         """Updates the agent
 
         :param update_type: Can be either 'simultaneous' or 'sequential'
@@ -157,10 +212,17 @@ class LensAgentRecurrent(agent.LensAgent):
         """
         if self.has_predecessor():
             if update_algorithm == 'random_1':
-                self._update_random_n(update_type, 1, **kwargs)
+                self._update_random_n(update_type, 1,
+                                      manual_predecessor_inputs, **kwargs)
             elif update_algorithm == 'random_all':
-                self._update_random_n(update_type, len(self.predecessors),
-                                      **kwargs)
+                if manual_predecessor_inputs is not None:
+                    n = len(manual_predecessor_inputs)
+                elif manual_predecessor_inputs is None:
+                    n = len(self.predecessors)
+                else:
+                    raise ValueError
+                self._update_random_n(update_type, n,
+                                      manual_predecessor_inputs, **kwargs)
             else:
                 raise ValueError("update algorithm unknown")
         else:

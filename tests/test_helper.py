@@ -6,15 +6,45 @@ import numpy as np
 
 from mann import helper
 
+
 def test_convert_str_to_int_array():
     converted = helper.convert_str_to_int_array('1, 2, 3')
     expected = np.array([1, 2, 3])
     assert np.array_equal(converted, expected)
 
+    converted = helper.convert_str_to_int_array('1 2 3', delims=[' '])
+    assert np.array_equal(converted, expected)
+
+    converted = helper.convert_str_to_int_array('1 2 3 4, 5, 6',
+                                                delims=[', ', ' '])
+    expected = np.array([1, 2, 3, 4, 5, 6])
+    assert np.array_equal(converted, expected)
+
+
+def test_convert_str_to_2d_int_array():
+    calculated = helper.convert_str_to_2d_int_array('1, 2, 3; 4, 5, 6; 7 8 9')
+    expected = [np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])]
+    # assert False
+    assert np.array_equal(calculated, expected)
+
+    calculated = helper.convert_str_to_2d_int_array('1, 2, 3\n4, 5, 6;7 8 9')
+    assert np.array_equal(calculated, expected)
+
+    calculated = helper.convert_str_to_2d_int_array(
+        '\n\n1, 2, 3\n4, 5, 6;7 8 9\n\n')
+    assert np.array_equal(calculated, expected)
+
+    calculated = helper.convert_str_to_2d_int_array('None')
+    expected = None
+    assert calculated is expected
+    assert calculated == expected
+
+
 def test_convert_list_to_delim_str():
     converted = helper.convert_list_to_delim_str([1, 2, 3])
     expected = '1,2,3'
     assert converted == expected
+
 
 def test_flip_1_0():
     calculated = helper.flip_1_0(1)
@@ -24,6 +54,7 @@ def test_flip_1_0():
     calculated = helper.flip_1_0(0)
     expected = 1
     assert calculated == expected
+
 
 def test_mutate():
     calculated = helper.mutate([0, 0, 0, 0], 0)
