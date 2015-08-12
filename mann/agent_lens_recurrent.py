@@ -108,13 +108,7 @@ class LensAgentRecurrent(agent.LensAgent):
     #                 # print('list of new state', list_of_new_state)
     #     return tuple(list_of_new_state)
 
-    def _update_random_n(self, update_type, n, **kwargs):
-        """Uses `n` neighbors to update
-        Does not handle if you pick `n` to be greater than the nunber of
-        predecessors
-        """
-        predecessors_picked = random.sample(self.predecessors, n)
-        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+    def _pick_self(self):
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
         lens_ex_file_strings = []
         agent_for_update = "{}-1".format(self.agent_id)
@@ -124,17 +118,90 @@ class LensAgentRecurrent(agent.LensAgent):
                 agent_for_update,
                 mann.helper.convert_list_to_delim_str(self.state, delim=' '))
         lens_ex_file_strings.append(agent_for_update_ex_str)
+        return(lens_ex_file_strings)
 
+    def _pick_network(self, n):
+        """Picks n from the predecessors and returns a list, lens_ex_file_string
+        where each element in the list is the example case used to write an .ex
+        LENS file
+        """
+        predecessors_picked = random.sample(self.predecessors, n)
+        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+        lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
+        lens_ex_file_strings = []
+        lens_ex_file_string_self_1 = self._pick_self()
+        # agent_for_update = "{}-1".format(self.agent_id)
+
+        # agent_for_update_ex_str = \
+        #     lens_in_writer_helper.clean_agent_state_in_file(
+        #         agent_for_update,
+        #         mann.helper.convert_list_to_delim_str(self.state, delim=' '))
+        # lens_ex_file_strings.append(agent_for_update_ex_str)
         for predecessor in predecessors_picked:
             predecessor_ex_str = \
                 lens_in_writer_helper.clean_agent_state_in_file(
                     str(predecessor.agent_id),
-                    mann.helper.convert_list_to_delim_str(predecessor.state,
-                                                          delim=' '))
+                    mann.helper.convert_list_to_delim_str(
+                        predecessor.state,
+                        delim=' '))
             lens_ex_file_strings.append(predecessor_ex_str)
+            # print(lens_ex_file_strings)
+        lens_ex_file_string_self_1.extend(lens_ex_file_strings)
+        return(lens_ex_file_string_self_1)
 
+    def _pick_manual_predecessor_inputs(self, manual_predecessor_inputs, n):
+        print("*"*80)
+        print(type(manual_predecessor_inputs))
+        print("shape, ", manual_predecessor_inputs.shape)
+        print("rows: ", manual_predecessor_inputs.shape[0])
+        lens_ex_file_string_self_1 = self._pick_self()
+        predecessors_picked = manual_predecessor_inputs[
+            numpy.random.choice(manual_predecessor_inputs.shape[0],
+                                size=n,
+                                replace=False),
+            :]
+        logging.debug('manual_predecessors_picked: {}'.
+                      format(predecessors_picked))
+        print("manual_predecessor_input:\n", manual_predecessor_inputs)
+        print("predecessors_picked:\n", predecessors_picked)
+        lens_ex_file_strings = []
+        lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
+        for idx, predecessor in enumerate(predecessors_picked):
+            predecessor_ex_str = \
+                lens_in_writer_helper.clean_agent_state_in_file(
+                    str(idx) + "_manual",
+                    mann.helper.convert_list_to_delim_str(
+                        predecessor,
+                        delim=' '))
+            lens_ex_file_strings.append(predecessor_ex_str)
+            # print(lens_ex_file_strings)
+        # print(type(lens_ex_file_string_self_1), type(lens_ex_file_strings))
+        # print("lens_ex_file_strings: ", lens_ex_file_strings)
+        # print("lens_ex_file_string_self_1: ", lens_ex_file_string_self_1)
+        lens_ex_file_string_self_1.extend(lens_ex_file_strings)
+        return(lens_ex_file_string_self_1)
+
+    def _update_random_n(self, update_type, n, manual_predecessor_inputs,
+                         **kwargs):
+        """Uses `n` neighbors to update
+        Does not handle if you pick `n` to be greater than the nunber of
+        predecessors
+        """
+        # manual_predecessor_inputs = None
+        if manual_predecessor_inputs is not None:
+            logging.debug('Picking from manual_predecessor_inputs')
+            lens_ex_file_strings = self._pick_manual_predecessor_inputs(
+                manual_predecessor_inputs, n)
+        else:
+            logging.debug('Picking from self.predecessors')
+            lens_ex_file_strings = self._pick_network(n)
+
+        # print("lens_ex_file_strings: ", lens_ex_file_strings)
+        # assert False
         ex_file_strings = '\n'.join(lens_ex_file_strings)
         ex_file_path = kwargs['lens_parameters']['ex_file_path']
+        print("ex_file_strings:\n", ex_file_strings)
+        # assert False
         with open(ex_file_path, 'w') as f:
             f.write(ex_file_strings)
         lens_in_file_path = kwargs['lens_parameters']['in_file_path']
