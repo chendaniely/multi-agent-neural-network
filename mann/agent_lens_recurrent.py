@@ -150,10 +150,6 @@ class LensAgentRecurrent(agent.LensAgent):
         return(lens_ex_file_string_self_1)
 
     def _pick_manual_predecessor_inputs(self, manual_predecessor_inputs, n):
-        print("*"*80)
-        print(type(manual_predecessor_inputs))
-        print("shape, ", manual_predecessor_inputs.shape)
-        print("rows: ", manual_predecessor_inputs.shape[0])
         lens_ex_file_string_self_1 = self._pick_self()
         predecessors_picked = manual_predecessor_inputs[
             numpy.random.choice(manual_predecessor_inputs.shape[0],
@@ -162,8 +158,6 @@ class LensAgentRecurrent(agent.LensAgent):
             :]
         logging.debug('manual_predecessors_picked: {}'.
                       format(predecessors_picked))
-        print("manual_predecessor_input:\n", manual_predecessor_inputs)
-        print("predecessors_picked:\n", predecessors_picked)
         lens_ex_file_strings = []
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
         for idx, predecessor in enumerate(predecessors_picked):
@@ -174,10 +168,6 @@ class LensAgentRecurrent(agent.LensAgent):
                         predecessor,
                         delim=' '))
             lens_ex_file_strings.append(predecessor_ex_str)
-            # print(lens_ex_file_strings)
-        # print(type(lens_ex_file_string_self_1), type(lens_ex_file_strings))
-        # print("lens_ex_file_strings: ", lens_ex_file_strings)
-        # print("lens_ex_file_string_self_1: ", lens_ex_file_string_self_1)
         lens_ex_file_string_self_1.extend(lens_ex_file_strings)
         return(lens_ex_file_string_self_1)
 
@@ -196,12 +186,9 @@ class LensAgentRecurrent(agent.LensAgent):
             logging.debug('Picking from self.predecessors')
             lens_ex_file_strings = self._pick_network(n)
 
-        # print("lens_ex_file_strings: ", lens_ex_file_strings)
-        # assert False
         ex_file_strings = '\n'.join(lens_ex_file_strings)
         ex_file_path = kwargs['lens_parameters']['ex_file_path']
-        print("ex_file_strings:\n", ex_file_strings)
-        # assert False
+
         with open(ex_file_path, 'w') as f:
             f.write(ex_file_strings)
         lens_in_file_path = kwargs['lens_parameters']['in_file_path']
