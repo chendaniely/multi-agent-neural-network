@@ -22,6 +22,21 @@ def convert_str_to_int_array(string, delim=','):
     return np.array([float(s) for s in string.strip().split(delim)])
 
 
+def convert_str_to_2d_int_array(string,
+                                delim_array=[', ', ' ', '', ','],
+                                delim_array_values=['\n', ';']):
+    string = string.strip()
+    if string == "None":
+        return None
+    else:
+        arrays = re.split('|'.join(delim_array_values), string)
+        arrays = [x.strip()  for x in arrays if x.strip() != '']
+        arrays = np.array(
+            [convert_str_to_int_array(x, delims=delim_array) for x in arrays])
+        print(arrays)
+        return(arrays)
+
+
 def convert_list_to_delim_str(list_to_convert, delim=','):
     """Return a string delimited by delim from a list
 
