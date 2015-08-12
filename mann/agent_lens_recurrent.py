@@ -146,7 +146,8 @@ class LensAgentRecurrent(agent.LensAgent):
         else:
             raise ValueError('Only implemented sequential updating so far')
 
-    def update_agent_state(self, update_type, update_algorithm, **kwargs):
+    def update_agent_state(self, update_type, update_algorithm,
+                           manual_predecessor_inputs, **kwargs):
         """Updates the agent
 
         :param update_type: Can be either 'simultaneous' or 'sequential'
@@ -157,10 +158,11 @@ class LensAgentRecurrent(agent.LensAgent):
         """
         if self.has_predecessor():
             if update_algorithm == 'random_1':
-                self._update_random_n(update_type, 1, **kwargs)
+                self._update_random_n(update_type, 1,
+                                      manual_predecessor_inputs, **kwargs)
             elif update_algorithm == 'random_all':
                 self._update_random_n(update_type, len(self.predecessors),
-                                      **kwargs)
+                                      manual_predecessor_inputs, **kwargs)
             else:
                 raise ValueError("update algorithm unknown")
         else:
