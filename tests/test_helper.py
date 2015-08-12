@@ -6,11 +6,19 @@ import numpy as np
 
 from mann import helper
 
+
 def test_convert_str_to_int_array():
     converted = helper.convert_str_to_int_array('1, 2, 3')
     expected = np.array([1, 2, 3])
     assert np.array_equal(converted, expected)
 
+    converted = helper.convert_str_to_int_array('1 2 3', delims=[' '])
+    assert np.array_equal(converted, expected)
+
+    converted = helper.convert_str_to_int_array('1 2 3 4, 5, 6',
+                                                delims=[', ', ' '])
+    expected = np.array([1, 2, 3, 4, 5, 6])
+    assert np.array_equal(converted, expected)
 
 
 def test_convert_str_to_2d_int_array():
@@ -37,6 +45,7 @@ def test_convert_list_to_delim_str():
     expected = '1,2,3'
     assert converted == expected
 
+
 def test_flip_1_0():
     calculated = helper.flip_1_0(1)
     expected = 0
@@ -45,6 +54,7 @@ def test_flip_1_0():
     calculated = helper.flip_1_0(0)
     expected = 1
     assert calculated == expected
+
 
 def test_mutate():
     calculated = helper.mutate([0, 0, 0, 0], 0)
