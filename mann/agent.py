@@ -217,7 +217,7 @@ class LensAgent(Agent):
         env = os.environ
 
         for key, value in kwargs.items():
-            env[key] = value
+            env[key] = str(value)
 
         subprocess.call(['lens', '-batch', lens_in_file_dir], env=env)
 
