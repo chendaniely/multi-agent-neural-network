@@ -214,7 +214,12 @@ class LensAgent(Agent):
         be a variable that contains all the enviornment variables needed
         for lens to run the .in file properly
         """
-        subprocess.call(['lens', '-batch', lens_in_file_dir], **kwargs)
+        env = os.environ
+
+        for key, value in kwargs.iteritems():
+            env[key] = value
+
+        subprocess.call(['lens', '-batch', lens_in_file_dir], env=env)
 
         # subprocess.call(['lens', '-batch', lens_in_file],
         #                env=kwargs.get('env'))
