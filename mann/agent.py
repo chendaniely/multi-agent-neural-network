@@ -99,6 +99,10 @@ class Agent(object):
     def set_state(self, new_state):
         raise BaseAgentStateError('Base agent class has no state')
 
+    def get_padded_agent_id(self, total_number_of_characters=6):
+        format_string = "{{0:0{}d}}".format(total_number_of_characters)
+        return format_string.format(self.get_key())
+
     def get_state(self):
         raise BaseAgentStateError('Base agent class has no state')
 
@@ -681,9 +685,9 @@ class LensAgent(Agent):
         return (pos, neg)
 
 
-    def get_padded_agent_id(self, total_number_of_characters=6):
-        format_string = "{{0:0{}d}}".format(total_number_of_characters)
-        return format_string.format(self.get_key())
+    # def get_padded_agent_id(self, total_number_of_characters=6):
+    #     format_string = "{{0:0{}d}}".format(total_number_of_characters)
+    #     return format_string.format(self.get_key())
 
 
     def get_env_for_pos_neg_bank_values(self):
