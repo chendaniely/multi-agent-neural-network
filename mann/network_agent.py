@@ -74,6 +74,8 @@ class NetworkAgent(object):
                     # procedures
                     new_agent = mann.agent_lens_recurrent.LensAgentRecurrent(
                         agent_type[1])
+                    new_agent.create_weight_file(
+                        kwargs.get('weight_in_file'))
                 else:
                     raise ValueError('Unknown Lens Agent Type')
             else:
