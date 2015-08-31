@@ -154,24 +154,33 @@ def _ftb_string_to_values(ftb_string):
 
 def _format_values_lens(tuple_of_values):
     # assert(len(tuple_of_values) == 5)
-    assert(len(tuple_of_values) == 2)
+    assert(len(tuple_of_values) == 7)
     # agents, delta, epsilon, criterion, run = tuple_of_values
-    agents, run = tuple_of_values
+    agents, run,\
+        clamp_strength,\
+        between_mean, between_sd,\
+        within_mean, within_sd = tuple_of_values
 
     agents = int(agents)
     # delta = float("{0:.2f}".format(delta))
     # epsilon = float("{0:.2f}".format(epsilon))
     # criterion = int(criterion)
     run = int(run)
+    clamp_strength = float("{0:.2f}".format(clamp_strength))
+    between_mean = float("{0:.2f}".format(between_mean))
+    between_sd = float("{0:.2f}".format(between_sd))
+    within_mean = float("{0:.2f}".format(within_mean))
+    within_sd = float("{0:.2f}".format(within_sd))
 
-    assert isinstance(agents, int)
+    # assert isinstance(agents, int)
     # assert isinstance(delta, float)
     # assert isinstance(epsilon, float)
     # assert isinstance(criterion, int)
-    assert isinstance(run, int)
+    # assert isinstance(run, int)
 
     # return tuple((agents, delta, epsilon, criterion, run))
-    return tuple((agents, run))
+    return tuple((agents, between_mean, between_sd, within_mean, within_sd,
+                  clamp_strength, run))
 
 
 def _format_values_watts(tuple_of_values):
