@@ -171,6 +171,8 @@ class LensAgentRecurrent(agent.LensAgent):
         return(lens_ex_file_string_self_1)
 
     def _pick_manual_predecessor_inputs(self, manual_predecessor_inputs, n):
+        """Pick manually entered predecessor inputs
+        """
         lens_ex_file_string_self_1 = self._pick_self()
         predecessors_picked = manual_predecessor_inputs[
             numpy.random.choice(manual_predecessor_inputs.shape[0],
