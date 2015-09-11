@@ -208,19 +208,21 @@ class LensAgent(Agent):
         LensAgent.prototypes = list_of_prototypes[:]
         print('list of prototypes created: ', str(list_of_prototypes))
 
-    def call_lens(self, lens_in_file_dir, **kwargs):
+    def call_lens(self, lens_in_file_dir, lens_env={}):
         """Calls LENS
 
         :param lens_in_file_dir: file dir of .in file to use for LENS
         :type lens_in_file_dir: str
 
-        Typically the 'env' key is passed in the kwargs, where 'env' will
-        be a variable that contains all the enviornment variables needed
+        :param lens_env: values to be passed into the lens environment
+        :type lens_env: dict
+
+        the lens_env contains all the enviornment variables needed
         for lens to run the .in file properly
         """
         env = os.environ
 
-        for key, value in kwargs.items():
+        for key, value in lens_env.items():
             env[key] = str(value)
 
         subprocess.call(['lens', '-batch', lens_in_file_dir], env=env)
