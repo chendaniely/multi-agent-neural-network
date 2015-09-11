@@ -67,17 +67,26 @@ class LensAgentRecurrent(agent.LensAgent):
 
         return tuple(new_state_values)
 
-    def create_weight_file(self, weight_in_file_path):
+    def create_weight_file(self, weight_in_file_path, weight_directory,
+                           ex_file_path):
         """Creates the weights for agent_lens_recurrent
+        This involves creating an .ex file (Typically Infl.ex)
+        calling lens (which will generate weights,
+        read in the .ex file, and train)
         """
         padded_agent_number = self.get_padded_agent_id()
 
-        # weight_file_name = 'AgentWgt{}.ex'.format(str(padded_agent_number))
-        # weight_file_dir = os.path.join(weight_output_dir,
-        #                                weight_file_name)
+        # write a LENS ex file before calling lens to create weights
+
+        # number of predecessors
+        np = len(self.predecessors)
+
+        self.write_lens_ex_file(
+            ex_file_path,
+            list_to_write_into_string=self.sample_predecessor_values(np))
 
         self.call_lens(lens_in_file_dir=weight_in_file_path,
-                       a=padded_agent_number)
+                       lens_env={'a': padded_agent_number})
 
     # def get_new_state_values_from_out_file(self, file_dir, agent_type,
     #                                        column=0):
