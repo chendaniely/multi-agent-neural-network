@@ -69,13 +69,12 @@ class NetworkAgent(object):
                         kwargs.get('prototype_mutation_prob'),
                         kwargs.get('training_criterion'))
                 elif agent_type[2] == 'recurrent_attitude':
-                    # nothing really happens after the agent gets created
-                    # this is more of a place holder for later training
-                    # procedures
                     new_agent = mann.agent_lens_recurrent.LensAgentRecurrent(
                         agent_type[1])
                     new_agent.create_weight_file(
-                        kwargs.get('weight_in_file'))
+                        kwargs.get('weight_in_file'),
+                        kwargs.get('weight_dir'),
+                        kwargs.get('weight_ex_path'))
                 else:
                     raise ValueError('Unknown Lens Agent Type')
             else:
