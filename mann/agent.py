@@ -99,6 +99,10 @@ class Agent(object):
     def set_state(self, new_state):
         raise BaseAgentStateError('Base agent class has no state')
 
+    def get_padded_agent_id(self, total_number_of_characters=6):
+        format_string = "{{0:0{}d}}".format(total_number_of_characters)
+        return format_string.format(self.get_key())
+
     def get_state(self):
         raise BaseAgentStateError('Base agent class has no state')
 
@@ -204,19 +208,21 @@ class LensAgent(Agent):
         LensAgent.prototypes = list_of_prototypes[:]
         print('list of prototypes created: ', str(list_of_prototypes))
 
-    def call_lens(self, lens_in_file_dir, **kwargs):
+    def call_lens(self, lens_in_file_dir, lens_env={}):
         """Calls LENS
 
         :param lens_in_file_dir: file dir of .in file to use for LENS
         :type lens_in_file_dir: str
 
-        Typically the 'env' key is passed in the kwargs, where 'env' will
-        be a variable that contains all the enviornment variables needed
+        :param lens_env: values to be passed into the lens environment
+        :type lens_env: dict
+
+        the lens_env contains all the enviornment variables needed
         for lens to run the .in file properly
         """
         env = os.environ
 
-        for key, value in kwargs.items():
+        for key, value in lens_env.items():
             env[key] = str(value)
 
         subprocess.call(['lens', '-batch', lens_in_file_dir], env=env)
@@ -681,9 +687,9 @@ class LensAgent(Agent):
         return (pos, neg)
 
 
-    def get_padded_agent_id(self, total_number_of_characters=6):
-        format_string = "{{0:0{}d}}".format(total_number_of_characters)
-        return format_string.format(self.get_key())
+    # def get_padded_agent_id(self, total_number_of_characters=6):
+    #     format_string = "{{0:0{}d}}".format(total_number_of_characters)
+    #     return format_string.format(self.get_key())
 
 
     def get_env_for_pos_neg_bank_values(self):

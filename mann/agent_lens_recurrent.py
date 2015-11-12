@@ -67,6 +67,27 @@ class LensAgentRecurrent(agent.LensAgent):
 
         return tuple(new_state_values)
 
+    def create_weight_file(self, weight_in_file_path, weight_directory,
+                           ex_file_path):
+        """Creates the weights for agent_lens_recurrent
+        This involves creating an .ex file (Typically Infl.ex)
+        calling lens (which will generate weights,
+        read in the .ex file, and train)
+        """
+        padded_agent_number = self.get_padded_agent_id()
+
+        # write a LENS ex file before calling lens to create weights
+
+        # number of predecessors
+        np = len(self.predecessors)
+
+        self.write_lens_ex_file(
+            ex_file_path,
+            list_to_write_into_string=self.sample_predecessor_values(np))
+
+        self.call_lens(lens_in_file_dir=weight_in_file_path,
+                       lens_env={'a': padded_agent_number})
+
     # def get_new_state_values_from_out_file(self, file_dir, agent_type,
     #                                        column=0):
     #     """Get new state values from .out file
@@ -150,6 +171,8 @@ class LensAgentRecurrent(agent.LensAgent):
         return(lens_ex_file_string_self_1)
 
     def _pick_manual_predecessor_inputs(self, manual_predecessor_inputs, n):
+        """Pick manually entered predecessor inputs
+        """
         lens_ex_file_string_self_1 = self._pick_self()
         predecessors_picked = manual_predecessor_inputs[
             numpy.random.choice(manual_predecessor_inputs.shape[0],
@@ -171,12 +194,34 @@ class LensAgentRecurrent(agent.LensAgent):
         lens_ex_file_string_self_1.extend(lens_ex_file_strings)
         return(lens_ex_file_string_self_1)
 
-    def _update_random_n(self, update_type, n, manual_predecessor_inputs,
-                         **kwargs):
-        """Uses `n` neighbors to update
-        Does not handle if you pick `n` to be greater than the nunber of
-        predecessors
+    def write_lens_ex_file(self, file_to_write,
+                           string_to_write=None,
+                           list_to_write_into_string=None):
+        """Takes a string or list and writes an .ex file for lens
         """
+        print("-"*80)
+        print("string", string_to_write)
+        print("list", list_to_write_into_string)
+        with open(file_to_write, 'w') as f:
+            if string_to_write is None and list_to_write_into_string is not None:
+                # passed in a list of stings to write and not a full string
+                ex_file_strings = '\n'.join(list_to_write_into_string)
+                f.write(ex_file_strings)
+            elif string_to_write is not None and list_to_write_into_string is None:
+                # passed in just a string to directly write
+                f.write(string_to_write)
+            else:
+                raise(ValueError,
+                      "Unknown combination of strings or list passed")
+
+    def sample_predecessor_values(self, n, manual_predecessor_inputs=None):
+        """Returns a list of strings that represent the inputs of n predecessors
+        Each element of the string will have the agent number, and a string
+        representation of the selected agent's activation values
+        """
+        if n > len(self.predecessors):
+            raise(ValueError, "n is greater than number of predecessors")
+
         # manual_predecessor_inputs = None
         if manual_predecessor_inputs is not None:
             logging.debug('Picking from manual_predecessor_inputs')
@@ -185,14 +230,36 @@ class LensAgentRecurrent(agent.LensAgent):
         else:
             logging.debug('Picking from self.predecessors')
             lens_ex_file_strings = self._pick_network(n)
+        return(lens_ex_file_strings)
+
+    def _update_random_n(self, update_type, n, manual_predecessor_inputs,
+                         **kwargs):
+        """Uses `n` neighbors to update
+        """
+
+        lens_ex_file_strings = self.sample_predecessor_values(
+            n,
+            manual_predecessor_inputs=manual_predecessor_inputs)
+
+        # manual_predecessor_inputs = None
+        # if manual_predecessor_inputs is not None:
+        #     logging.debug('Picking from manual_predecessor_inputs')
+        #     lens_ex_file_strings = self._pick_manual_predecessor_inputs(
+        #         manual_predecessor_inputs, n)
+        # else:
+        #     logging.debug('Picking from self.predecessors')
+        #     lens_ex_file_strings = self._pick_network(n)
 
         ex_file_strings = '\n'.join(lens_ex_file_strings)
         ex_file_path = kwargs['lens_parameters']['ex_file_path']
 
-        with open(ex_file_path, 'w') as f:
-            f.write(ex_file_strings)
+        self.write_lens_ex_file(ex_file_path, string_to_write=ex_file_strings)
+        # with open(ex_file_path, 'w') as f:
+        #     f.write(ex_file_strings)
+
         lens_in_file_path = kwargs['lens_parameters']['in_file_path']
-        self.call_lens(lens_in_file_path, a=self.agent_id)
+        self.call_lens(lens_in_file_path,
+                       lens_env={'a': self.get_padded_agent_id})
         if update_type == 'sequential':
             new_state_path = kwargs['lens_parameters']['new_state_path']
             new_state = self.get_new_state_values_from_out_file(new_state_path)
