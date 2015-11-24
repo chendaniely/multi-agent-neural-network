@@ -68,7 +68,7 @@ class LensAgentRecurrent(agent.LensAgent):
         return tuple(new_state_values)
 
     def create_weight_file(self, weight_in_file_path, weight_directory,
-                           ex_file_path):
+                           ex_file_path, **kwargs):
         """Creates the weights for agent_lens_recurrent
         This involves creating an .ex file (Typically Infl.ex)
         calling lens (which will generate weights,
@@ -86,7 +86,12 @@ class LensAgentRecurrent(agent.LensAgent):
             list_to_write_into_string=self.sample_predecessor_values(np))
 
         self.call_lens(lens_in_file_dir=weight_in_file_path,
-                       lens_env={'a': padded_agent_number})
+                       lens_env={'a': padded_agent_number,
+                                 'bm': kwargs['between_mean'],
+                                 'bs': kwargs['between_sd'],
+                                 'wm': kwargs['within_mean'],
+                                 'ws': kwargs['within_sd'],
+                                 'cs': kwargs['clamp_strength']})
 
     # def get_new_state_values_from_out_file(self, file_dir, agent_type,
     #                                        column=0):
@@ -256,10 +261,16 @@ class LensAgentRecurrent(agent.LensAgent):
         self.write_lens_ex_file(ex_file_path, string_to_write=ex_file_strings)
         # with open(ex_file_path, 'w') as f:
         #     f.write(ex_file_strings)
-
+        print('kwargs: ', kwargs['lens_parameters'])
+        print(kwargs['lens_parameters']['between_mean'])
         lens_in_file_path = kwargs['lens_parameters']['in_file_path']
         self.call_lens(lens_in_file_path,
-                       lens_env={'a': self.get_padded_agent_id()})
+                       lens_env={'a': self.get_padded_agent_id(),
+                                 'bm': kwargs['lens_parameters']['between_mean'],
+                                 'bs': kwargs['lens_parameters']['between_sd'],
+                                 'wm': kwargs['lens_parameters']['within_mean'],
+                                 'ws': kwargs['lens_parameters']['within_sd'],
+                                 'cs': kwargs['lens_parameters']['clamp_strength']})
         if update_type == 'sequential':
             new_state_path = kwargs['lens_parameters']['new_state_path']
             new_state = self.get_new_state_values_from_out_file(new_state_path)
