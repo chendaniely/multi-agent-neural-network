@@ -226,6 +226,26 @@ def test_get_new_state_values_from_out_file():
     #                               rtol=1e-07, verbose=True)
 
 
+@nose.with_setup(reset_LensAgent_20)
+def test_get_new_state_values_from_out_file_standalone():
+    test_lens_agent = agent.LensAgent(20)
+
+    agent_state_out_file_dir = os.path.join(here, 'lens',
+                                            'AgentState_10PU_N_ex.out')
+
+    calculated_state = test_lens_agent.get_new_state_values_from_out_file(
+        agent_state_out_file_dir, 10)
+    expected_state = [0.61267, 0.593237, 0.620111, 0.604982, 0.602024,
+                      0.584436, 0.578927, 0.560431, 0.565787, 0.57802]
+    print(calculated_state, file=sys.stderr)
+    assert calculated_state == expected_state
+
+    # print('agent state: ', calculated_state, file=sys.stderr)
+    # print('\ncannot fully test update_agent_state until we can seed LENS\n',
+    #       file=sys.stderr)
+
+    # assert(len(test_lens_agent.get_state()) == len(expected_state))
+
 expected_ex_file = '''name: sit1
 B: 0 1 0 0 0 0 1 1 0 0 1 1 0 0 1 0 0 1 0 1 ;
 '''

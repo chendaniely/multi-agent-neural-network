@@ -13,10 +13,12 @@ setup(
                   tarball/0.0.1',
     keywords=['agent-based model', 'abm', 'neural network', 'learning',
               'diffusion'],
-    # scripts=['mann/agent.py',
-    #          'mann/network_agent.py',
-    #          'mann/network.py',
-    #          'mann/agent_lens_recurrent.py'],
+    scripts=['mann/agent.py',
+             'mann/agent_binary.py',
+             'mann/network_agent.py',
+             'mann/network.py',
+             'mann/batch_sweep.py',
+             'mann/helper.py'],
     classifiers=['Natural Language :: English', ],
-    long_description='README.md',
+    long_description='README.md'
 )

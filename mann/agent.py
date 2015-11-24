@@ -26,10 +26,12 @@ class BaseAgentUpdateStateError(Error):
     '''Raised when the update_agent_state method
     is called from the Agent class'''
 
+
 class AssignAgentIdError(Error):
     """Raised when trying to assign an agent id to an agent that
     already has an ID
     """
+
 
 ###############################################################################
 #
@@ -97,6 +99,10 @@ class Agent(object):
     def set_state(self, new_state):
         raise BaseAgentStateError('Base agent class has no state')
 
+    def get_padded_agent_id(self, total_number_of_characters=6):
+        format_string = "{{0:0{}d}}".format(total_number_of_characters)
+        return format_string.format(self.get_key())
+
     def get_state(self):
         raise BaseAgentStateError('Base agent class has no state')
 
@@ -112,7 +118,7 @@ class Agent(object):
         '''
         self.predecessors = list_of_predecessors
 
-    def has_predessor(self):
+    def has_predecessor(self):
         if len(self.predecessors) == 0:
             return False
         else:
@@ -125,103 +131,7 @@ class Agent(object):
         raise BaseAgentUpdateStateError(
             'Base agent class has no state to update')
 
-###############################################################################
-#
-# Binary Agent Class
-#
-###############################################################################
 
-
-class BinaryAgent(Agent):
-    binary_agent_count = 0
-
-    def __init__(self):
-        self.agent_id = BinaryAgent.binary_agent_count
-        BinaryAgent.binary_agent_count += 1
-        self.binary_state = 0
-        self.predecessors = []
-
-    def set_binary_state(self, value):
-        # binary state means 0 or 1
-        assert value in [0, 1],\
-            "binary state can only be 0 or 1, got %r" % value
-
-        # make sure we are only changing the state when the value is different
-        assert value != self.binary_state, "changing state to same value"
-
-        self.binary_state = value
-
-    def get_state(self):
-        return self.binary_state
-
-    def seed_agent(self):
-        self.set_binary_state(1)
-
-    def random_binary_state(self):
-        '''
-        generates a random state for the agent as it is created
-        raises exception if state cannot be assign
-
-        Returns:
-            int: value of 0 or 1 for a :py:data::self.state
-        '''
-        random_float = random.random()
-        if random_float < .5:
-            return 0
-        elif random_float >= .5:
-            return 1
-        # else:
-        #     return -1
-        #     raise Exception("Error in _random_state")
-
-    def _update_agent_state_default(self):
-        '''
-        Looks at the list of predessors for the selected agent
-        randomly picks one of them
-        if the selected predessor is has a different state
-        there will be a 70% chance that the selected agent will change states
-        to match the predessor's state
-        otherwise no state is changed
-        '''
-        # print('in _update_agent_state_default')
-        # print("type of predecssors: ",  type(self.predecessors))  # list
-        # print("container of predessors: ", self.predecessors)
-        predecessor_picked = random.sample(list(self.predecessors), 1)[0]
-        # print("predecessor picked: ", predecessor_picked)
-        # print("predecessor picked key: ", predecessor_picked.get_key())
-        if self.binary_state == predecessor_picked.binary_state:
-            # print("no update required, binary states are the same")
-            # print("self.binary_state = ", self.binary_state)
-            # print("predecessor_picked.binary_state = ",
-            #       predecessor_picked.binary_state)
-            pass
-        else:
-            # print('updateing agent state')
-            random_number = random.random()
-            if random_number < 0.7:
-                self.set_binary_state(predecessor_picked.binary_state)
-            else:
-                pass
-
-    def update_agent_state(self, pick='default'):
-        '''
-        pick = 'default': uses the update_agent__state_default algorithm
-        '''
-        # print('in update_agent_state')
-        # print('has predecessors', self.has_predessor())
-        if self.has_predessor():
-            if pick == 'default':
-                self._update_agent_state_default()
-            else:
-                raise ValueError("Algorithm used for pick unknown")
-        else:
-            pass
-
-###############################################################################
-#
-# Lens Agent Class
-#
-###############################################################################
 class LensAgent(Agent):
     agent_count = 0
     prototypes = []
@@ -229,12 +139,13 @@ class LensAgent(Agent):
     def __init__(self, num_state_vars):
         """Creates a LensAgent instance
 
-        :param num_state_vars: Total number of processing units in the LensAgent.
+        :param num_state_vars:
+        Total number of processing units in the LensAgent.
         """
         print('class prototypes: ', LensAgent.prototypes)
         print(len(LensAgent.prototypes))
         assert len(LensAgent.prototypes) >= 1,\
-               "LensAgent prototypes need to be set before creating "
+            "LensAgent prototypes need to be set before creating "
 
         self.agent_id = LensAgent.agent_count
         LensAgent.agent_count += 1
@@ -297,17 +208,24 @@ class LensAgent(Agent):
         LensAgent.prototypes = list_of_prototypes[:]
         print('list of prototypes created: ', str(list_of_prototypes))
 
-    def call_lens(self, lens_in_file_dir, **kwargs):
+    def call_lens(self, lens_in_file_dir, lens_env={}):
         """Calls LENS
 
         :param lens_in_file_dir: file dir of .in file to use for LENS
         :type lens_in_file_dir: str
 
-        Typically the 'env' key is passed in the kwargs, where 'env' will
-        be a variable that contains all the enviornment variables needed
+        :param lens_env: values to be passed into the lens environment
+        :type lens_env: dict
+
+        the lens_env contains all the enviornment variables needed
         for lens to run the .in file properly
         """
-        subprocess.call(['lens', '-batch', lens_in_file_dir], **kwargs)
+        env = os.environ
+
+        for key, value in lens_env.items():
+            env[key] = str(value)
+
+        subprocess.call(['lens', '-batch', lens_in_file_dir], env=env)
 
         # subprocess.call(['lens', '-batch', lens_in_file],
         #                env=kwargs.get('env'))
@@ -343,34 +261,54 @@ class LensAgent(Agent):
                 list_of_example_values.append(train_list)
             return list_of_example_values
 
-    def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
-        """Get new state values from .out file_d
+    def get_new_state_values_from_out_file(self, lens_output_dir,
+                                           num_processing_unts=10,
+                                           column=0):
+        num_lines = sum(1 for line in open(lens_output_dir))
+        final_lens_output = []
+        start_line = num_lines - (num_processing_unts + 3)
+        print(start_line)
+        with open(lens_output_dir, 'r') as f:
+            for line_num, line in enumerate(f):
+                if line_num >= start_line:
+                    final_lens_output.append(line.strip())
+        assert num_processing_unts % 2 == 0, 'num_processing_unts not even'
+        per_bank = int(num_processing_unts / 2)
+        new_state = final_lens_output[2:(2+per_bank)]
+        new_state.extend(final_lens_output[2+per_bank+1:])
+        new_state = [float(x) for x in new_state]
+        assert len(new_state) == num_processing_unts, \
+            'final number of output units not equal to num processing units'
+        return(new_state)
 
-        :returns: new state values
-        :rtype: tuple
-        """
-        # creates a list and returns a tuple
-        list_of_new_state = []
+    # def _get_new_state_values_from_out_file(self, file_dir, type, column=0):
+    #     """Get new state values from .out file_d
 
-        # here = os.path.abspath(os.path.dirname(__file__))
-        # read_file_path = here + '/' + file_dir
-        read_file_path = file_dir
-        # print('read_file_path: ', read_file_path)
-        # print('files here', os.listdir("./"))
+    #     :returns: new state values
+    #     :rtype: tuple
+    #     """
+    #     # creates a list and returns a tuple
+    #     list_of_new_state = []
 
-        with open(read_file_path, 'r') as f:
-            start_bank1, end_bank1, start_bank2, end_bank2 = \
-                self._start_end_update_out(f)
-            for line_idx, line in enumerate(f):
-                # print(line)
-                line_num = line_idx + 1  # python starts from line 0
-                if start_bank1 <= line_num <= end_bank1 or \
-                   start_bank2 <= line_num <= end_bank2:
-                    # in a line that I want to save information for
-                    col = line.strip().split(' ')[column]
-                    list_of_new_state.append(float(col))
-                    # print('list of new state', list_of_new_state)
-        return tuple(list_of_new_state)
+    #     # here = os.path.abspath(os.path.dirname(__file__))
+    #     # read_file_path = here + '/' + file_dir
+    #     read_file_path = file_dir
+    #     # print('read_file_path: ', read_file_path)
+    #     # print('files here', os.listdir("./"))
+
+    #     with open(read_file_path, 'r') as f:
+    #         start_bank1, end_bank1, start_bank2, end_bank2 = \
+    #             self._start_end_update_out(f)
+    #         for line_idx, line in enumerate(f):
+    #             # print(line)
+    #             line_num = line_idx + 1  # python starts from line 0
+    #             if start_bank1 <= line_num <= end_bank1 or \
+    #                start_bank2 <= line_num <= end_bank2:
+    #                 # in a line that I want to save information for
+    #                 col = line.strip().split(' ')[column]
+    #                 list_of_new_state.append(float(col))
+    #                 # print('list of new state', list_of_new_state)
+    #     return tuple(list_of_new_state)
 
     def _length_per_bank(self):
         num_elements_per_bank = len(self.get_state())/2
@@ -397,6 +335,12 @@ class LensAgent(Agent):
         output.close()
         # print(contents)
         return contents
+
+    def _str_to_int_list(self, string):
+        '''Returns a list of ints from a comma separated string of int values
+        used for creating a prototype list from a config file (which is a str)
+        '''
+        return list(int(s) for s in string.strip().split(','))
 
     def _update_agent_state_default(self, lens_in_file, agent_ex_file,
                                     infl_ex_file, agent_state_out_file,
@@ -743,17 +687,16 @@ class LensAgent(Agent):
         return (pos, neg)
 
 
-    def get_padded_agent_id(self, total_number_of_characters=6):
-        format_string = "{{0:0{}d}}".format(total_number_of_characters)
-        return format_string.format(self.get_key())
+    # def get_padded_agent_id(self, total_number_of_characters=6):
+    #     format_string = "{{0:0{}d}}".format(total_number_of_characters)
+    #     return format_string.format(self.get_key())
 
 
     def get_env_for_pos_neg_bank_values(self):
         # TODO this should be a hidden function
         current_env = os.environ
-        # padded_agent_number = "{0:06d}".format(self.get_key())
-        # padded_agent_number = self.get_padded_agent_id()
-        # current_env['a'] = padded_agent_number
+        padded_agent_number = "{0:06d}".format(self.get_key())
+        current_env['a'] = padded_agent_number
         for idx_bank, bank in enumerate(('p', 'n')):
             bank_values = self.get_pos_neg_bank_values()[idx_bank]
             # print(bank_values, file=sys.stderr)
@@ -767,6 +710,37 @@ class LensAgent(Agent):
                 # print(current_env.get(var_to_export))
                 # print(current_env.get(var_key))
         return current_env
+
+    def mutate(self, list_to_mutate, mutation_prob):
+        '''Mutates each element of a list by the mutation_prob
+        Mutating means flipping the 1 to a 0 or vice versa
+
+        This calculation is usually used to create the training situations
+        by mutating the prototype to create training examples
+
+        This is used by the seeding function to mutate the prototype by
+        the mutation_prob to do the initial seed.
+
+        if the mutation_prob == 0, then the prototype is returned
+        else, there is a probabliy that prototype is still returned
+        '''
+        if mutation_prob > 0.0 and mutation_prob <= 1:
+            post_mutation_list = list_to_mutate[:]
+            for idx, value in enumerate(list_to_mutate):
+                prob = random.random()
+                if prob <= mutation_prob:
+                    post_mutation_list[idx] = self._flip_1_0_value(value)
+            if ((post_mutation_list is list_to_mutate) or
+               (post_mutation_list == list_to_mutate)):
+                warnings.warn('Mutated example is equal to prototype',
+                              UserWarning)
+            return post_mutation_list
+        elif mutation_prob == 0.0:
+            return list_to_mutate
+        else:
+            raise ValueError('Incorrect value for mutation probability ' +
+                             'probability needs to be between ' +
+                             '0 and 1 inclusive')
 
     def update_agent_state(self, pick='default', **kwargs):
         # if there is an agent_state_out_file, clear it
