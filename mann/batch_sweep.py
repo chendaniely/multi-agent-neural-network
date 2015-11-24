@@ -6,6 +6,7 @@ import os
 import shutil
 import configparser
 import subprocess
+import collections
 
 """Module that contains functions to help run batches and parameter sweeps
 """
@@ -153,13 +154,20 @@ def _ftb_string_to_values(ftb_string):
 
 
 def _format_values_lens(tuple_of_values):
+    # assert isinstance(tuple_of_values, collections.namedtuple)
     # assert(len(tuple_of_values) == 5)
     assert(len(tuple_of_values) == 7)
     # agents, delta, epsilon, criterion, run = tuple_of_values
     agents, run,\
         clamp_strength,\
         between_mean, between_sd,\
-        within_mean, within_sd = tuple_of_values
+        within_mean, within_sd = (tuple_of_values.agents_sweep_values,
+                                  tuple_of_values.num_sims_per,
+                                  tuple_of_values.clamp_sweep_values,
+                                  tuple_of_values.between_bank_mean_values,
+                                  tuple_of_values.between_bank_sd_values,
+                                  tuple_of_values.within_bank_mean_values,
+                                  tuple_of_values.within_bank_sd_values)
 
     agents = int(agents)
     # delta = float("{0:.2f}".format(delta))
@@ -178,9 +186,23 @@ def _format_values_lens(tuple_of_values):
     # assert isinstance(criterion, int)
     # assert isinstance(run, int)
 
+    Parameters = collections.namedtuple('Parameters',
+                                        ['agents',
+                                         'between_mean', 'between_sd',
+                                         'within_mean', 'within_sd',
+                                         'clamp_strength', 'run'])
+    values = Parameters(agents=agents,
+                        between_mean=between_mean,
+                        between_sd=between_sd,
+                        within_mean=within_mean,
+                        within_sd=within_sd,
+                        clamp_strength=clamp_strength,
+                        run=run)
+    # print("MANN values: ", values)
+    return(values)
     # return tuple((agents, delta, epsilon, criterion, run))
-    return tuple((agents, between_mean, between_sd, within_mean, within_sd,
-                  clamp_strength, run))
+    # return tuple((agents, between_mean, between_sd, within_mean, within_sd,
+    #               clamp_strength, run))
 
 
 def _format_values_watts(tuple_of_values):
