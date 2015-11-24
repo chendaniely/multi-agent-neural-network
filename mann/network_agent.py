@@ -60,6 +60,7 @@ class NetworkAgent(object):
                                                           agent_type[2])
             elif agent_type[0] == 'lens':
                 if agent_type[2] == 'feed_forward_global_cascade':
+                    assert False
                     new_agent = mann.agent.LensAgent(agent_type[1])
                     new_agent.create_weight_file(
                         kwargs.get('weight_in_file'),
@@ -74,7 +75,8 @@ class NetworkAgent(object):
                     new_agent.create_weight_file(
                         kwargs.get('weight_in_file'),
                         kwargs.get('weight_dir'),
-                        kwargs.get('weight_ex_path'))
+                        kwargs.get('weight_ex_path'),
+                        **kwargs)
                 else:
                     raise ValueError('Unknown Lens Agent Type')
             else:
@@ -195,7 +197,6 @@ class NetworkAgent(object):
 
         logging.info('Num agents for update: {}'.
                      format(len(agents_for_update)))
-
         # assign new temp value
         for selected_agent in agents_for_update:
             logging.info('Updating: {}'.
