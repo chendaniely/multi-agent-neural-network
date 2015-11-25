@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 
 import networkx as nx
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
