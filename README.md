@@ -34,6 +34,10 @@ You will need to install the following packages
     sudo apt-get install libx11-dev
     sudo apt-get install tcl8.4-dev tk8.4-dev
 
+#### CentOS
+
+    sudo yum install libX11-devel
+
 Notes from David Plaut: 
 
 > The problem is (was) that the supplied libraries are only for 32-bit machines, which won't link with the 64-bit object files you generate when compiling Lens on a 64-bit machine.
