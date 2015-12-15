@@ -11,6 +11,7 @@ name: infl1
 I: 4 5 6;
 """
 
+
 def test_generate_lens_recurrent_attitude():
     test_writer = lens_in_writer.LensInWriterHelper()
     calculated = test_writer.generate_lens_recurrent_attitude(
@@ -19,6 +20,7 @@ def test_generate_lens_recurrent_attitude():
     # print(calculated, file=sys.stderr)
     # print(expected, file=sys.stderr)
     assert calculated == expected
+
 
 def test_generate_lens_recurrent_attitude_list():
     test_writer = lens_in_writer.LensInWriterHelper()
