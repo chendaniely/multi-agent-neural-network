@@ -1,0 +1,47 @@
+#TEST WEIGHT MAKING FOR MANN M0a
+#CREATED 18-14-14
+
+set w $env(w)
+
+addNet "5X5-TRA DIFFUSION" -i 3.0 -t 3 CONTINUOUS
+
+addGroup Input 5 -RESET_ON_EXAMPLE INPUT OUTPUT SOFT_CLAMP -BIASED USE_OUTPUT_HIST USE_TARGET_HIST
+addGroup InputMirror 5 -RESET_ON_EXAMPLE INPUT OUTPUT SOFT_CLAMP -BIASED USE_OUTPUT_HIST USE_TARGET_HIST
+addGroup Hidden 10 -RESET_ON_EXAMPLE
+addGroup HiddenMirror 10 -RESET_ON_EXAMPLE
+
+#ADD LINK TYPE FOR THE INPUT TO INPUTMIRROR
+addLinkType "InToMirror"
+
+connectGroups Input Hidden -bidirectional
+connectGroups Input Input
+connectGroups InputMirror InputMirror
+connectGroups InputMirror HiddenMirror -bidirectional
+
+
+#FIX INTERBANK UNITS
+repeat u [getObj Input.numUnits] {
+   connectUnits Input:$u InputMirror:$u -m -1.0 -r 0 -b 		 
+}
+repeat u [getObj Input.numUnits] {
+   connectUnits InputMirror:$u Input:$u -m -1.0 -r 0 -b 		 
+}
+
+#Remove Input->Input self connections
+#AND mirror
+repeat u [getObj Input.numUnits] {
+  disconnectUnits Input:$u Input:$u
+}
+
+repeat u [getObj InputMirror.numUnits] {
+  disconnectUnits InputMirror:$u InputMirror:$u
+}
+
+#FREEZE UNITS BETWEEN INPUT AND INPUTMIRROR THEN ASSIGN
+freezeWeights -g {InputMirror} -t Input
+freezeWeights -g {Input} -t InputMirror
+
+saveWeights weights/AgentWgt$w.wt
+
+exit
+#EOF

@@ -1,0 +1,57 @@
+###############################################################################
+# AUTO ENCODER NETWORK
+# USED FOR UPDATING AGENTS DURING SIMS
+# LEARNING ON
+# CREATED FEB 19, 2015 - Daniel Chen
+# UPDATED None
+###############################################################################
+
+# GRAB ENV VARS
+# a is the agent number
+# c is the criterion
+set a $env(a)
+set c $env(c)
+
+deleteNets *
+
+loadExamples ../Infl.ex -s encoder
+
+# BUILD NETWORK STRUCTURE
+proc buildEncoder hidden {
+  addNet "8-${hidden}-8 Encoder" 20 $hidden 20
+  useTrainingSet encoder
+}
+
+buildEncoder 10
+
+changeGroupType "output" +WRITE_OUTPUTS +USE_OUTPUT_HIST +USE_TARGET_HIST
+
+setObj criterion $c
+setObj learningRate    0.1
+setObj weightDecay     0.0001
+setObj zeroErrorRadius 0.01
+
+# PREPARE FOR PROCESSING
+resetNet
+
+# LOAD WEIGHTS -- UPDATING ONLY
+loadWeights ../weights/wgt_learning_$a.wt
+
+# LEARNING ALLOWED -- UPDATING ONLY
+# freezeWeights
+
+# OUTPUT OPEN -- UPDATING ONLY
+openNetOutputFile ../AgentState.out
+
+# TRAIN -- UPDATING
+train 1
+
+# SAVE WEIGHTS AFTER LEARNING
+saveWeights ../weights/wgt_learning_$a.wt
+
+#OUTPUT CLOSE -- UPDATING ONLY
+closeNetOutputFile
+
+exit
+# EOF
+

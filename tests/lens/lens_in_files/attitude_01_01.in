@@ -1,0 +1,94 @@
+# seed 42
+
+deleteNets *
+
+# set a $env(a)
+
+addNet "5X5-TRA DIFFUSION" -i 3.0 -t 3 CONTINUOUS
+
+addGroup Input 5 INPUT DOT_PRODUCT INCR_CLAMP INTERACT_INTEGR WRITE_OUTPUTS -RESET_ON_EXAMPLE
+addGroup InputMirror 5 INPUT DOT_PRODUCT INCR_CLAMP INTERACT_INTEGR WRITE_OUTPUTS -RESET_ON_EXAMPLE
+
+#FIX INTERBANK UNITS (BETWEEN BANK)
+repeat u [getObj Input.numUnits] {
+   connectUnits Input:$u InputMirror:$u -m -0.42 -r 0 -b
+}
+repeat u [getObj Input.numUnits] {
+   connectUnits InputMirror:$u Input:$u -m -0.42 -r 0 -b
+}
+
+#Remove Input->Input self connections AND mirror
+repeat u [getObj Input.numUnits] {
+  disconnectUnits Input:$u Input:$u
+}
+
+repeat u [getObj InputMirror.numUnits] {
+  disconnectUnits InputMirror:$u InputMirror:$u
+}
+
+#POSITIVE CONNECTIONS WITHIN BANKS
+#FIRST BANK
+for {set i 0} {$i < 5} {incr i} {
+   for {set j [expr $i+1]} {$j < 5} {incr j} {
+      connectUnits Input:$i Input:$j -m 0.8 -r .2 -b
+   }
+}
+
+#SECOND BANK (MIRROR)
+for {set i 0} {$i < 5} {incr i} {
+   for {set j [expr $i+1]} {$j < 5} {incr j} {
+      connectUnits InputMirror:$i InputMirror:$j -m 0.8 -r .2 -b
+   }
+}
+
+#CHARACTERISTICS OF NETWORK
+setObj Input.initOutput	  0.0
+setObj InputMirror.initOutput  0.0
+
+setObj Input.maxOutput	  1.0
+setObj InputMirror.maxOutput  1.0
+
+setObj Input.minOutput	 -0.2
+setObj InputMirror.minOutput  -0.2
+
+deleteExampleSets *
+
+#EXAMPLE SETS
+# ORDERED MUST BE SET AS IS HERE
+loadExamples ../Infl.ex -s train -exmode ORDERED
+
+setObj train.graceTime  1.0
+setObj train.minTime    3.0
+setObj train.maxTime    3.0
+
+setObj learningRate     0.01
+setObj momentum         0.8
+setObj clampStrength 	0.25
+setObj randRange        0.25
+
+#THIS RESETS WEIGHTS AND OUTPUTS
+#resetNet
+
+#LOAD WEIGHTS
+#DAN USE ENV VARIABLE "a" for Agent ID
+# loadWeights weights/AgentWgt$a.wt
+
+
+#NO LEARNING ALLOWED
+freezeWeights
+
+#MAKE DATA AND SIMULATE
+#DAN FOR NOW
+openNetOutputFile ../output/AgentState.out
+train 1
+closeNetOutputFile
+
+proc printStuff {g1 u1 g2 u2 b l} {
+            format "%s->%s %.3f\n" [getObj $u1.name] [getObj $u2.name] \
+              [getObj $u2.incoming($l).weight]
+          }
+
+printLinkValues - printStuff {Input InputMirror} *
+
+exit
+#EOF

@@ -1,0 +1,44 @@
+###############################################################################
+# AUTO ENCODER NETWORK
+# USED FOR TRAINING (WGT GENERATION)
+# CREATED OCT 21, 2014 - Mark Orr
+# UPDATED FEB 19, 2015 - Daniel Chen - remove commented out update code
+###############################################################################
+
+# GRAB ENV VARS
+# a is the agent number
+# c is the criterion
+set a $env(a)
+set c $env(c)
+
+deleteNets *
+
+loadExamples ../weights/AgentWgt$a.ex -s encoder
+
+# BUILD NETWORK STRUCTURE
+proc buildEncoder hidden {
+  addNet "8-${hidden}-8 Encoder" 20 $hidden 20
+  useTrainingSet encoder
+}
+
+buildEncoder 10
+
+changeGroupType "output" +WRITE_OUTPUTS +USE_OUTPUT_HIST +USE_TARGET_HIST
+
+setObj criterion $c
+setObj learningRate    0.1
+setObj weightDecay     0.0001
+setObj zeroErrorRadius 0.01
+
+# PREPARE FOR PROCESSING
+resetNet
+
+# TRAIN -- TRAINING # number of epochs
+train 1000
+
+# SAVE WEIGHTS -- TRAINING ONLY
+saveWeights ../weights/wgt$a.wt
+
+exit
+# EOF
+
