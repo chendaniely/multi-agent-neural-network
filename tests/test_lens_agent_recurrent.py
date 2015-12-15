@@ -114,6 +114,36 @@ I: 2 2 2 2 2 2 2 2 2 2;
         file_contents = f.read()
         assert file_contents == expected_file_contents
 
+
+@nose.with_setup(reset_LensAgentRecurrent, remove_lens_files)
+def test_call_lens_weight_file_attitude_02_01_wgtmk():
+    agent_lens_recurrent.LensAgentRecurrent.agent_count = 0
+    test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_1 = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_2 = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_3 = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_1.state = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    test_agent_2.state = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    test_agent_3.state = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+    test_agent.set_predecessors([test_agent_1, test_agent_2, test_agent_3])
+    file_to_write = os.path.join(HERE, 'lens', 'Infl.ex')
+    test_agent.write_lens_ex_file(
+        file_to_write,
+        list_to_write_into_string=test_agent.sample_predecessor_values(3))
+    in_file_path = os.path.join(
+        HERE, 'lens', 'lens_in_files', 'attitude_02_01_wgtmk.in')
+    test_agent.call_lens(lens_in_file_dir=in_file_path,
+                         lens_env={'a': test_agent.get_padded_agent_id(),
+                                   'bm': 0,
+                                   'bs': 0,
+                                   'wm': 0,
+                                   'ws': 0,
+                                   'cs': 0},
+                         stdout_null=True)
+    agent_state_out = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
+    assert os.path.exists(agent_state_out)
+
+
 # @nose.with_setup(reset_LensAgentRecurrent)
 # def test_create_weight_file_attitude_02_01_wgtmk():
 #     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
