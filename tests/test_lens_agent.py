@@ -74,7 +74,7 @@ def test_lens_agent_set_get_state():
 
 
 @nose.with_setup(reset_LensAgent_20)
-def test_create_weight_file():
+def test_create_weight_file_global_cascade_01_01_train():
     test_lens_agent = agent.LensAgent(20)
     assert test_lens_agent.get_key() == 0
 
@@ -87,9 +87,11 @@ def test_create_weight_file():
     # where I want the weight file saved
     weight_output_dir = os.path.join(here, 'lens', 'weights')
     # where the .in file to create weights is
-    weight_in_file = os.path.join(here, 'lens', 'AutoEncoderArch.in')
+    weight_in_file = os.path.join(here, 'lens', 'lens_in_files',
+                                  'global_cascade_01_01_train.in')
 
     prototype = agent.LensAgent.prototypes[0]
+    # print('prototype: {}'.format(prototype), file=sys.stderr)
     assert(isinstance(prototype, list))
 
     # create the weight file
