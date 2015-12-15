@@ -65,12 +65,12 @@ def test_lens_agent_set_get_state():
         assert False
 
 
-@nose.with_setup(reset_LensAgent)
-def test_list_to_str_delim():
-    test_lens_agent = agent.LensAgent(4)
-    expected_string = "1 3 5"
-    output_string = test_lens_agent._list_to_str_delim([1, 3, 5], delim=" ")
-    assert output_string == expected_string
+# @nose.with_setup(reset_LensAgent)
+# def test_list_to_str_delim():
+#     test_lens_agent = agent.LensAgent(4)
+#     expected_string = "1 3 5"
+#     output_string = test_lens_agent._list_to_str_delim([1, 3, 5], delim=" ")
+#     assert output_string == expected_string
 
 
 @nose.with_setup(reset_LensAgent_20)
