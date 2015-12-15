@@ -112,12 +112,30 @@ def test_lens_agent_seed_agent_no_update():
     assert test_lens_agent.get_state() == [0] * 20
     weight_base_example = '0, 1, 0, 0, 0, 0, 1, 1, 0, 0,' +\
                           '1, 1, 0, 0, 1, 0, 0, 1, 0, 1'
-    test_lens_agent.seed_agent_no_update(weight_base_example)
+    test_lens_agent.seed_agent_no_update(weight_base_example,
+                                         epsilon=0)
 
     expected_state = [0, 1, 0, 0, 0, 0, 1, 1, 0, 0,
                       1, 1, 0, 0, 1, 0, 0, 1, 0, 1]
     assert(test_lens_agent.get_state() == expected_state)
 
+    test_lens_agent_e1 = agent.LensAgent(20)
+    assert test_lens_agent_e1.get_state() == [0] * 20
+    test_lens_agent_e1.seed_agent_no_update(weight_base_example,
+                                            epsilon=1)
+    expected_state = [1, 0, 1, 1, 1, 1, 0, 0, 1, 1,
+                      0, 0, 1, 1, 0, 1, 1, 0, 1, 0]
+    assert(test_lens_agent_e1.get_state() == expected_state)
+
+    random.seed(42)
+    test_lens_agent_e0_5 = agent.LensAgent(20)
+    assert test_lens_agent_e0_5.get_state() == [0] * 20
+    test_lens_agent_e0_5.seed_agent_no_update(weight_base_example,
+                                              epsilon=0.5)
+    print(test_lens_agent_e0_5.get_state(), file=sys.stderr)
+    expected_state = [1, 0, 1, 0, 0, 0, 0, 0, 1, 1,
+                      1, 0, 1, 0, 1, 1, 0, 1, 1, 1]
+    assert(test_lens_agent_e0_5.get_state() == expected_state)
 
 @nose.with_setup(reset_LensAgent_20)
 def test_lens_agent_seed():
