@@ -217,6 +217,12 @@ class LensAgentRecurrent(agent.LensAgent):
                            string_to_write=None,
                            list_to_write_into_string=None):
         """Takes a string or list and writes an .ex file for lens
+        The strings passed are the exact ones to put into the ex file.
+        Meaning, the strings need to be pre-formatted.
+        The self.sample_predecessor_values() accomplishes this
+
+        Only pass the string_to_write value or the list_to_write_into_string
+        value
         """
         print("-"*80)
         print("string", string_to_write)

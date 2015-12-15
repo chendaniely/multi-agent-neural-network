@@ -67,14 +67,43 @@ def test_sample_predecessor_values():
         1, manual_predecessor_inputs=manual_predecessor_inputs)
     assert expected_value == lens_ex_file_strings
 
-# @nose.with_setup(reset_LensAgentRecurrent)
-# def test_write_lens_ex_file():
-#     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
-#     file_to_write = os.path.join(HERE, 'lens', 'Infl.ex')
-#     # string_to_write = helper.convert_list_to_delim_str(test_agent.state)
-#     values_list = test_agent.state
-#     test_agent.write_lens_ex_file(file_to_write,
-#                                   list_to_write_into_string=None)
+
+@nose.with_setup(reset_LensAgentRecurrent)
+def test_write_lens_ex_file():
+    test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_1 = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_2 = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_3 = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_agent_1.state = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    test_agent_2.state = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    test_agent_3.state = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+    test_agent.set_predecessors([test_agent_1, test_agent_2, test_agent_3])
+
+    file_to_write = os.path.join(HERE, 'lens', 'Infl.ex')
+
+    if os.path.exists(file_to_write):
+        print('file found:{}'.format(file_to_write), file=sys.stderr)
+        os.remove(file_to_write)
+
+    random.seed(42)
+    test_agent.write_lens_ex_file(
+        file_to_write,
+        list_to_write_into_string=test_agent.sample_predecessor_values(3))
+    expected_file_contents = """name: agent0-1
+I: 0 0 0 0 0 0 0 0 0 0;
+
+name: agent3
+I: 3 3 3 3 3 3 3 3 3 3;
+
+name: agent1
+I: 1 1 1 1 1 1 1 1 1 1;
+
+name: agent2
+I: 2 2 2 2 2 2 2 2 2 2;
+"""
+    with open(file_to_write, 'r') as f:
+        file_contents = f.read()
+        assert file_contents == expected_file_contents
 
 # @nose.with_setup(reset_LensAgentRecurrent)
 # def test_create_weight_file_attitude_02_01_wgtmk():
