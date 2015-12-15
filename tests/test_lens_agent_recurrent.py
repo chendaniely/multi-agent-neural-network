@@ -23,9 +23,18 @@ def reset_LensAgentRecurrent():
     agent_lens_recurrent.LensAgentRecurrent.agent_count = 0
 
 
-# @nose.with_setup(reset_LensAgentRecurrent)
-# def test_calc_new_state_values_rps_1():
-#     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
+def remove_lens_files():
+    call_lens_files = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
+    infl_ex = os.path.join(HERE, 'lens', 'Infl.ex')
+    try:
+        os.remove(call_lens_files)
+    except:
+        pass
+    try:
+        os.remove(infl_ex)
+    except:
+        pass
+
 
 @nose.with_setup(reset_LensAgentRecurrent)
 def test_sample_predecessor_values():
@@ -68,7 +77,7 @@ def test_sample_predecessor_values():
     assert expected_value == lens_ex_file_strings
 
 
-@nose.with_setup(reset_LensAgentRecurrent)
+@nose.with_setup(reset_LensAgentRecurrent, remove_lens_files)
 def test_write_lens_ex_file():
     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
     test_agent_1 = agent_lens_recurrent.LensAgentRecurrent(10)
