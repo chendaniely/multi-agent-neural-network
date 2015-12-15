@@ -135,6 +135,9 @@ class LensAgentRecurrent(agent.LensAgent):
     #     return tuple(list_of_new_state)
 
     def _pick_self(self):
+        """Return an exfile string of the current agent.
+        see self.sample_predecessor_values for example
+        """
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
         lens_ex_file_strings = []
         agent_for_update = "{}-1".format(self.agent_id)
@@ -150,19 +153,17 @@ class LensAgentRecurrent(agent.LensAgent):
         """Picks n from the predecessors and returns a list, lens_ex_file_string
         where each element in the list is the example case used to write an .ex
         LENS file
+
+        0th element of the returned list is the string for the current agent.
+
+        See docstring for `sample_predecessor_values` for examples
         """
         predecessors_picked = random.sample(self.predecessors, n)
         logging.debug('predecessors_picked: {}'.format(predecessors_picked))
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
         lens_ex_file_strings = []
         lens_ex_file_string_self_1 = self._pick_self()
-        # agent_for_update = "{}-1".format(self.agent_id)
 
-        # agent_for_update_ex_str = \
-        #     lens_in_writer_helper.clean_agent_state_in_file(
-        #         agent_for_update,
-        #         mann.helper.convert_list_to_delim_str(self.state, delim=' '))
-        # lens_ex_file_strings.append(agent_for_update_ex_str)
         for predecessor in predecessors_picked:
             predecessor_ex_str = \
                 lens_in_writer_helper.clean_agent_state_in_file(
@@ -177,6 +178,19 @@ class LensAgentRecurrent(agent.LensAgent):
 
     def _pick_manual_predecessor_inputs(self, manual_predecessor_inputs, n):
         """Pick manually entered predecessor inputs
+
+        0th element will be the current agent's state
+
+        see sample_predecessor_values for more details
+
+        :param manual_predecessor_inputs: 2-d numpy array of agent states
+        :type manual_predecessor_inputs: numpy.array
+
+        :param n: number of states to sample from
+        :type n: int
+
+        :returns: list of strings to write to an ex file
+        :rtype: list
         """
         lens_ex_file_string_self_1 = self._pick_self()
         predecessors_picked = manual_predecessor_inputs[
@@ -223,6 +237,31 @@ class LensAgentRecurrent(agent.LensAgent):
         """Returns a list of strings that represent the inputs of n predecessors
         Each element of the string will have the agent number, and a string
         representation of the selected agent's activation values
+
+        uses `random.sample()`, which samples without replacement
+
+        :param n: number of predecessors to sample from
+        :type n: int
+
+        :param manual_predecessor_inputs:
+        :type manual_predecessor_inputs: list
+
+        :returns: list of strings to write into an ex file
+        :rtype: list
+
+
+        the 0th element of the string will always be the current agent's state
+        this is denoted by agent{}-1, where the {} denots the agent_id,
+        in the examples below the agent_id is 0, thus: agent0-1
+        see `self._pick_self()` for the format
+
+        For example:
+        if n = 0, the string returned will be:
+        ['name: agent0-1\nI: 0 0 0 0 0 0 0 0 0 0;\n']
+
+        if n = 1, the string returned will be:
+        ['name: agent0-1\nI: 0 0 0 0 0 0 0 0 0 0;\n',
+         'name: agent1\nI: 1 1 1 1 1 1 1 1 1 1;\n']
         """
         if n > len(self.predecessors):
             raise(ValueError, "n is greater than number of predecessors")
