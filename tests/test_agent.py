@@ -117,14 +117,14 @@ def test_agent_set_predecessors_network_agent():
 def test_has_predessor_empty():
     test_agent = agent.Agent()
     test_agent.set_predecessors([])
-    assert test_agent.has_predessor() is False
+    assert test_agent.has_predecessor() is False
 
 
 @nose.with_setup(reset_agent)
 def test_has_predessor_list():
     test_agent = agent.Agent()
     test_agent.set_predecessors([1, 3, 5])
-    assert test_agent.has_predessor() is True
+    assert test_agent.has_predecessor() is True
 
 
 @nose.with_setup(reset_agent)
@@ -138,10 +138,10 @@ def test_has_predessor_network_agent():
     assert test_agent.get_key() == 3
 
     test_agent.set_predecessors(list_of_predecessors)
-    assert test_agent.has_predessor() is True
+    assert test_agent.has_predecessor() is True
 
     test_agent_no_predecessor = agent.Agent()
-    assert test_agent_no_predecessor.has_predessor() is False
+    assert test_agent_no_predecessor.has_predecessor() is False
 
 
 @nose.with_setup(reset_agent)
