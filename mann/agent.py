@@ -8,6 +8,8 @@ import os
 import warnings
 
 
+import helper
+
 class Error(Exception):
     '''Base class for other exceptions'''
     def __init__(self, message):
@@ -370,10 +372,12 @@ class LensAgent(Agent):
         ----------
         list_to_write: list, 1d list
         '''
+        # print(sit_num, list_to_write)
         f.write('name: sit' + str(sit_num) + '\n')
-        lens_agent_state_str = self._list_to_str_delim(list_to_write, " ")
+        lens_agent_state_str = helper.convert_list_to_delim_str(list_to_write, " ")
         # print('weight EX to write: ', lens_agent_state_str)
         input_line = 'B: ' + lens_agent_state_str + ' ;\n'
+        # print('input_line: {}'.format(input_line))
         f.write(input_line)
 
     def calculate_new_state_default_i(self, lens_in_file, agent_ex_file,
@@ -445,7 +449,7 @@ class LensAgent(Agent):
         """Creates the weight file for the :py:class:`LensAgent`
 
         The weights are needed for LENS, as it defines the weights between each
-        processing unit and the units in the hidden latery of the nerual
+        processing unit and the units in the hidden layer of the nerual
         network.  The weight file created is a binary file.
 
         :param weight_in_file: full path to the LENS .in file to generate
@@ -518,6 +522,8 @@ class LensAgent(Agent):
         # list of 'words' passed into the subprocess call
         lens_weight_command = ['lens', '-batch',  weight_in_file]
         subprocess.call(lens_weight_command, env=lens_env)
+        # subprocess.call(lens_weight_command, env=lens_env,
+        #                 stdout=subprocess.DEVNULL)
 
     def get_state(self):
         """Return the state of the agent
@@ -729,7 +735,7 @@ class LensAgent(Agent):
             for idx, value in enumerate(list_to_mutate):
                 prob = random.random()
                 if prob <= mutation_prob:
-                    post_mutation_list[idx] = self._flip_1_0_value(value)
+                    post_mutation_list[idx] = helper.flip_1_0(value)
             if ((post_mutation_list is list_to_mutate) or
                (post_mutation_list == list_to_mutate)):
                 warnings.warn('Mutated example is equal to prototype',
@@ -791,6 +797,7 @@ class LensAgent(Agent):
         write_file_path = file_dir
 
         if write_type == 'state':
+            print('state file path: {}'.format(write_file_path))
             try:
                 # print('trying to open file to write state')
                 with open(write_file_path, 'w') as f:
@@ -799,19 +806,23 @@ class LensAgent(Agent):
                     name: sit1
                     I: 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
                     '''
+                    print('file opened')
                     f.write('name: sit1\n')
                     # assert False
-                    lens_agent_state_str = self._list_to_str_delim(
+                    lens_agent_state_str = helper.convert_list_to_delim_str(
                         self.state, " ")
                     input_line = 'B: ' + lens_agent_state_str + ' ;'
                     f.write(input_line)
             except:
                 assert False, 'write_type == "state" failed'
         if write_type == 'sit':
+            # print('file_dir for sit: {}'.format(file_dir))
             try:
                 with open(file_dir, 'w') as f:
+                    # print('file opened')
                     # print('weight_ex_list', kwargs.get('weight_ex_list'))
                     # print('type: ', type(kwargs.get('weight_ex_list')))
+                    # print(len(kwargs.get('weight_ex_list')))
                     assert isinstance(kwargs.get('weight_ex_list'), list)
                     for i in range(len(kwargs.get('weight_ex_list'))):
                         self._write_sit_to_ex(kwargs.get('weight_ex_list')[i],
