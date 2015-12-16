@@ -151,28 +151,17 @@ def test_call_lens_weight_file_attitude_02_01_wgtmk():
     assert os.path.exists(agent_state_out)
 
 
-# @nose.with_setup(reset_LensAgentRecurrent)
-# def test_create_weight_file_attitude_02_01_wgtmk():
-#     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
-#     weight_in_file_path = os.path.join(HERE, 'lens', 'lens_in_files',
-#                                         'attitude_02_01_wgtmk.in')
-#     # print(weight_in_file_path, file=sys.stderr)
-#     weight_directory = os.path.join(HERE, 'lens', 'weights')
-#     ex_file_path = os.path.join(HERE, 'lens', 'Infl.ex')
-#     test_agent.create_weight_file(weight_in_file_path,
-#                                   weight_directory,
-#                                   ex_file_path)
-
-
-
-# @nose.with_setup(reset_LensAgentRecurrent)
-# def test_pick_random_predecessor():
-#     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
-#     test_agent_p1 = agent_lens_recurrent.LensAgentRecurrent(10)
-#     test_agent_p2 = agent_lens_recurrent.LensAgentRecurrent(10)
-
-#     test_agent.predecessors = [test_agent_p1, test_agent_p2]
-#     print(test_agent.predecessors, file=sys.stderr)
-#     picked_predecessor = test_agent.pick_random_predecessor(
-#         test_agent.predecessors, 1)
-#     print(picked_predecessor, file=sys.stderr)
+@nose.with_setup(reset_LensAgentRecurrent)
+def test_get_new_state_values_from_out_file():
+    # call test_call_lens_weight_file_attitude_02_01_wgtmk()
+    # to get an AgentState.out file
+    test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
+    test_call_lens_weight_file_attitude_02_01_wgtmk()
+    lens_output_dir = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
+    # print(test_agent.state, file=sys.stderr)
+    new_state = test_agent.get_new_state_values_from_out_file(lens_output_dir)
+    # print(new_state, file=sys.stderr)
+    # print(test_agent.state, file=sys.stderr)
+    test_agent.state = new_state
+    # print(test_agent.state, file=sys.stderr)
+    assert False, "can't test right now"
