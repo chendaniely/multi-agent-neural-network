@@ -139,13 +139,15 @@ def test_call_lens_weight_file_attitude_02_01_wgtmk():
         HERE, 'lens', 'lens_in_files', 'attitude_02_01_wgtmk.in')
     test_agent.call_lens(lens_in_file_dir=in_file_path,
                          lens_env={'a': test_agent.get_padded_agent_id(),
-                                   'bm': 0,
-                                   'bs': 0,
-                                   'wm': 0,
-                                   'ws': 0,
-                                   'cs': 0},
+                                   'bm': .10,
+                                   'bs': .12,
+                                   'wm': .30,
+                                   'ws': .40,
+                                   'cs': .50},
                          stdout_null=True)
     agent_state_out = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
+    weight_file = os.path.join(HERE, 'lens', 'weights', 'AgentWgt000000.wt')
+    assert os.path.exists(weight_file)
     assert os.path.exists(agent_state_out)
 
 
