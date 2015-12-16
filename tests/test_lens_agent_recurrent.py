@@ -26,12 +26,17 @@ def reset_LensAgentRecurrent():
 def remove_lens_files():
     call_lens_files = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
     infl_ex = os.path.join(HERE, 'lens', 'Infl.ex')
+    weight_file = os.path.join(HERE, 'lens', 'weights', 'AgentWgt000000.wt')
     try:
         os.remove(call_lens_files)
     except:
         pass
     try:
         os.remove(infl_ex)
+    except:
+        pass
+    try:
+        os.remove(weight_file)
     except:
         pass
 
