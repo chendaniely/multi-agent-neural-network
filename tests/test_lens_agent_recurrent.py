@@ -72,7 +72,8 @@ def test_sample_predecessor_values():
     lens_ex_file_strings = test_agent.sample_predecessor_values(3)
     assert expected_value == lens_ex_file_strings
 
-    random.seed(42)
+    # random.seed(42)
+    np.random.seed(42)
     manual_predecessor_inputs = np.array([[9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
                                           [8, 8, 8, 8, 8, 8, 8, 8, 8, 8]])
     expected_value = ['name: agent0-1\nI: 0 0 0 0 0 0 0 0 0 0;\n',
