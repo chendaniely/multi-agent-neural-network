@@ -74,7 +74,7 @@ class test_network_agent():
     def test_write_network_agent_step_info(self):
         time_step = 2
         file_to_write = os.path.join(HERE, 'lens', 'output',
-                                     'network_of_agents.pout')
+                                     'network_of_ageNts.pout')
         file_mode = 'w'
         agent_type = 'lens'
 
@@ -91,3 +91,17 @@ class test_network_agent():
             file_contents = f.read()
             # print(file_contents, file=sys.stderr)
             assert file_contents == expected
+
+    @nose.with_setup(setup)
+    def test_set_predecessors_for_each_node(self):
+        self.test_network_agent.set_predecessors_for_each_node()
+        calculated = {node.agent_id: node.predecessors
+                      for node in self.test_network_agent.G}
+        # print(self.test_network_agent.G.nodes(), file=sys.stderr)
+        # print(calculated, file=sys.stderr)
+        expected = {0: [],
+                    1: [self.test_agent],
+                    2: [self.test_agent],
+                    3: [self.test_agent_1, self.test_agent_2]}
+        # print(expected, file=sys.stderr)
+        assert calculated == expected
