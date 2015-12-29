@@ -104,11 +104,12 @@ class NetworkAgent(object):
         logging.info('number of nodes created: {}'.format(len(self.G)))
 
         logging.info('Creating edges')
-        for edge in edge_list:
+        for idx, edge in enumerate(edge_list):
             u, v = edge
             self.G.add_edge(all_agents[u], all_agents[v])
             if add_reverse_edge is True:
                 self.G.add_edge(all_agents[v], all_agents[u])
+        logging.info('number of edges create: {}'.format(idx + 1))
 
         logging.info('Saving plot of mann copied graph')
         nx.draw_circular(self.G)
