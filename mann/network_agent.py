@@ -115,7 +115,6 @@ class NetworkAgent(object):
         nx.draw_circular(self.G)
         # plt.show()
         plt.savefig(fig_path)
-
         return self.G
 
     def export_edge_list(self, export_file_dir, **kwargs):
