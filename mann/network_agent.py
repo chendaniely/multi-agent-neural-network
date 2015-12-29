@@ -60,7 +60,7 @@ class NetworkAgent(object):
                                                           agent_type[2])
             elif agent_type[0] == 'lens':
                 if agent_type[2] == 'feed_forward_global_cascade':
-                    assert False
+                    assert False, "Needs to be re-implmented"
                     new_agent = mann.agent.LensAgent(agent_type[1])
                     new_agent.create_weight_file(
                         kwargs.get('weight_in_file'),
