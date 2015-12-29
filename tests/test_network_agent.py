@@ -53,7 +53,6 @@ class test_network_agent():
         plt.savefig(os.path.join(HERE, 'lens', 'output', 'setup_network.png'))
 
 
-    @classmethod
     def teardown(self):
         # print("teardown", file=sys.stderr)
         pass
