@@ -147,7 +147,7 @@ class NetworkAgent(object):
         # reg ex str replace multiple
         # http://stackoverflow.com/questions/6116978/python-replace-multiple-strings
         # dict.iteritems() is a python 2 syntax
-        # python 3 has dict.itemd()
+        # python 3 has dict.items()
         rep = {"[": "", "]": "", "(": "", ")": ""}
         rep = dict((re.escape(k), v) for k, v in rep.items())
         pattern = re.compile("|".join(rep.keys()))
