@@ -152,17 +152,22 @@ def test_call_lens_weight_file_attitude_02_01_wgtmk():
     assert os.path.exists(agent_state_out)
 
 
+# @nose.with_setup(reset_LensAgentRecurrent)
+# def test_get_new_state_values_from_out_file():
+#     # call test_call_lens_weight_file_attitude_02_01_wgtmk()
+#     # to get an AgentState.out file
+#     test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
+#     test_call_lens_weight_file_attitude_02_01_wgtmk()
+#     lens_output_dir = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
+#     # print(test_agent.state, file=sys.stderr)
+#     new_state = test_agent.get_new_state_values_from_out_file(lens_output_dir)
+#     # print(new_state, file=sys.stderr)
+#     # print(test_agent.state, file=sys.stderr)
+#     test_agent.state = new_state
+#     # print(test_agent.state, file=sys.stderr)
+#     print("test_get_new_state_values_from_out_file")
+#     print(new_state, file=sys.stderr)
+#     assert False, "can't test right now, need a stable AgentState.out file"
+
+
 @nose.with_setup(reset_LensAgentRecurrent)
-def test_get_new_state_values_from_out_file():
-    # call test_call_lens_weight_file_attitude_02_01_wgtmk()
-    # to get an AgentState.out file
-    test_agent = agent_lens_recurrent.LensAgentRecurrent(10)
-    test_call_lens_weight_file_attitude_02_01_wgtmk()
-    lens_output_dir = os.path.join(HERE, 'lens', 'output', 'AgentState.out')
-    # print(test_agent.state, file=sys.stderr)
-    new_state = test_agent.get_new_state_values_from_out_file(lens_output_dir)
-    # print(new_state, file=sys.stderr)
-    # print(test_agent.state, file=sys.stderr)
-    test_agent.state = new_state
-    # print(test_agent.state, file=sys.stderr)
-    assert False, "can't test right now"
