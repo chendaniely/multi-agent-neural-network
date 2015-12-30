@@ -117,4 +117,3 @@ class test_network_agent():
         # print(sample, file=sys.stderr)
         expected = [self.test_agent, self.test_agent_3]
         assert expected == calculated
-
