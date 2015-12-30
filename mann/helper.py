@@ -75,7 +75,7 @@ def flip_1_0(number):
     :returns flipped value
     :rtype: int
     """
-    assert number in [0, 1], 'number to flip is not a 0 or 1'
+    # assert number in [0, 1], 'number to flip is not a 0 or 1'
     assert isinstance(number, int), 'number to flip is not int'
     if number == 0:
         return 1

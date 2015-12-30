@@ -2,6 +2,7 @@
 import random
 # import sys
 
+import nose
 import numpy as np
 
 from mann import helper
@@ -54,6 +55,11 @@ def test_flip_1_0():
     calculated = helper.flip_1_0(0)
     expected = 1
     assert calculated == expected
+
+
+@nose.tools.raises(ValueError)
+def test_flip_1_0_expection():
+    helper.flip_1_0(3)
 
 
 def test_mutate():
