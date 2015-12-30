@@ -3,7 +3,7 @@
 import nose
 import sys
 # import io
-# import random
+import random
 import os
 # import glob
 # import subprocess
@@ -105,3 +105,16 @@ class test_network_agent():
                     3: [self.test_agent_1, self.test_agent_2]}
         # print(expected, file=sys.stderr)
         assert calculated == expected
+
+    @nose.with_setup(setup)
+    def test_sample_network(self):
+        random.seed(42)
+        # print(random.random(), file=sys.stderr)
+        calculated = self.test_network_agent.sample_network(2)
+        # print(calculated, file=sys.stderr)
+        # print(self.test_network_agent.G.nodes(), file=sys.stderr)
+        # sample = random.sample(self.test_network_agent.G.nodes(), 2)
+        # print(sample, file=sys.stderr)
+        expected = [self.test_agent, self.test_agent_3]
+        assert expected == calculated
+
