@@ -76,3 +76,13 @@ def test_mutate():
     # print(calculated, file=sys.stderr)
     expected = [1, 0, 0, 1]
     assert np.array_equal(np.array(calculated), np.array(expected))
+
+
+@nose.tools.raises(ValueError)
+def test_mutate_ValueError_neg():
+    helper.mutate([0, 0, 0, 0], -1)
+
+
+@nose.tools.raises(ValueError)
+def test_mutate_ValueError_pos():
+    helper.mutate([0, 0, 0, 0], 1.1)
