@@ -76,7 +76,8 @@ def flip_1_0(number):
     :rtype: int
     """
     assert number in [0, 1], 'number to flip is not a 0 or 1'
-    assert isinstance(number, int), 'number to flip is not int'
+    # print(type(number))
+    # assert isinstance(number, int), 'number to flip is not int'
     if number == 0:
         return 1
     elif number == 1:
@@ -98,6 +99,9 @@ def mutate(list_to_mutate, mutation_prob):
     if the mutation_prob == 0, then the original list is returned
     else, there is a probabliy that prototype is still returned
     """
+    if isinstance(list_to_mutate, np.ndarray):
+        list_to_mutate = list(list_to_mutate)
+
     if mutation_prob > 0.0 and mutation_prob <= 1.0:
         post_mutation_list = list_to_mutate[:]
         for idx, value in enumerate(list_to_mutate):
@@ -115,3 +119,22 @@ def mutate(list_to_mutate, mutation_prob):
         raise ValueError('Incorrect value for mutation probability ' +
                          'probability needs to be between ' +
                          '0 and 1 inclusive')
+
+def calc_dim(testlist, dim=0):
+   """tests if testlist is a list and how many dimensions it has
+   returns -1 if it is no list at all, 0 if list is empty 
+   and otherwise the dimensions of it
+
+   http://stackoverflow.com/a/33826565
+   """
+   if isinstance(testlist, list):
+      if testlist == []:
+          return dim
+      dim = dim + 1
+      dim = test_dim(testlist[0], dim)
+      return dim
+   else:
+      if dim == 0:
+          return -1
+      else:
+          return dim

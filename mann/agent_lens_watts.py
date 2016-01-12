@@ -1,6 +1,9 @@
+import random
+
 from mann import agent
 import mann.helper
 import mann.lens_in_writer
+import mann.helper_lens_ex_writer
 
 class LensAgentWatts(agent.LensAgent):
     agent_count = 0
@@ -29,33 +32,24 @@ class LensAgentWatts(agent.LensAgent):
 
     def create_weight_file(self, weight_in_file_path, weight_directory,
                            ex_file_path, prototype, prototype_mutation_prob,
-                           **kwargs):
+                           num_ex=50, **kwargs):
         padded_agent_number = self.get_padded_agent_id()
         np = len(self.predecessors)
 
-        ex_file_string = 'test'
-        # need to see which way is easier, providing a list of values seems easier
-        # we can use this to write the ex file and call lens
-        self.write_lens_ex_file(
-            exfile_path)
-        assert False, 'fail in create weight file'
+        prototype = prototype[0]
+        print("prototype: {}".format(prototype))
+        print(type(prototype))
 
-    def write_lens_ex_file(self, file_to_write,
-                           string_to_write=None,
-                           list_to_write_into_string=None):
-        """Takes a string or list and writes an .ex file for lens
-        """
-        print("-"*80)
-        print("string", string_to_write)
-        print("list", list_to_write_into_string)
-        with open(file_to_write, 'w') as f:
-            if string_to_write is None and list_to_write_into_string is not None:
-                # passed in a list of stings to write and not a full string
-                ex_file_strings = '\n'.join(list_to_write_into_string)
-                f.write(ex_file_strings)
-            elif string_to_write is not None and list_to_write_into_string is None:
-                # passed in just a string to directly write
-                f.write(string_to_write)
-            else:
-                raise(ValueError,
-                      "Unknown combination of strings or list passed")
+        all_ex = []
+        for i in range(num_ex):
+            all_ex.append(mann.helper.mutate(prototype, prototype_mutation_prob))
+        print(all_ex)
+
+        ex_file_string = mann.helper_lens_ex_writer.create_ex_str_from_2d_list(all_ex)
+
+        mann.helper_lens_ex_writer.write_lens_ex_file(
+            ex_file_path, string_to_write=ex_file_string)
+
+        self.call_lens(lens_in_file_dir=weight_in_file_path,
+                       lens_env={'a': padded_agent_number})
+        assert False, 'fail in create weight file'

@@ -99,6 +99,8 @@ class NetworkAgent(object):
                         kwargs.get('weight_in_file'),
                         kwargs.get('weight_dir'),
                         kwargs.get('weight_ex_path'),
+                        kwargs.get('prototypes'),
+                        kwargs.get('prototype_mutation_p'),
                         **kwargs)
                     assert False, 'fail in network_agent.py'
                 else:
