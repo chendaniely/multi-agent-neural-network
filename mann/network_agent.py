@@ -9,6 +9,7 @@ import logging
 import mann.agent
 import mann.agent_binary
 import mann.agent_lens_recurrent
+import mann.agent_lens_watts
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +92,15 @@ class NetworkAgent(object):
                         kwargs.get('weight_dir'),
                         kwargs.get('weight_ex_path'),
                         **kwargs)
+                elif agent_type[2] == 'watts':
+                    new_agent = mann.agent_lens_watts.LensAgentWatts(
+                        agent_type[1])
+                    new_agent.create_weight_file(
+                        kwargs.get('weight_in_file'),
+                        kwargs.get('weight_dir'),
+                        kwargs.get('weight_ex_path'),
+                        **kwargs)
+                    assert False, 'fail in network_agent.py'
                 else:
                     s = 'Unknown Lens Agent Type'
                     logger.fatal(s)
