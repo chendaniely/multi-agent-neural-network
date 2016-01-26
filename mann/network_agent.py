@@ -10,6 +10,20 @@ import mann.agent
 import mann.agent_binary
 import mann.agent_lens_recurrent
 
+logger = logging.getLogger(__name__)
+
+
+def setup_logger(fh, formatter):
+    logger.setLevel(logging.DEBUG)
+    fh = fh
+    fh.setLevel(logging.DEBUG)
+    formatter = formatter
+    fh.setFormatter(formatter)
+    global logger
+    logger.addHandler(fh)
+    logger.debug('Setup logger in network_agent.py')
+    return logger
+
 
 class NetworkAgent(object):
     def __init__(self):
@@ -20,7 +34,7 @@ class NetworkAgent(object):
 
     def create_multidigraph_of_agents_from_edge_list(
             self, number_of_agents, edge_list, fig_path,
-            agent_type=tuple(['None']), add_reverse_edge=False, logger=None,
+            agent_type=tuple(['None']), add_reverse_edge=False,
             **kwargs):
         """Create multi directed networkx graph of agents from an edge list
 
@@ -42,7 +56,7 @@ class NetworkAgent(object):
         :param **kwargs: kwargs used for lens agent creation
         :type **kwargs: dict
         """
-        logging.info('In mann.network_agent.'
+        logger.debug('In mann.network_agent.'
                      'create_multidigraph_of_agents_from_edge_list()')
 
         # create the graph
@@ -50,9 +64,9 @@ class NetworkAgent(object):
 
         # dictonary container for agents, key values will be the agent.get_key
         all_agents = {}
-
+        logger.debug("creating agents of type {}".format(agent_type))
         for i in range(number_of_agents):
-            logging.info("creating agent # {}".format(i))
+            logger.debug("creating agent # {}".format(i))
 
             # createing the different types of agents for the network
             if agent_type[0] == 'binary':
@@ -78,18 +92,21 @@ class NetworkAgent(object):
                         kwargs.get('weight_ex_path'),
                         **kwargs)
                 else:
-                    raise ValueError('Unknown Lens Agent Type')
+                    s = 'Unknown Lens Agent Type'
+                    logger.fatal(s)
+                    raise ValueError(s)
             else:
-                raise mann.agent.UnknownAgentTypeError(
-                    'Unknown agent specified as nodes for network')
+                s = 'Unknown agent specified as node for network'
+                logger.fatal(s)
+                raise mann.agent.UnknownAgentTypeError(s)
 
-            logging.info("agent {} created: type: {}".
+            logger.debug("agent {} created: type: {}".
                          format(new_agent.get_key(), type(new_agent)))
-            logging.info("agent {} state: {}".
+            logger.debug("agent {} state: {}".
                          format(new_agent.get_key(), str(new_agent.state)))
 
             try:
-                logging.info("agent {} threshold: {}".
+                logger.debug("agent {} threshold: {}".
                              format(new_agent.get_key(),
                                     str(new_agent.threshold)))
             except AttributeError:  # threshold is not a parameter for agent
@@ -97,20 +114,21 @@ class NetworkAgent(object):
 
             all_agents[new_agent.agent_id] = new_agent
 
-        logging.info('total number of agents created: {}'.
+        logger.debug('total number of agents created: {}'.
                      format(new_agent.agent_count))
 
         self.G.add_nodes_from(all_agents.values())
-        logging.info('number of nodes created: {}'.format(len(self.G)))
+        logger.debug('number of nodes created: {}'.format(len(self.G)))
 
-        logging.info('Creating edges')
+        logger.debug('Creating edges')
+        logger.debug('Add reverse edge: {}'.format(str(add_reverse_edge)))
         for edge in edge_list:
             u, v = edge
             self.G.add_edge(all_agents[u], all_agents[v])
             if add_reverse_edge is True:
                 self.G.add_edge(all_agents[v], all_agents[u])
 
-        logging.info('Saving plot of mann copied graph')
+        logger.debug('Saving plot of mann copied graph')
         nx.draw_circular(self.G)
         # plt.show()
         plt.savefig(fig_path)
@@ -121,6 +139,7 @@ class NetworkAgent(object):
         nx.write_edgelist(self.G, export_file_dir, **kwargs)
 
     def set_predecessors_for_each_node(self):
+        logger.debug('network_agent.set_predecessors_for_each_node()')
         # iterate through all nodes in network
         for node_agent in self.G.nodes_iter():
             # look up the predessors for each node
@@ -128,9 +147,9 @@ class NetworkAgent(object):
             # since the nodes are an Agent class we can
             # assign the predecessors agent instance variable to the iter
             node_agent.set_predecessors(predecessors)
-            logging.info('Agent {} predecessors assigned'.
-                         format(node_agent.agent_id))
-            print(node_agent.predecessors)
+            logger.debug('Agent {} predecessors assigned: {}'.
+                         format(node_agent.agent_id, node_agent.predecessors))
+            # print(node_agent.predecessors)
 
     def sample_network(self, number_of_agents_to_sample):
         '''
@@ -160,22 +179,22 @@ class NetworkAgent(object):
         assert isinstance(num_agents_update, int)
         agents_for_update = self.sample_network(num_agents_update)
 
-        logging.info('Num agents for update: {}'.
+        logger.debug('Num agents for update: {}'.
                      format(len(agents_for_update)))
 
         # assign new temp value
         for selected_agent in agents_for_update:
-            logging.info('Updating: {}'.
+            logger.debug('Updating: {}'.
                          format(self.G.nodes()[selected_agent.agent_id]))
             assert selected_agent.temp_new_state is None
             selected_agent.update_agent_state(update_type,
                                               update_algorithm)
 
         # assign new temp value as final state simultaneous update
-        logging.info('Performing simultaneous update')
+        logger.debug('Performing simultaneous update')
         for selected_agent in agents_for_update:
             if selected_agent.temp_new_state == 1:
-                logging.info('Update agent {}: setting state to {}, was {}'.
+                logger.debug('Update agent {}: setting state to {}, was {}'.
                              format(selected_agent.agent_id,
                                     selected_agent.temp_new_state,
                                     selected_agent.state))
@@ -183,7 +202,7 @@ class NetworkAgent(object):
                 selected_agent.state = selected_agent.temp_new_state
                 selected_agent.num_update += 1
             else:
-                logging.info('Agent {}: No state change to {}, was {}'.
+                logger.debug('Agent {}: No state change to {}, was {}'.
                              format(selected_agent.agent_id,
                                     selected_agent.temp_new_state,
                                     selected_agent.state))
@@ -195,11 +214,11 @@ class NetworkAgent(object):
         assert isinstance(num_agents_update, int)
         agents_for_update = self.sample_network(num_agents_update)
 
-        logging.info('Num agents for update: {}'.
+        logger.debug('Num agents for update: {}'.
                      format(len(agents_for_update)))
         # assign new temp value
         for selected_agent in agents_for_update:
-            logging.info('Updating: {}'.
+            logger.debug('Updating: {}'.
                          format(self.G.nodes()[selected_agent.agent_id]))
             selected_agent.update_agent_state(update_type, update_algorithm,
                                               manual_predecessor_inputs,

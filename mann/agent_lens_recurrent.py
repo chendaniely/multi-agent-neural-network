@@ -7,6 +7,20 @@ from mann import agent
 import mann.helper
 import mann.lens_in_writer
 
+logger = logging.getLogger(__name__)
+
+
+def setup_logger(fh, formatter):
+    logger.setLevel(logging.DEBUG)
+    fh = fh
+    fh.setLevel(logging.DEBUG)
+    formatter = formatter
+    fh.setFormatter(formatter)
+    global logger
+    logger.addHandler(fh)
+    logger.debug('Setup logger in agent_lens_recurrent.py')
+    return logger
+
 
 class LensAgentRecurrent(agent.LensAgent):
     agent_count = 0
@@ -74,17 +88,20 @@ class LensAgentRecurrent(agent.LensAgent):
         calling lens (which will generate weights,
         read in the .ex file, and train)
         """
+        logger.debug("creating weight file")
         padded_agent_number = self.get_padded_agent_id()
 
         # write a LENS ex file before calling lens to create weights
 
         # number of predecessors
         np = len(self.predecessors)
+        logger.debug("Number of predecessors: {}".format(str(np)))
 
         self.write_lens_ex_file(
             ex_file_path,
             list_to_write_into_string=self.sample_predecessor_values(np))
 
+        logger.debug('Calling lens from agent_lens_recurrent.create_weight_file')
         self.call_lens(lens_in_file_dir=weight_in_file_path,
                        lens_env={'a': padded_agent_number,
                                  'bm': kwargs['between_mean'],
@@ -92,6 +109,7 @@ class LensAgentRecurrent(agent.LensAgent):
                                  'wm': kwargs['within_mean'],
                                  'ws': kwargs['within_sd'],
                                  'cs': kwargs['clamp_strength']})
+        logger.debug('Finished alling lens from agent_lens_recurrent.create_weight_file')
 
     # def get_new_state_values_from_out_file(self, file_dir, agent_type,
     #                                        column=0):
@@ -152,7 +170,7 @@ class LensAgentRecurrent(agent.LensAgent):
         LENS file
         """
         predecessors_picked = random.sample(self.predecessors, n)
-        logging.debug('predecessors_picked: {}'.format(predecessors_picked))
+        logger.debug('predecessors_picked: {}'.format(predecessors_picked))
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
         lens_ex_file_strings = []
         lens_ex_file_string_self_1 = self._pick_self()
@@ -184,7 +202,7 @@ class LensAgentRecurrent(agent.LensAgent):
                                 size=n,
                                 replace=False),
             :]
-        logging.debug('manual_predecessors_picked: {}'.
+        logger.debug('manual_predecessors_picked: {}'.
                       format(predecessors_picked))
         lens_ex_file_strings = []
         lens_in_writer_helper = mann.lens_in_writer.LensInWriterHelper()
@@ -211,13 +229,24 @@ class LensAgentRecurrent(agent.LensAgent):
             if string_to_write is None and list_to_write_into_string is not None:
                 # passed in a list of stings to write and not a full string
                 ex_file_strings = '\n'.join(list_to_write_into_string)
+                logger.debug('writing ex file {}:\n{}\n{}\n{}'.format(
+                    file_to_write,
+                    '*' * 80,
+                    ex_file_strings,
+                    '*' * 80))
                 f.write(ex_file_strings)
             elif string_to_write is not None and list_to_write_into_string is None:
                 # passed in just a string to directly write
+                logger.debug('writing ex file {}:\n{}\n{}\n{}'.format(
+                    file_to_write,
+                    '*' * 80,
+                    string_to_write,
+                    '*' * 80))
                 f.write(string_to_write)
             else:
-                raise(ValueError,
-                      "Unknown combination of strings or list passed")
+                s = "Unknown combination of strings or list passed"
+                logger.fatal(s)
+                raise(ValueError, s)
 
     def sample_predecessor_values(self, n, manual_predecessor_inputs=None):
         """Returns a list of strings that represent the inputs of n predecessors
@@ -229,11 +258,11 @@ class LensAgentRecurrent(agent.LensAgent):
 
         # manual_predecessor_inputs = None
         if manual_predecessor_inputs is not None:
-            logging.debug('Picking from manual_predecessor_inputs')
+            logger.debug('Picking from manual_predecessor_inputs')
             lens_ex_file_strings = self._pick_manual_predecessor_inputs(
                 manual_predecessor_inputs, n)
         else:
-            logging.debug('Picking from self.predecessors')
+            logger.debug('Picking from self.predecessors')
             lens_ex_file_strings = self._pick_network(n)
         return(lens_ex_file_strings)
 
@@ -248,11 +277,11 @@ class LensAgentRecurrent(agent.LensAgent):
 
         # manual_predecessor_inputs = None
         # if manual_predecessor_inputs is not None:
-        #     logging.debug('Picking from manual_predecessor_inputs')
+        #     logger.debug('Picking from manual_predecessor_inputs')
         #     lens_ex_file_strings = self._pick_manual_predecessor_inputs(
         #         manual_predecessor_inputs, n)
         # else:
-        #     logging.debug('Picking from self.predecessors')
+        #     logger.debug('Picking from self.predecessors')
         #     lens_ex_file_strings = self._pick_network(n)
 
         ex_file_strings = '\n'.join(lens_ex_file_strings)
@@ -304,7 +333,7 @@ class LensAgentRecurrent(agent.LensAgent):
             else:
                 raise ValueError("update algorithm unknown")
         else:
-            logging.debug('Agent {} has no precessors.'.
+            logger.debug('Agent {} has no precessors.'.
                           format(self.agent_id))
 
     @property

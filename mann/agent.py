@@ -6,6 +6,21 @@ import io
 import os
 # import sys  # used to print to stderr for unit testing
 import warnings
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logger(fh, formatter):
+    logger.setLevel(logging.DEBUG)
+    fh = fh
+    fh.setLevel(logging.DEBUG)
+    formatter = formatter
+    fh.setFormatter(formatter)
+    global logger
+    logger.addHandler(fh)
+    logger.debug('Setup logger in network_agent.py')
+    return logger
 
 
 class Error(Exception):
@@ -225,7 +240,11 @@ class LensAgent(Agent):
         for key, value in lens_env.items():
             env[key] = str(value)
 
+        logger.debug('Lens env: {}'.format(str(lens_env.items())))
+
+        logger.debug('Calling lens')
         subprocess.call(['lens', '-batch', lens_in_file_dir], env=env)
+        logger.debug('Finished calling lens')
 
         # subprocess.call(['lens', '-batch', lens_in_file],
         #                env=kwargs.get('env'))
