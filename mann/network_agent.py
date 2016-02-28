@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 def setup_logger(fh, formatter):
     logger.setLevel(logging.DEBUG)
     fh = fh
-    fh.setLevel(logging.DEBUG)
+    # fh.setLevel(logging.DEBUG)
+    fh.setLevel(logging.CRITICAL)
     formatter = formatter
     fh.setFormatter(formatter)
     global logger
