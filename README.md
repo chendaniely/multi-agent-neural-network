@@ -91,6 +91,24 @@ Finally before running <code>./lens</code> you need to export a few more environ
 
 If you are running Lens on a remote machine via SSH, remember to ssh via <code> ssh -X </code>
 
+# configure X11 Forwarding in RHEL7, CentOS7
+
+Taken from: https://rtfmp.com/2015/10/08/how-configure-x11-forwarding-in-rhel7-centos7/
+
+1) Install the following packages
+yum install -y xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps
+
+2) Enable X11 Fowarding
+grep -i X11Forwarding /etc/ssh/sshd_config
+Should be set to Yes
+
+3) Logoff and login as
+ssh -Y user@host
+
+4) Test
+xclock& , xeyes&
+
+# Runing Tests
 If you are planning to run the nose tests:
 
 `nosetests --cover-branches --with-coverage --cover-erase --cover-package=mann`
